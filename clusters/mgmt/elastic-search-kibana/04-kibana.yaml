@@ -45,7 +45,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: http-ingress
+  name: kibana
   namespace: tanzu-system-logging
   labels:
     app: kibana

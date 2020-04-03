@@ -1,5 +1,7 @@
 # TKG Lab
 
+![TKG Lab Deployment Diagram](docs/tkg-deployment.png)
+
 ## Required CLIs
 
 - kubectl
@@ -759,3 +761,4 @@ kubectl delete all,secret,cm,ingress,pvc -l app=acmefit
 
 - Set network access policy for acme-fitness
 - Use tmc cli to set policy and create workspace
+- Use bitnami for elastic search
