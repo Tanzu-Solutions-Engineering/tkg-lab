@@ -585,7 +585,7 @@ KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 
 Create Workspace -> dpfeffer-acme-fitness-dev
 Create Namespace -> acme-fitness
-Set Policy on the Namespace => namespace.admin to acme-fitness-devs
+Set Policy on the Namespace => workspace.edit to acme-fitness-devs
 
 ## Set Resource Quota for acme-fitness namespace
 
@@ -632,10 +632,14 @@ helm install wavefront wavefront/wavefront \
 
 Follow the URL provided in the helm install command and filter the cluster list to your $VMWARE_ID-wlc-1 cluster.
 
-## Install Contour on management cluster
+## Install Contour on workload cluster
 
 ```bash
 kubectl apply -f tkg-extensions/ingress/contour/aws/
+kubectl create secret generic acme-account-key \
+   --from-file=tls.key=keys/acme-account-private-key.pem \
+   -n tanzu-system-ingress
+kubectl apply -f clusters/wlc-1/contour-cluster-issuer.yaml
 ```
 
 Get the load balancer external IP for the envoy service
@@ -678,14 +682,80 @@ velero backup get
 velero schedule get
 ```
 
+## Now Switch to Acme-Fitness Dev Team Perspective
+
+## Get Log-in and setup kubeconfig
+
+1. Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
+2. Click Sign In
+3. Log into okta as cody@winterfell.live
+4. Give a secret question answer
+5. Download kubeconfig
+6. Attempt to access wlc-1 cluster with the new config
+
+```bash
+export KUBECONFIG=~/Downloads/kubeconf.txt
+export kubectl config set-context --current --namespace acme-fitness
+kubectl get pods
+```
+
+## Get, update, and deploy Acme-fitness
+
+```bash
+git clone https://github.com/vmwarecloudadvocacy/acme_fitness_demo.git
+cd acme_fitness_demo
+git checkout 158bbe2
+cd ..
+rm -rf acme_fitness_demo/.git
+rm -rf acme_fitness_demo/aws-fargate
+rm -rf acme_fitness_demo/docker-compose
+```
+
+```bash
+kubectl apply -f clusters/wlc-1/acme-fitness/acme-fitness-mongodata-pvc.yaml
+kubectl create secret generic cart-redis-pass --from-literal=password=KeepItSimple1! --namespace acme-fitness
+kubectl label secret cart-redis-pass app=acmefit
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/cart-redis-total.yaml --namespace acme-fitness
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/cart-total.yaml --namespace acme-fitness
+kubectl create secret generic catalog-mongo-pass  --from-literal=password=KeepItSimple1! --namespace acme-fitness
+kubectl label secret catalog-mongo-pass app=acmefit
+kubectl create -f acme_fitness_demo/kubernetes-manifests/catalog-db-initdb-configmap.yaml --namespace acme-fitness
+kubectl label cm catalog-initdb-config app=acmefit
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/catalog-db-total.yaml --namespace acme-fitness
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/catalog-total.yaml --namespace acme-fitness
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/payment-total.yaml --namespace acme-fitness
+kubectl create secret generic order-postgres-pass --from-literal=password=KeepItSimple1! --namespace acme-fitness
+kubectl label secret order-postgres-pass app=acmefit
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/order-db-total.yaml --namespace acme-fitness
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/order-total.yaml --namespace acme-fitness
+kubectl create secret generic users-mongo-pass --from-literal=password=KeepItSimple1! --namespace acme-fitness
+kubectl label secret users-mongo-pass app=acmefit
+kubectl create secret generic users-redis-pass --from-literal=password=KeepItSimple1! --namespace acme-fitness
+kubectl label secret users-redis-pass app=acmefit
+kubectl create -f acme_fitness_demo/kubernetes-manifests/users-db-initdb-configmap.yaml --namespace acme-fitness
+kubectl label cm users-initdb-config app=acmefit
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/users-db-total.yaml --namespace acme-fitness
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/users-redis-total.yaml --namespace acme-fitness
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/users-total.yaml --namespace acme-fitness
+kubectl patch deployment catalog-mongo  --type merge -p "$(cat clusters/wlc-1/acme-fitness/catalog-db-patch-volumes.yaml)"
+kubectl apply -f acme_fitness_demo/kubernetes-manifests/frontend-total.yaml --namespace acme-fitness
+kubectl apply -f clusters/wlc-1/acme-fitness/acme-fitness-frontend-ingress.yaml
+kubectl label secret acme-fitness-tls app=acmefit
+```
+
+### Validation Step
+
+Go to the ingress URL to test out.  Mine is https://acme-fitness.wlc-1.tkg-aws-lab.winterfell.live.
+
 ## Teardown
 
 ```bash
 tmc cluster delete pa-dpfeffer-mgmt
+tmc cluster delete pa-dpfeffer-wlc-1
+kubectl delete all,secret,cm,ingress,pvc -l app=acmefit
 ```
 
 ## TODO
-- Deploy contour issuer for wildcard certs
-- Deploy acme fitness
+
 - Set network access policy for acme-fitness
 - Use tmc cli to set policy and create workspace

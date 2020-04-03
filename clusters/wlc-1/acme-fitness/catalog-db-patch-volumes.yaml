@@ -1,0 +1,10 @@
+spec:
+  template:
+    spec:
+      volumes:
+      - name: mongodata
+        persistentVolumeClaim:
+          claimName: mongodata
+      - name: mongo-initdb
+        configMap:
+          name: catalog-initdb-config

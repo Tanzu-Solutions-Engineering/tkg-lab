@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: acme-fitness
+  namespace: acme-fitness
+spec:
+  hard:
+    requests.cpu: "3"
+    requests.memory: 4Gi
+    requests.storage: 10Gi
+    limits.cpu: "3"
+    limits.memory: 4Gi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: acme-fitness
+  namespace: acme-fitness
+spec:
+  limits:
+  - default:
+      cpu: "100m"
+      memory: "100Mi"
+    defaultRequest:
+      cpu: "100m"
+      memory: "100Mi"
+    type: Container
