@@ -1,0 +1,9 @@
+fullName:
+  clusterName: pa-dpfeffer-mgmt
+  location: global
+  name: acme-fitness
+objectMeta:
+  labels:
+    origin: dpfeffer
+spec:
+  workspaceName: dpfeffer-acme-fitness-dev

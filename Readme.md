@@ -563,21 +563,23 @@ kubectl apply -f clusters/wlc-1/sensitive/tmc-wlc-1-cluster-attach-manifest.yaml
 
 Go to the TMC UI and find your cluster.  It should take a few minutes but appear clean.
 
-## Use TMC to set Admin Access Policy
+```bash
+# Replace pa-dpfeffer-mgmt with the name of your management cluser
+tmc cluster iam add-binding pa-dpfeffer-mgmt --role cluster.admin --groups platform-team
+```
+
+### Validation Step
 
 1. Access TMC UI
 2. Select Policies on the left nav
 3. Choose Access->Clusters and then select your wlc-1 cluster
-4. Add Direct Access Policy => Set cluster.admin permission to the platform-team group
-
-### Validation Step
-
-1. Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
-2. Click Sign In
-3. Log into okta as alana@winterfell.live
-4. Give a secret password
-5. Download kubeconfig
-6. Attempt to access wlc-1 cluster with the new config
+4. Observer direct Access Policy => Set cluster.admin permission to the platform-team group
+5. Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
+6. Click Sign In
+7. Log into okta as alana@winterfell.live
+8. Give a secret password
+9. Download kubeconfig
+10. Attempt to access wlc-1 cluster with the new config
 
 ```bash
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
@@ -585,9 +587,15 @@ KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 
 ## Use TMC to set workspace and Access Policy for acme-fitness
 
-Create Workspace -> dpfeffer-acme-fitness-dev
-Create Namespace -> acme-fitness
-Set Policy on the Namespace => workspace.edit to acme-fitness-devs
+Use the commands below to create a workspace and associated namespace.  Then provide the workspace.edit role to the acme-fitness-dev group.
+
+>Note: update the files within tmc/config to match your specific names.  Essentially replace the dpfeffer references with your own.
+
+```bash
+tmc workspace create -f tmc/config/workspace/acme-fitness-dev.yaml
+tmc cluster namespace create -f tmc/config/namespace/tkg-mgmt-acme-fitness.yaml
+tmc workspace iam add-binding dpfeffer-acme-fitness-dev --role workspace.edit --groups acme-fitness-devs
+```
 
 ## Set Resource Quota for acme-fitness namespace
 
@@ -760,5 +768,4 @@ kubectl delete all,secret,cm,ingress,pvc -l app=acmefit
 ## TODO
 
 - Set network access policy for acme-fitness
-- Use tmc cli to set policy and create workspace
 - Use bitnami for elastic search
