@@ -483,13 +483,13 @@ kubectl apply -f tkg-extensions/cert-manager/
 Copy the example modification files over to your working directory.
 
 ```bash
-cp tkg-extensions-mods-examples/authentication/gangway/aws/03-config.yaml clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/03-config.yaml
-cp tkg-extensions-mods-examples/authentication/gangway/aws/05-certs.yaml clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/05-certs.yaml
+cp tkg-extensions-mods-examples/authentication/gangway/aws/03-config.yaml clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/03-config.yaml
+cp tkg-extensions-mods-examples/authentication/gangway/aws/05-certs.yaml clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/05-certs.yaml
 ```
 
 Modified versions of ganway config files were specific to my environment.  Make the following updates to customize to your environment.
 
-Update clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/05-certs.yaml
+Update clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/05-certs.yaml
 
 Issuer with name=dex-ca-issuer
 
@@ -502,7 +502,7 @@ Certificate with name=dex-cert
 - spec.commonName
 - spec.dnsNames[0]
 
-Update clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/03-config.yaml
+Update clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/03-config.yaml
 
 - authorizeURL (just update the root domain name)
 - tokenURL (just update the root domain name)
@@ -512,7 +512,7 @@ Update clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/03-config.ya
 ```bash
 kubectl apply -f tkg-extensions/authentication/gangway/aws/01-namespace.yaml
 kubectl apply -f tkg-extensions/authentication/gangway/aws/02-service.yaml
-kubectl apply -f clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/03-config.yaml
+kubectl apply -f clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/03-config.yaml
 # Below is FOO_SECRET intentionally hard coded
 kubectl create secret generic gangway \
    --from-literal=sesssionKey=$(openssl rand -base64 32) \
@@ -524,7 +524,7 @@ kubectl create secret generic acme-account-key \
 kubectl create secret generic certbot-gcp-service-account \
    --from-file=keys/certbot-gcp-service-account.json \
    -n tanzu-system-auth
-kubectl apply -f clusters/mgmt/tkg-extensions-mods/authentication/gangway/aws/05-certs.yaml
+kubectl apply -f clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/05-certs.yaml
 watch kubectl get certificate -n tanzu-system-auth
 # Wait for above certificate to be ready.  It took me about 2m20s
 kubectl create cm dex-ca -n tanzu-system-auth --from-file=dex-ca.crt=keys/letsencrypt-ca.pem
