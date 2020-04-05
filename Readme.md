@@ -103,18 +103,11 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 11. [Install Velero and Setup Nightly Backup](docs/velero_mgmt.md)
 
 
-
+## Now you have a simulated request to setup cluster for a new team
 ### Workload Cluster
 #### 1. [xxxxx](docs/xxxxx.md)
 
 
-
-
-
-
-
-
-## Now you have a simulated request to setup cluster for a new team
 
 ## Create new workload cluster
 
