@@ -19,9 +19,17 @@ Follow the docs... for background and pre-requisite tasks.  http://go/tkg-alexan
 tkg scale cluster tkg-mgmt-aws --namespace tkg-system -w 2
 ```
 
+## Install Default Storage Class
+
+```bash
+kubectl apply -f clusters/mgmt/default-storage-class.yaml
+```
+
 ## Validation Step
 
 ```bash
 tkg get management-clusters --config config.yaml
 kubectl get pods -A
+kubectl sc
 ```
+
