@@ -89,7 +89,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - helm 3
 
 ## Installation Steps
-### [Install Management Cluster](../docs/install_tkg_mgmt.md)
+### 1. [Install Management Cluster](docs/install_tkg_mgmt.md)
 
 ## Attach Management Cluster to TMC
 
