@@ -14,6 +14,7 @@ OSS Signed and Supported Extensions:
 TKG+ w/ Customer Reliability Engerineering and VMware Open Source:
 
 - **Velero** for backup
+- **Harbor** for image registry
 
 Incorporates the following Tanzu SaaS products:
 
