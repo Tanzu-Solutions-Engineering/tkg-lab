@@ -21,12 +21,14 @@ Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be
 ```bash
 kubectl apply -f clusters/mgmt/harbor/generated/01-namespace.yaml
 ```
-### Create k8s secrets
+### Create k8s secrets and certificates
 We will utizize keys generated in earlier steps.  Replicate these secretes into the harbor namespace:
 ```bash
 kubectl create secret generic certbot-gcp-service-account --from-file=keys/certbot-gcp-service-account.json -n harbor
 
 kubectl create secret generic acme-account-key --from-file=tls.key=keys/acme-account-private-key.pem -n harbor
+
+kubectl apply -f clusters/mgmt/harbor/generated/02-certs.yaml 
 ```
 
 ### Add helm repo and install harbor
