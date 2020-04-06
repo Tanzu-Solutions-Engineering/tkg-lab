@@ -30,6 +30,6 @@ kubectl apply -f clusters/mgmt/default-storage-class.yaml
 ```bash
 tkg get management-clusters --config config.yaml
 kubectl get pods -A
-kubectl sc
+kubectl get sc
 ```
 
