@@ -1,0 +1,53 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: harbor-ca-issuer
+  namespace: harbor
+spec:
+  acme:
+    # The ACME server URL
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    # email: "certificates@example.com"
+    email: 
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: acme-account-key
+      # Enable the DNS-01 challenge provider
+    solvers:
+    - dns01:
+        clouddns:
+          # The ID of the GCP project
+          project: 
+          # This is the secret used to access the service account
+          serviceAccountSecretRef:
+            name: certbot-gcp-service-account
+            key: certbot-gcp-service-account.json
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: harbor-cert
+  namespace: harbor
+spec:
+  # Secret names are always required.
+  secretName: harbor-cert-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  organization:
+  - vmware
+  commonName: 
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  # At least one of a DNS Name, USI SAN, or IP address is required.
+  dnsNames:
+  # 
+  issuerRef:
+    name: harbor-ca-issuer
+    # We can reference ClusterIssuers by changing the kind here.
+    # The default value is Issuer (i.e. a locally namespaced Issuer)
+    kind: Issuer
+  

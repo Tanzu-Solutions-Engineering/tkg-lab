@@ -1,0 +1,14 @@
+expose:
+  type: ingress
+  ingress:
+    hosts:
+      core: 
+      notary: 
+  tls:
+    secretName: harbor-cert-tls
+    notarySecretName: harbor-cert-tls
+externalURL: 
+persistence:
+  persistentVolumeClaim:
+    registry:
+      size: 30Gi
