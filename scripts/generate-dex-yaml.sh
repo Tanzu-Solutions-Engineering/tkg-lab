@@ -21,6 +21,6 @@ yq write -d0 clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/gener
 yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/04-cm.yaml > clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 sed -i '' -e 's/$DEX_CN/'$DEX_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 sed -i '' -e 's/$GANGWAY_CN/'$GANGWAY_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-sed -i '' -e 's/$OCTA_AUTH_SERVER_URL/'$OCTA_AUTH_SERVER_URL'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+sed -i '' -e 's/$OCTA_AUTH_SERVER_CN/'$OCTA_AUTH_SERVER_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 sed -i '' -e 's/$OCTA_DEX_APP_CLIENT_ID/'$OCTA_DEX_APP_CLIENT_ID'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 sed -i '' -e 's/$OCTA_DEX_APP_CLIENT_SECRET/'$OCTA_DEX_APP_CLIENT_SECRET'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml

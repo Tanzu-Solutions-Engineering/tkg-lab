@@ -10,7 +10,7 @@ export DEX_CN=dex.mgmt.tkg-aws-lab.winterfell.live
 # the DNS CN that will ultimately map to the ganway service on your first workload cluster
 export GANGWAY_CN=gangway.wlc-1.tkg-aws-lab.winterfell.live
 # the default auth server url from Okta
-export OCTA_AUTH_SERVER_URL=https://dev-866321145.okta.com/oauth2/default
+export OCTA_AUTH_SERVER_CN=dev-866321145.okta.com
 # the client id and secret from the app you created in Okta for Dex
 export OCTA_DEX_APP_CLIENT_ID=123adsfsadf3234r
 export OCTA_DEX_APP_CLIENT_SECRET=123adsfsadf3234r
