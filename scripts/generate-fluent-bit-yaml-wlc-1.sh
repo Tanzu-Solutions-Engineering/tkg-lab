@@ -1,4 +1,6 @@
-#bin/bash
+#!/bin/bash -e
+
+: ${ELASTICSEARCH_CN?"Need to set ELASTICSEARCH_CN environment variable"}
 
 mkdir -p clusters/wlc-1/tkg-extensions-mods/logging/fluent-bit/aws/output/elasticsearch/generated
 

@@ -18,7 +18,7 @@ export OCTA_DEX_APP_CLIENT_SECRET=123adsfsadf3234r
 
 ## Prepare Manifests
 
-Prepare the YAML manifests for the related dex K8S objects.  Manifest will be output into `clusters/mgmt/tkg-extensions/mods/authentication/dex/aws/oidc/generated/` in case you want to inspect.
+Prepare the YAML manifests for the related dex K8S objects.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/` in case you want to inspect.
 
 ```bash
 ./scripts/generate-dex-yaml.sh

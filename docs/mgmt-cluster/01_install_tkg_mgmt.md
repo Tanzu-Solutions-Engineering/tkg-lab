@@ -28,7 +28,7 @@ kubectl apply -f clusters/mgmt/default-storage-class.yaml
 ## Validation Step
 
 ```bash
-tkg get management-clusters --config config.yaml
+tkg get management-clusters
 kubectl get pods -A
 kubectl get sc
 ```

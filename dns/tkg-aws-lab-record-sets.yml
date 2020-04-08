@@ -1,4 +1,3 @@
----
 kind: dns#resourceRecordSet
 name: tkg-aws-lab.winterfell.live.
 rrdatas:
@@ -27,6 +26,6 @@ type: CNAME
 kind: dns#resourceRecordSet
 name: '*.wlc-1.tkg-aws-lab.winterfell.live.'
 rrdatas:
-- ab7f527993d1b4b9cad0e12229164c5c-660468626.us-east-2.elb.amazonaws.com.
+- a27517a1da0364c35bb5fb25ae4854d4-769782876.us-east-2.elb.amazonaws.com.
 ttl: 300
 type: CNAME

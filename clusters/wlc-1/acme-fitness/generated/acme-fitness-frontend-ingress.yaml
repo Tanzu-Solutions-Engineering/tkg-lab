@@ -16,9 +16,9 @@ spec:
     hosts:
     - acme-fitness.wlc-1.tkg-aws-lab.winterfell.live
   rules:
-    - host: acme-fitness.wlc-1.tkg-aws-lab.winterfell.live
-      http:
-        paths:
-          - backend:
-              serviceName: frontend
-              servicePort: 80
+  - host: acme-fitness.wlc-1.tkg-aws-lab.winterfell.live
+    http:
+      paths:
+      - backend:
+          serviceName: frontend
+          servicePort: 80

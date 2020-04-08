@@ -34,3 +34,12 @@ chmod 600 keys/acme-account-private-key.pem
 ```
 
 Create a service account in GCP following these [instructions](https://certbot-dns-google.readthedocs.io/en/stable/) and then store the service account json file at **keys/certbot-gcp-service-account.json**
+
+## Retrieve Let's Encrypt CA
+
+The workload cluster needs to use a special oidc plan so that it leverages the DEX OIDC federated endpoint
+
+```bash
+curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o keys/letsencrypt-ca.pem
+chmod 600 keys/letsencrypt-ca.pem
+```
