@@ -37,8 +37,8 @@ spec:
           requests:
             cpu: 100m
         env:
-          - name: ELASTICSEARCH_URL
-            value: http://elasticsearch:9200
+        - name: ELASTICSEARCH_URL
+          value: http://elasticsearch:9200
         ports:
         - containerPort: 5601
 ---
@@ -51,10 +51,9 @@ metadata:
     app: kibana
 spec:
   rules:
-  - host: logs.mgmt.tkg-aws-lab.winterfell.live # This should be updated to your domain
+  - host: logs.mgmt.tkg-aws-lab.winterfell.live
     http:
       paths:
       - backend:
           serviceName: kibana
           servicePort: 5601
-  

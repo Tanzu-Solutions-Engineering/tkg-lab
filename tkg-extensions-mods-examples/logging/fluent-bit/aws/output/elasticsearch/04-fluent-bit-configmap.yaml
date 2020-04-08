@@ -60,7 +60,7 @@ data:
         Name            es
         Match           *
         Host            elasticsearch.mgmt.tkg-aws-lab.winterfell.live
-        Port            9200
+        Port            80
         Logstash_Format On
         Replace_Dots    On
         Retry_Limit     False

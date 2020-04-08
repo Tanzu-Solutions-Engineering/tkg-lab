@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elasticsearch
+  namespace: tanzu-system-logging
+  labels:
+    app: elasticsearch
+spec:
+  rules:
+  - host: elasticsearch.mgmt.tkg-aws-lab.winterfell.live
+    http:
+      paths:
+      - backend:
+          serviceName: elasticsearch
+          servicePort: 9200

@@ -6,7 +6,6 @@ metadata:
   labels:
     k8s-app: fluent-bit
 data:
-
   # Configuration files: server, input, filters and output
   # ======================================================
   fluent-bit.conf: |
@@ -23,7 +22,6 @@ data:
     @INCLUDE filter-kubernetes.conf
     @INCLUDE filter-record.conf
     @INCLUDE output-elasticsearch.conf
-
   input-kubernetes.conf: |
     [INPUT]
         Name              tail
@@ -34,7 +32,6 @@ data:
         Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
         Refresh_Interval  10
-
   filter-kubernetes.conf: |
     [FILTER]
         Name                kubernetes
@@ -47,24 +44,21 @@ data:
         Merge_Log_Key       log_processed
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
-
   filter-record.conf: |
     [FILTER]
         Name                record_modifier
         Match               *
-        Record tkg_cluster wlc-1
+        Record tkg_cluster mgmt
         Record tkg_instance tkg-aws-lab
-
   output-elasticsearch.conf: |
     [OUTPUT]
         Name            es
         Match           *
-        Host            elasticsearch.mgmt.tkg-aws-lab.winterfell.live
+        Host            elasticsearch
         Port            9200
         Logstash_Format On
         Replace_Dots    On
         Retry_Limit     False
-
   parsers.conf: |
     [PARSER]
         Name   apache

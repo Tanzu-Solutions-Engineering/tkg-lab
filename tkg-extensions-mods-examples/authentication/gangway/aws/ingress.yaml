@@ -1,0 +1,19 @@
+apiVersion: contour.heptio.com/v1beta1
+kind: IngressRoute
+metadata:
+  name: gangway
+  namespace: tanzu-system-auth
+spec:
+  virtualhost:
+    fqdn: gangway.wlc-1.tkg-aws-lab.winterfell.live
+    tls:
+      passthrough: true
+  tcpproxy:
+    services:
+    - name: gangwaysvc
+      port: 443
+  routes:
+  - match: /
+    services:
+    - name: kuard
+      port: 80

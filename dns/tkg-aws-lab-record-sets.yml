@@ -20,21 +20,7 @@ type: SOA
 kind: dns#resourceRecordSet
 name: '*.mgmt.tkg-aws-lab.winterfell.live.'
 rrdatas:
-- adae99d620d5b4beca8943f530e0905c-1615842977.us-east-2.elb.amazonaws.com.
-ttl: 300
-type: CNAME
----
-kind: dns#resourceRecordSet
-name: 'dex.mgmt.tkg-aws-lab.winterfell.live.'
-rrdatas:
-- a30bc283436cb4a75bdfb22f600d9184-422732864.us-east-2.elb.amazonaws.com.
-ttl: 300
-type: CNAME
----
-kind: dns#resourceRecordSet
-name: 'elasticsearch.mgmt.tkg-aws-lab.winterfell.live.'
-rrdatas:
-- a1c0cc6122c294537a4b91fbca1dee43-561764671.us-east-2.elb.amazonaws.com.
+- a5a075eb1231c4a5ab7641e1d8ec2bff-267257117.us-east-2.elb.amazonaws.com.
 ttl: 300
 type: CNAME
 ---
@@ -42,12 +28,5 @@ kind: dns#resourceRecordSet
 name: '*.wlc-1.tkg-aws-lab.winterfell.live.'
 rrdatas:
 - ab7f527993d1b4b9cad0e12229164c5c-660468626.us-east-2.elb.amazonaws.com.
-ttl: 300
-type: CNAME
----
-kind: dns#resourceRecordSet
-name: 'gangway.wlc-1.tkg-aws-lab.winterfell.live.'
-rrdatas:
-- ac77dea80fe2d4a01b39658cfd59b909-1888649922.us-east-2.elb.amazonaws.com.
 ttl: 300
 type: CNAME

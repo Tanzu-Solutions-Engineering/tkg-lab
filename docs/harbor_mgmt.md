@@ -1,16 +1,16 @@
 # Install Harbor Image Registry
 
 ### Set environment variables
-The scripts to prepare the YAML to deploy Harbor depend on a few environmental variables to be set.  Set the following variables in you ternminal session:
+The scripts to prepare the YAML to deploy Harbor depend on a few environmental variables to be set.  Set the following variables in you terminal session:
 ```bash
 # the email registered with ACME
-export EMAIL=azwickey@gmail.com
+export EMAIL=dpfeffer@pivotal.io
 # the GCP Cloud DNS project ID
-export PROJECT_ID=fe-azwickey
+export PROJECT_ID=fe-dpfeffer
 # the DNS NC to be used for harbor services
-export HARBOR_CN=harbor.mgmt.tanzu.cloud.zwickey.net
+export HARBOR_CN=harbor.mgmt.tkg-aws-lab.winterfell.live
 # the DNS CN to be used for notary services
-export NOTARY_CN=harbor.mgmt.tanzu.cloud.zwickey.net
+export NOTARY_CN=notary.mgmt.tkg-aws-lab.winterfell.live
 ```
 ### Prepare Manifests
 Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `clusters/mgmt/harbor/generated/` in case you want to inspect.

@@ -3,6 +3,8 @@ kind: StatefulSet
 metadata:
   name: elasticsearch
   namespace: tanzu-system-logging
+  labels:
+    app: elasticsearch
 spec:
   serviceName: elasticsearch
   replicas: 1
