@@ -10,14 +10,14 @@ spec:
   renewBefore: 360h # 15d
   organization:
   - vmware
-  commonName: dex.foo.bar
+  commonName: dex.mgmt.tkg-aws-lab.winterfell.live
   isCA: false
   keySize: 2048
   keyAlgorithm: rsa
   keyEncoding: pkcs1
   # At least one of a DNS Name, USI SAN, or IP address is required.
   dnsNames:
-  - dex.foo.bar
+  - dex.mgmt.tkg-aws-lab.winterfell.live
   # Issuer references are always required.
   issuerRef:
     name: letsencrypt-contour-cluster-issuer

@@ -10,7 +10,7 @@ export DEX_CN=dex.mgmt.tkg-aws-lab.winterfell.live
 # the DNS CN that will ultimately map to the ganway service on your first workload cluster
 export GANGWAY_CN=gangway.wlc-1.tkg-aws-lab.winterfell.live
 # the default auth server url from Okta
-export OCTA_AUTH_SERVER_URL=https://dev-866145.okta.com/oauth2/default
+export OCTA_AUTH_SERVER_URL=https://dev-866321145.okta.com/oauth2/default
 # the client id and secret from the app you created in Okta for Dex
 export OCTA_DEX_APP_CLIENT_ID=123adsfsadf3234r
 export OCTA_DEX_APP_CLIENT_SECRET=123adsfsadf3234r
@@ -21,7 +21,7 @@ export OCTA_DEX_APP_CLIENT_SECRET=123adsfsadf3234r
 Prepare the YAML manifests for the related dex K8S objects.  Manifest will be output into `clusters/mgmt/tkg-extensions/mods/authentication/dex/aws/oidc/generated/` in case you want to inspect.
 
 ```bash
-./scripts/generate-dex.yaml.sh
+./scripts/generate-dex-yaml.sh
 ```
 
 ## Deploy Dex
