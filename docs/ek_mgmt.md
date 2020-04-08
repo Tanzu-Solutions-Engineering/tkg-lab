@@ -22,7 +22,8 @@ Prepare the YAML manifests for the related elasticsearch and kibana K8S objects.
 ## Deploy Elasticsearch and Kibana
 
 ```bash
-kubectl apply -f clusters/mgmt/elastic-search-kibana/
+kubectl apply -f clusters/mgmt/elasticsearch-kibana/
+kubectl apply -f clusters/mgmt/elasticsearch-kibana/generated
 ```
 
 ## Validation Step

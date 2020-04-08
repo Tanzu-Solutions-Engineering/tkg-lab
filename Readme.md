@@ -99,7 +99,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 6. [Install Contour Ingress Controller](docs/contour_mgmt.md)
 #### 7. [Configure Dex](docs/dex_mgmt.md)
 #### 8. [Install Tanzu Observability](docs/to_mgmt.md)
-#### 9. [Install ElasticSearch and Kibana](docs/elk_mgmt.md)
+#### 9. [Install ElasticSearch and Kibana](docs/ek_mgmt.md)
 #### 10. [Install FluentBit](docs/fluentbit_mgmt.md)
 #### 11. [Install Velero and Setup Nightly Backup](docs/velero_mgmt.md)
 #### 12. [Install Harbor Image Registry](docs/harbor_mgmt.md)
