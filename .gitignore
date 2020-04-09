@@ -4,3 +4,4 @@ config.yaml
 tkg-extensions
 acme_fitness_demo
 tmc.token
+sensitive/

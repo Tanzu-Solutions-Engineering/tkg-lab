@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend
+  namespace: acme-fitness
+  labels:
+    app: acmefit
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-contour-cluster-issuer
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+  - secretName: acme-fitness-tls
+    hosts:
+    - acme-fitness.wlc-1.tkg-aws-lab.winterfell.live
+  rules:
+  - host: acme-fitness.wlc-1.tkg-aws-lab.winterfell.live
+    http:
+      paths:
+      - backend:
+          serviceName: frontend
+          servicePort: 80

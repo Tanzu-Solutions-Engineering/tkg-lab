@@ -32,11 +32,11 @@ data:
 
     # OAuth2 URL to start authorization flow.
     # Env var: GANGWAY_AUTHORIZE_URL
-    authorizeURL: "https://$DEX_CN/auth"
+    authorizeURL: "https://dex.mgmt.tkg-aws-lab.winterfell.live/auth"
 
     # OAuth2 URL to obtain access tokens.
     # Env var: GANGWAY_TOKEN_URL
-    tokenURL: "https://$DEX_CN/token"
+    tokenURL: "https://dex.mgmt.tkg-aws-lab.winterfell.live/token"
 
     # Endpoint that provides user profile information [optional]. Not all providers
     # will require this.
@@ -50,7 +50,7 @@ data:
     # Typically this also needs to be registered as part of the oauth application
     # with the oAuth provider.
     # Env var: GANGWAY_REDIRECT_URL
-    redirectURL: "https://$GANGWAY_CN/callback"
+    redirectURL: "https://gangway.wlc-1.tkg-aws-lab.winterfell.live/callback"
 
     # API client ID as indicated by the identity provider
     # Env var: GANGWAY_CLIENT_ID

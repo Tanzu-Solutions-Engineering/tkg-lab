@@ -13,4 +13,4 @@ export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm alpha bootstrap encode-aws-cre
 # us-east-2 AMI
 export AWS_AMI_ID=ami-0f02df79b659875ec
 
-tkg init --infrastructure=aws --name=tkg-mgmt-aws --plan=dev --config config.yaml -v 6
+tkg init --infrastructure=aws --name=tkg-mgmt-aws --plan=dev -v 6

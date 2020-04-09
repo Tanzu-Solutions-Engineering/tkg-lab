@@ -5,7 +5,7 @@ metadata:
   namespace: tanzu-system-auth
 data:
   config.yaml: |
-    issuer: https://dex.mgmt.tkg-aws-lab.winterfell.live
+    issuer: https://$DEX_CN # Example value https://dex.mgmt.tkg-aws-lab.winterfell.live
     frontend:
       theme: tkg
     web:
@@ -22,7 +22,7 @@ data:
     staticClients:
     - id: wlc-1
       redirectURIs:
-      - 'https://gangway.wlc-1.tkg-aws-lab.winterfell.live/callback'
+      - 'https://$GANGWAY_CN/callback' # Example value 'https://gangway.wlc-1.tkg-aws-lab.winterfell.live/callback'
       name: 'wlc-1'
       # Intentionally hard coded to FOO_SECRET
       secret: FOO_SECRET
@@ -31,10 +31,10 @@ data:
       id: oidc
       name: oidc
       config:
-        issuer: https://dev-866145.okta.com/oauth2/default
-        clientID: REDACTED
-        clientSecret: REDACTED
-        redirectURI: https://dex.mgmt.tkg-aws-lab.winterfell.live/callback
+        issuer: https://$OCTA_AUTH_SERVER_CN/oauth2/default # Example value https://dev-866145.okta.com/oauth2/default
+        clientID: $OCTA_DEX_APP_CLIENT_ID
+        clientSecret: $OCTA_DEX_APP_CLIENT_SECRET
+        redirectURI: https://$DEX_CN/callback # Example value https://dex.mgmt.tkg-aws-lab.winterfell.live/callback
         # Some providers require passing client_secret via POST parameters instead
         # of basic auth, despite the OAuth2 RFC discouraging it. Many of these
         # cases are caught internally, but some may need to uncomment the
