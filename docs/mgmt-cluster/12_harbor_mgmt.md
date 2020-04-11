@@ -3,11 +3,7 @@
 ### Set environment variables
 The scripts to prepare the YAML to deploy Harbor depend on a few environmental variables to be set.  Set the following variables in you terminal session:
 ```bash
-# the email registered with ACME
-export EMAIL=dpfeffer@pivotal.io
-# the GCP Cloud DNS project ID
-export PROJECT_ID=fe-dpfeffer
-# the DNS NC to be used for harbor services
+# the DNS CN to be used for harbor services
 export HARBOR_CN=harbor.mgmt.tkg-aws-lab.winterfell.live
 # the DNS CN to be used for notary services
 export NOTARY_CN=notary.mgmt.tkg-aws-lab.winterfell.live
