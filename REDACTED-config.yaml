@@ -1,44 +1,3 @@
-KUBERNETES_VERSION: v1.17.3+vmware.1
-overridesFolder: /Users/dpfeffer/.tkg/overrides
-providers:
-  - name: cluster-api
-    url: /Users/dpfeffer/.tkg/providers/cluster-api/v0.3.2/core-components.yaml
-    type: CoreProvider
-  - name: aws
-    url: /Users/dpfeffer/.tkg/providers/infrastructure-aws/v0.5.1/infrastructure-components.yaml
-    type: InfrastructureProvider
-  - name: vsphere
-    url: /Users/dpfeffer/.tkg/providers/infrastructure-vsphere/v0.6.2/infrastructure-components.yaml
-    type: InfrastructureProvider
-  - name: vsphere-pacific
-    url: /Users/dpfeffer/.tkg/providers/infrastructure-tkg-service-vsphere/v1.0.0/unused.yaml
-    type: InfrastructureProvider
-  - name: kubeadm
-    url: /Users/dpfeffer/.tkg/providers/bootstrap-kubeadm/v0.3.2/bootstrap-components.yaml
-    type: BootstrapProvider
-  - name: kubeadm
-    url: /Users/dpfeffer/.tkg/providers/control-plane-kubeadm/v0.3.2/control-plane-components.yaml
-    type: ControlPlaneProvider
-images:
-    cert-manager:
-        repository: registry.tkg.vmware.run/cert-manager
-        tag: v0.11.0_vmware.1
-VSPHERE_SERVER: 192.168.7.105
-VSPHERE_USERNAME: administrator@vsphere.local
-VSPHERE_PASSWORD: REDACTED
-VSPHERE_DATACENTER: Datacenter
-VSPHERE_DATASTORE: datastore1
-VSPHERE_NETWORK: VM Network
-VSPHERE_RESOURCE_POOL: /Datacenter/host/Cluster1/Resources/tkg
-VSPHERE_FOLDER: /Datacenter/vm/tkg
-VSPHERE_TEMPLATE: /Datacenter/vm/tkg/photon-3-kube-v1.17.3+vmware.1
-VSPHERE_HAPROXY_TEMPLATE: /Datacenter/vm/tkg/capv-haproxy
-VSPHERE_DISK_GIB: "40"
-VSPHERE_NUM_CPUS: "2"
-VSPHERE_MEM_MIB: "4096"
-VSPHERE_SSH_AUTHORIZED_KEY: REDACTED
-SERVICE_CIDR: 100.64.0.0/13
-AWS_NODE_AZ: us-east-2a
 AWS_PRIVATE_NODE_CIDR: 10.0.0.0/24
 AWS_PUBLIC_NODE_CIDR: 10.0.1.0/24
 AWS_VPC_CIDR: 10.0.0.0/16
@@ -46,13 +5,3 @@ CLUSTER_CIDR: 100.96.0.0/11
 AWS_SSH_KEY_NAME: tkg-default
 CONTROL_PLANE_MACHINE_TYPE: t3.medium
 NODE_MACHINE_TYPE: t3.medium
-AWS_AMI_ID: ami-0d47a0c1ceaca063d
-tkg:
-    regions:
-      - name: tkg-mgmt-aws
-        context: tkg-mgmt-aws-admin@tkg-mgmt-aws
-        file: /Users/dpfeffer/.kube/config
-      - name: tkg-mgmt-vsphere
-        context: tkg-mgmt-vsphere-admin@tkg-mgmt-vsphere
-        file: /Users/dpfeffer/.kube/config
-    current-region-context: "tkg-mgmt-vsphere-admin@tkg-mgmt-vsphere"
