@@ -9,7 +9,7 @@ export VMWARE_ID=YOUR_VMWARE_ID
 kubectl create namespace wavefront
 helm repo add wavefront https://wavefronthq.github.io/helm/
 helm repo update
-helm install wavefront wavefront/wavefront \
+helm install wavefront wavefront/wavefront -f clusters/mgmt/wavefront/wf.yml \
   --set wavefront.url=https://surf.wavefront.com \
   --set wavefront.token=$TO_API_KEY \
   --set clusterName=$VMWARE_ID-mgmt \
