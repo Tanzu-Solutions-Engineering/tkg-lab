@@ -17,18 +17,12 @@ Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be
 ```bash
 ./clusters/mgmt/harbor/00-generate_yaml.sh
 ```
-### Create Create Harbor namespace
+### Create Create Harbor namespace and certs
+Create the Harbor namespace and certificate.  Wait for the certificate to be ready.
 ```bash
-kubectl apply -f clusters/mgmt/harbor/generated/01-namespace.yaml
-```
-### Create k8s secrets and certificates
-We will utizize keys generated in earlier steps.  Replicate these secretes into the harbor namespace:
-```bash
-kubectl create secret generic certbot-gcp-service-account --from-file=keys/certbot-gcp-service-account.json -n harbor
-
-kubectl create secret generic acme-account-key --from-file=tls.key=keys/acme-account-private-key.pem -n harbor
-
-kubectl apply -f clusters/mgmt/harbor/generated/02-certs.yaml 
+kubectl apply -f clusters/mgmt/harbor/generated/01-namespace.yaml 
+kubectl apply -f clusters/mgmt/harbor/generated/02-certs.yaml  
+watch kubectl get certificate -n harbor 
 ```
 
 ### Add helm repo and install harbor
@@ -47,4 +41,3 @@ kubectl get certificate -n harbor
 kubectl get po -n harbor 
 ```
 3. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
-It will take a few minutes, but the 
