@@ -7,7 +7,8 @@ Follow the docs... for background and pre-requisite tasks.  http://go/tkg-alexan
 2. Complete `Prepare to Deploy the Management Cluster to Amazon EC2` which does setup activity in EC2.  I used the following script which hard codes us-east-2 (but you can change this) and stored the private key at keys/aws-ssh.pem
 
 ```bash
-./01-prep-aws-objects.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
+#make sure you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_REGION vars set
+./scripts/01-prep-aws-objects.sh
 ```
 
 3. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`.  I have included a config-REDACTED.yaml at the root of this repo.  You can use that as a reference of what my config.yaml ended up looking like after the tasks described in the docs.  Also, here is a script I used to complete the deployment.
