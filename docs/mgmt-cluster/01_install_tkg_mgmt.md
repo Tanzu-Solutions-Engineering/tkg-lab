@@ -1,6 +1,6 @@
 # Install TKG Management Cluster
 
-Follow the docs... for background and pre-requisite tasks.  http://go/tkg-alexandria-docs
+Follow the [official docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/index.html) for background and pre-requisite tasks.  
 
 1. Complete `Set Up the Bootstrap Environment for Tanzu Kubernetes Grid` which gets your kubectl and docker setup.
 
