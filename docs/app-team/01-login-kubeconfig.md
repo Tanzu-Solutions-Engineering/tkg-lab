@@ -1,6 +1,6 @@
 # Log-in to workload cluster and setup kubeconfig
 
-1. Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
+1. (Using Incognito Window) Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
 2. Click Sign In
 3. Log into okta as cody@winterfell.live
 4. Give a secret question answer
