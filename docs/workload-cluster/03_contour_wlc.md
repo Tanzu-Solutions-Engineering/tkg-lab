@@ -25,10 +25,10 @@ export BASE_DOMAIN=winterfell.live
 
 ## Setup DNS for Contour Ingress
 
-Get the load balancer external IP for the envoy service and update Google Cloud DNS
+Get the load balancer external IP for the envoy service and update AWS Route 53
 
 ```bash
-./scripts/update-dns-records.sh *.wlc-1
+./scripts/update-dns-records-aws.sh *.wlc-1
 ```
 
 ## Set environment variables
@@ -46,8 +46,5 @@ Prepare the YAML manifests for the contour cluster issuer.  Manifest will be out
 
 ```bash
 ./scripts/generate-contour-yaml.sh wlc-1
-kubectl create secret generic acme-account-key \
-   --from-file=tls.key=keys/acme-account-private-key.pem \
-   -n tanzu-system-ingress
 kubectl apply -f clusters/wlc-1/tkg-extensions-mods/ingress/contour/generated/contour-cluster-issuer.yaml
 ```
