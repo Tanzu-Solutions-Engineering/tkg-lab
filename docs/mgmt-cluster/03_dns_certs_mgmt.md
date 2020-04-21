@@ -20,14 +20,17 @@ gcloud auth list
 gcloud dns managed-zones list
 ```
 
+Before creating the DNS Zone on either DNS Cloud solution, set the BASE_DOMAIN and LAB_SUBDOMAIN into the shell.  These will be used throughout the lab:
+
+```bash
+export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
+export LAB_SUBDOMAIN=tkg-aws-lab.${BASE_DOMAIN}
+```
 # DNS Zone
 
 For AWS, this will require a Route53 Hosted Zone.  Later we will add record sets as necessary, but we cannot do this until the Copntour Load Balancer and AWS ELB get created.  For now, create a hosted zone and record the ID:
 
 ```bash
-export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
-export LAB_SUBDOMAIN=tkg-aws-lab.${BASE_DOMAIN}
-
 aws route53 create-hosted-zone --name ${LAB_SUBDOMAIN} --caller-reference "${LAB_SUBDOMAIN}-`date`"
 export AWS_HOSTED_ZONE=XXXXXXXXX # From the output, just the ID characters
 ```
@@ -36,7 +39,7 @@ For GCP, this will use GCP Cloud DNS:
 
 ```bash
 export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
-gcloud dns managed-zones create tkg-aws-lab \
-  --dns-name tkg-aws-lab.${BASE_DOMAIN}. \
+gcloud dns managed-zones create ${LAB_SUBDOMAIN} \
+  --dns-name ${LAB_SUBDOMAIN} \
   --description "TKG AWS Lab domains"
 ```
