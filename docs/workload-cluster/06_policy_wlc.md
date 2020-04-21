@@ -21,7 +21,7 @@ tmc cluster iam add-binding se-$VMWARE_ID-wlc-1 --role cluster.admin --groups pl
 2. Select Policies on the left nav
 3. Choose Access->Clusters and then select your wlc-1 cluster
 4. Observe direct Access Policy => Set cluster.admin permission to the platform-team group
-5. Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
+5. (Using Incognito Window) Login to the workload cluster at https://gangway.wlc-1.tkg-aws-lab.winterfell.live (adjust for your base domain)
 6. Click Sign In
 7. Log into okta as alana
 8. Give a secret password
