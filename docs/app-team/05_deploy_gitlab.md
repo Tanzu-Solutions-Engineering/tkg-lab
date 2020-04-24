@@ -52,5 +52,5 @@ kubectl get pod,pvc,ing,cert -n gitlab
 kubectl get -n gitlab secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
 ```
 
-Go to the browser -> https://gitlab.gitlab.aws-tkg-lab.arg-pivotal.com/ and log in with root/<the password>
+Go to the browser -> https://gitlab.gitlab.tkg-aws-lab.arg-pivotal.com/ and log in with root/<the password>
  
