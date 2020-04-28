@@ -1,4 +1,4 @@
-  #!/bin/bash -e
+#!/bin/bash -e
 : ${BASE_DOMAIN?"Need to set BASE_DOMAIN environment variable"}
 
 if [ ! $# -eq 1 ]; then

@@ -1,9 +1,23 @@
 # Install Contour on management cluster
 
-## Deploy Contour
-
+## Deploy MetalLB (only for vSphere installations!!)
+Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
+Run the script passing the range as parameters. Example:
 ```bash
-kubectl apply -f tkg-extensions/ingress/contour/aws/
+./scripts/deploy-metallb.sh 192.168.14.200 192.168.14.220
+```
+
+## Deploy Contour
+Locate the folder where you unbundled the TGK extensions (e.g: `tkg-extensions-v1.0.0`)
+
+Deploy cert-manager
+```bash
+kubectl apply -f tkg-extensions-v1.0.0/cert-manager/
+```
+
+Wait a couple of minutes ... And apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.
+```bash
+kubectl apply -f tkg-extensions-v1.0.0/ingress/contour/aws/
 ```
 
 ## Set environment variables

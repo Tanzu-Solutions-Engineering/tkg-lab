@@ -5,9 +5,9 @@ I chose Google Cloud DNS because it has a supporting Let's Encrypt Certbot Plugi
 ```bash
 export BASE_DOMAIN=YOUR_BASE_DOMAIN
 #export BASE_DOMAIN=winterfell.live
-gcloud dns managed-zones create tkg-aws-lab \
-  --dns-name tkg-aws-lab.$BASE_DOMAIN. \
-  --description "TKG AWS Lab domains"
+gcloud dns managed-zones create tkg-lab \
+  --dns-name tkg-lab.$BASE_DOMAIN. \
+  --description "TKG Lab domains"
 ```
 
 # Setup a Let's Encrypt Account
