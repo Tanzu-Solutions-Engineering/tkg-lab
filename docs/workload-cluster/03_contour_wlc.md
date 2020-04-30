@@ -48,3 +48,13 @@ Prepare the YAML manifests for the contour cluster issuer.  Manifest will be out
 ./scripts/generate-contour-yaml.sh wlc-1
 kubectl apply -f clusters/wlc-1/tkg-extensions-mods/ingress/contour/generated/contour-cluster-issuer.yaml
 ```
+
+## Verify Cluster Issuer
+
+Check to see that the ClusterIssuer is valid:
+
+```bash
+kubectl get clusterissuer letsencrypt-contour-cluster-issuer -o yaml
+```
+
+Look for the status to be Ready: True
