@@ -8,16 +8,16 @@ Run the script passing the range as parameters. Example:
 ```
 
 ## Deploy Contour
-Locate the folder where you unbundled the TGK extensions (e.g: `tkg-extensions-v1.0.0`)
+Locate the folder where you unbundled the TGK extensions (e.g: `tkg-extensions`)
 
 Deploy cert-manager
 ```bash
-kubectl apply -f tkg-extensions-v1.0.0/cert-manager/
+kubectl apply -f tkg-extensions/cert-manager/
 ```
 
 Wait a couple of minutes ... And apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.
 ```bash
-kubectl apply -f tkg-extensions-v1.0.0/ingress/contour/aws/
+kubectl apply -f tkg-extensions/ingress/contour/aws/
 ```
 
 ## Set environment variables
@@ -27,6 +27,8 @@ The scripts update Google Cloud DNS depend on a few environmental variables to b
 ```bash
 # the DNS CN to be used for base domain
 export BASE_DOMAIN=winterfell.live
+# the Lab name to be used as subdomain
+export LAB_NAME=tkg-aws-lab
 ```
 
 ## Setup DNS for Contour Ingress
@@ -34,7 +36,7 @@ export BASE_DOMAIN=winterfell.live
 Get the load balancer external IP for the envoy service and update Google Cloud DNS
 
 ```bash
-./scripts/update-dns-records.sh *.mgmt
+./scripts/update-dns-records.sh "*.mgmt"
 ```
 
 ## Set environment variables
