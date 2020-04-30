@@ -2,7 +2,7 @@
 
 : ${DEX_CN?"Need to set DEX_CN environment variable"}
 : ${GANGWAY_CN?"Need to set GANGWAY_CN environment variable"}
-: ${OCTA_ISSUER_URL?"Need to set OCTA_ISSUER_URL environment variable"}
+: ${OCTA_AUTH_SERVER_CN?"Need to set OCTA_AUTH_SERVER_CN environment variable"}
 : ${OCTA_DEX_APP_CLIENT_ID?"Need to set OCTA_DEX_APP_CLIENT_ID environment variable"}
 : ${OCTA_DEX_APP_CLIENT_SECRET?"Need to set OCTA_DEX_APP_CLIENT_SECRET environment variable"}
 

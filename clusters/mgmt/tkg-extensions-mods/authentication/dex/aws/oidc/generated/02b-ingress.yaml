@@ -5,7 +5,7 @@ metadata:
   namespace: tanzu-system-auth
 spec:
   virtualhost:
-    fqdn: dex.mgmt.tkg-aws-lab.winterfell.live
+    fqdn: dex.mgmt.tkg-vsp-lab.hyrulelab.com
     tls:
       passthrough: true
   tcpproxy:

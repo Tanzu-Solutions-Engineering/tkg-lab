@@ -1,5 +1,7 @@
 # Attach the new workload cluster to TMC
 
+NOTE: Please adjust the script below to accommodate your Cluster Group if you already had one created prior to starting this  lab.  
+
 ```bash
 export VMWARE_ID=YOUR_ID
 tmc cluster attach \
