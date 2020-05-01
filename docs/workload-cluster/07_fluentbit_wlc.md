@@ -14,7 +14,7 @@ export ELASTICSEARCH_CN=elasticsearch.mgmt.tkg-aws-lab.winterfell.live
 Prepare the YAML manifests for the related fluent-bit K8S objects.  Manifest will be output into `clusters/wlc-1/tkg-extensions-mods/logging/fluent-bit/outputs/elasticsearch/generated` in case you want to inspect.
 
 ```bash
-./scripts/generate-fluent-bit-yaml-wlc.sh
+./scripts/generate-fluent-bit-yaml-wlc-1.sh
 ```
 
 ## Deploy fluent-bit
