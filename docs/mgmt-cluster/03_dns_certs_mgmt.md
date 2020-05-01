@@ -1,45 +1,52 @@
-# Setup DNS
+# Overview
 
-Using Google Cloud DNS because it has a supporting Let's Encrypt Certbot Plugin.
+We can use any DNS provider that is publicly available.  This is required because any certificate that is generated will use cert-manager and Let's Encrypt, with an HTTP01 challenge.  This works through Kubernetes as follows:
 
+Public Domain Name -> DNS Hosted Zone -> Cloud Load Balancer -> K8s Load Balancer -> Contour -> Ingress (temporary) for Challenge
+
+# Pre-requisites
+
+Depending on the DNS solution to be used, we need to have the CLI set up for proper access to perform these actions.  In both cases, these commands should return either no zones or a list of existing zones, which will prove access to perform the commands we need to run as part of the lab.  If you cannot access the DNS zones properly, you can create the zone and associated entries at each step using the browser.
+
+For AWS, this will mean using a valid access key and running:
 ```bash
-export BASE_DOMAIN=YOUR_BASE_DOMAIN
-#export BASE_DOMAIN=winterfell.live
-export LAB_NAME=YOUR_AWS_OR_VSPHERE_LAB
-#export LAB_NAME=tkg-aws-lab
-gcloud dns managed-zones create $LAB_NAME \
-  --dns-name $LAB_NAME.$BASE_DOMAIN. \
-  --description "TKG $LAB_NAME Lab domains"
+aws configure
+aws route53 list-hosted-zones
 ```
 
-# Setup a Let's Encrypt Account
-
-Install letsencrypt, certbot, and google plugin.  Then register an account.
-
+For GCP, the account used must have access to modify GCloud DNS:
 ```bash
-brew install letsencrypt
-brew install certbot
-sudo pip install certbot-dns-google
-sudo certbot register
+gcloud auth list
+gcloud dns managed-zones list
 ```
 
-Find the private_key that was created when you registered your account.  Mine was in this location, but you will have a separate GUID.
+Before creating the DNS Zone on either DNS Cloud solution, set the BASE_DOMAIN and LAB_SUBDOMAIN into the shell.  These will be used throughout the lab:
 
 ```bash
-sudo cat /etc/letsencrypt/accounts/acme-v02.api.letsencrypt.org/directory/656b908c7d8dcf0d776091115fc00563/private_key.json
+export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
+export LAB_NAME=YOUR_AWS_OR_VSPHERE_LAB # Example tkg-aws-lab or tkg-vsphere-lab
+export LAB_SUBDOMAIN=$LAB_NAME.${BASE_DOMAIN}
 ```
 
-And then go to this [website](https://8gwifi.org/jwkconvertfunctions.jsp) to convert from jwt to pem.  Save the private key to **keys/acme-account-private-key.pem**.
+# DNS Zone
+
+For AWS, this will require a Route53 Hosted Zone.  Later we will add record sets as necessary, but we cannot do this until the Contour Load Balancer and AWS ELB get created.  For now, create a hosted zone and record the ID:
 
 ```bash
-chmod 600 keys/acme-account-private-key.pem
+aws route53 create-hosted-zone --name ${LAB_SUBDOMAIN} --caller-reference "${LAB_SUBDOMAIN}-`date`"
+export AWS_HOSTED_ZONE=XXXXXXXXX # From the output, just the ID characters
 ```
 
-Create a service account in GCP following these [instructions](https://certbot-dns-google.readthedocs.io/en/stable/) and then store the service account json file at **keys/certbot-gcp-service-account.json**
+For GCP, this will use GCP Cloud DNS:
 
-## Retrieve Let's Encrypt CA
+```bash
+export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
+gcloud dns managed-zones create ${LAB_SUBDOMAIN} \
+  --dns-name ${LAB_SUBDOMAIN} \
+  --description "TKG AWS Lab domains"
+```
 
-The workload cluster needs to use a special oidc plan so that it leverages the DEX OIDC federated endpoint
+# Retrieve the CA Cert from Let's Encrypt for use later
 
 ```bash
 curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o keys/letsencrypt-ca.pem

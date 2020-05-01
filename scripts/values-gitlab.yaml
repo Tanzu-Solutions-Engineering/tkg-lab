@@ -1,0 +1,59 @@
+certmanager:
+  install: false
+certmanager-issuer:
+  email: agregory@pivotal.io
+gitlab:
+  gitlab-shell:
+    minReplicas: 1
+    maxReplicas: 1
+  sidekiq:
+    minReplicas: 1
+    maxReplicas: 1
+  task-runner:
+    enabled: false
+  unicorn:
+    minReplicas: 1
+    maxReplicas: 1
+gitlab-runner:
+  install: false
+global:
+  hosts:
+    domain: gitlab.tkg-aws-lab.arg-pivotal.com
+    externalIP: ae361b500ddda47a8b9980b9d02155b4-1572019411.us-east-2.elb.amazonaws.com
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-contour-cluster-issuer
+      kubernetes.io/tls-acme: true
+      projectcontour.io/ingress.class: contour
+minio:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+nginx-ingress:
+  enabled: false
+  controller:
+    minAvailable: 0
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+  defaultBackend:
+    minAvailable: 0
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 5m
+        memory: 5Mi
+prometheus:
+  install: false
+redis:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+registry:
+  hpa:
+    minReplicas: 1
+    maxReplicas: 1

@@ -1,0 +1,18 @@
+{
+  "Comment": "TKG Record for CNAME",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "SUBDOMAIN.tkg-aws-lab.BASE_DOMAIN",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "LBHOST" 
+          }
+        ]
+      }
+    }
+  ]
+}
