@@ -79,8 +79,8 @@ After seeing this, go back and add the other registry (GCR).  A couple minutes l
 tmc workspace image-policy create \
   --workspace-name=${VMWARE_ID}-acme-fitness-dev \
   --recipe-name=allow-registry \
-  --registry-domains=docker.io \
-  --name=allow-docker-io
+  --registry-domains=gcr.io \
+  --name=allow-gcr-io
 
 kubectl delete rs -n acme-fitness --all
 
