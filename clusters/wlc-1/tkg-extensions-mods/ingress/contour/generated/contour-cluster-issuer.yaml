@@ -5,7 +5,7 @@ metadata:
   namespace: tanzu-system-ingress
 spec:
   acme:
-    email: dpfeffer@pivotal.io
+    email: dpfeffer@vmware.com
     privateKeySecretRef:
       name: acme-account-key
     server: https://acme-v02.api.letsencrypt.org/directory
