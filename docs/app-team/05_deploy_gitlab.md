@@ -26,13 +26,16 @@ Add the *.gitlab entry to the DNS:
 ```bash
 ./scripts/update-dns-records-aws.sh *.gitlab
 ```
-Modify the values file within /scripts/values-gitlab.yaml to include the same load balancer name as was used in the CNAME entry and the domain name for gitlab. Here is an example:
+Modify the values file within /scripts/values-gitlab.yaml to include the same load balancer name as was used in the CNAME entry and the domain name for gitlab. Also update the email address at the top.  Here is an example:
 
-```bash
+```yaml
+certmanager-issuer:
+  email: agregory@pivotal.io # Change Me
+...  
 global:
   hosts:
-    domain: gitlab.tkg-aws-lab.arg-pivotal.com
-    externalIP: ae361b500ddda47a8b9980b9d02155b4-1572019411.us-east-2.elb.amazonaws.com
+    domain: tkg-aws-lab.arg-pivotal.com  # Change Me
+    externalIP: ae361b500ddda47a8b9980b9d02155b4-1572019411.us-east-2.elb.amazonaws.com  # Change Me
 ```
 
 Ensure the helm chart is added to the repo for Helm 3 and let it fly:
