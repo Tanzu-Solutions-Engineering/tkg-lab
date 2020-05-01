@@ -1,7 +1,7 @@
-# usage: ./02-deploy-mgmt-cluster.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
+#!/bin/bash -e
+: ${AWS_ACCESS_KEY_ID?"Need to set AWS_ACCESS_KEY_ID environment variable"}
+: ${AWS_SECRET_ACCESS_KEY?"Need to set AWS_SECRET_ACCESS_KEY environment variable"}
 
-export AWS_ACCESS_KEY_ID=$1
-export AWS_SECRET_ACCESS_KEY=$2
 export AWS_REGION=us-east-2
 
 export AWS_CREDENTIALS=$(aws iam create-access-key --user-name bootstrapper.cluster-api-provider-aws.sigs.k8s.io --output json)

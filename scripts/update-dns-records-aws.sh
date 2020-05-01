@@ -1,4 +1,4 @@
-  #!/bin/bash -e
+#!/bin/bash -e
 : ${AWS_HOSTED_ZONE?"Need to set AWS_HOSTED_ZONE environment variable"}
 : ${BASE_DOMAIN?"Need to set BASE_DOMAIN environment variable"}
 

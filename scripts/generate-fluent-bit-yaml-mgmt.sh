@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash -e
 
 mkdir -p clusters/mgmt/tkg-extensions-mods/logging/fluent-bit/aws/output/elasticsearch/generated
 
