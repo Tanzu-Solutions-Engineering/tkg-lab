@@ -7,3 +7,5 @@ Follow [the documentation](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Gr
 tar -xzf  tkg-extensions-manifests-v1.0.0_vmware.1.tar.gz
 mv tkg-extensions-v1.0.0 tkg-extensions
 ```
+
+> Note: v1.0.0 has a spelling error one of the yaml files that needs to be fixed.  `tkg-extensions/authentication/gangway/aws/06-deployment.yaml`.  Search for `sesssionKey` and replace it with `sessionKey`.
