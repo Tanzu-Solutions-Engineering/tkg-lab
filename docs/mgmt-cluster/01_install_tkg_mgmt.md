@@ -69,6 +69,7 @@ tkg scale cluster tkg-mgmt-vsphere --namespace tkg-system -w 2
 Follow these steps in vCenter:
 - Tags & Custom Attributes -> Categories -> New -> k8s-storage (Datastore, Datastore Cluster)
 - Tags & Custom Attributes -> Tags -> New -> k8s-storage (choose k8s-storage category)
+- Storage -> Select datastore -> Tags -> Assign Tag (k8s-storage)
 - Policies & Profiles > VM Storage Profiles > Create VM Storage Policy
   - Name: “k8s Storage Policy”
   - Enable tag placement
