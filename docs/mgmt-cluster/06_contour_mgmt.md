@@ -69,7 +69,7 @@ The scripts to prepare the YAML to deploy the contour cluster issuer depend on a
 
 ```bash
 # the email to be used with Lets Encrypt / ACME
-export LETS_ENCRYPT_ACME_EMAIL=dpfeffer@pivotal.io
+export LETS_ENCRYPT_ACME_EMAIL=dpfeffer@vmware.com
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests

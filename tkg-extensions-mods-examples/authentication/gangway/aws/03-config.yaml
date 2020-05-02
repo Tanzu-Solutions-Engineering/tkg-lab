@@ -70,7 +70,7 @@ data:
 
     # The API server endpoint used to configure kubectl
     # Env var: GANGWAY_APISERVER_URL
-    apiServerURL: "https://WLC_1_API_SERVER_CN:6443"
+    apiServerURL: "https://$WLC_1_API_SERVER_CN:6443"
 
     # The path to find the CA bundle for the API server. Used to configure kubectl.
     # This is typically mounted into the default location for workloads running on

@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # usage: ./01-prep-vsphere-objects.sh URL USERNAME PASSWORD DATASTORE TEMPLATE_FOLDER OVA_FOLDER
 
 export GOVC_URL=$1

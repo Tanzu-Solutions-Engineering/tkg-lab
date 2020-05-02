@@ -18,7 +18,8 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 2. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`. You can use a config-REDACTED.yaml locate at the root of this repo.  You can use that as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
 
 ```bash
-./02-deploy-aws-mgmt-cluster.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
+#make sure you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY vars set
+./02-deploy-aws-mgmt-cluster.sh
 
 # Once completed scale the worker nodes for the management cluster
 tkg scale cluster tkg-mgmt-aws --namespace tkg-system -w 2

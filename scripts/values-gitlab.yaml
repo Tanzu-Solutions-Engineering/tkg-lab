@@ -1,7 +1,7 @@
 certmanager:
   install: false
 certmanager-issuer:
-  email: agregory@pivotal.io
+  email: agregory@pivotal.io  # Change Me
 gitlab:
   gitlab-shell:
     minReplicas: 1
@@ -18,8 +18,8 @@ gitlab-runner:
   install: false
 global:
   hosts:
-    domain: gitlab.tkg-aws-lab.arg-pivotal.com
-    externalIP: ae361b500ddda47a8b9980b9d02155b4-1572019411.us-east-2.elb.amazonaws.com
+    domain: gitlab.tkg-aws-lab.arg-pivotal.com  # Change Me
+    externalIP: ae361b500ddda47a8b9980b9d02155b4-1572019411.us-east-2.elb.amazonaws.com  # Change Me
   ingress:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-contour-cluster-issuer

@@ -1,8 +1,7 @@
-# usage: ./01-prep-aws-objects.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
-
-#export AWS_ACCESS_KEY_ID=$1
-#export AWS_SECRET_ACCESS_KEY=$2
-#export AWS_REGION=us-east-2
+#!/bin/bash -e
+: ${AWS_ACCESS_KEY_ID?"Need to set AWS_ACCESS_KEY_ID environment variable"}
+: ${AWS_SECRET_ACCESS_KEY?"Need to set AWS_SECRET_ACCESS_KEY environment variable"}
+: ${AWS_REGION?"Need to set AWS_REGION environment variable"}
 
 clusterawsadm alpha bootstrap create-stack
 

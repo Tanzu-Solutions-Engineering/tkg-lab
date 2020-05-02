@@ -35,8 +35,8 @@ kubectl apply -f clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/g
 kubectl apply -f tkg-extensions/authentication/dex/aws/oidc/05-rbac.yaml
 # Same environment variables set previously
 kubectl create secret generic oidc \
-   --from-literal=clientId=$(echo -n $OCTA_DEX_APP_CLIENT_ID | base64) \
-   --from-literal=clientSecret=$(echo -n $OCTA_DEX_APP_CLIENT_SECRET | base64) \
+   --from-literal=clientId=$OCTA_DEX_APP_CLIENT_ID \
+   --from-literal=clientSecret=$OCTA_DEX_APP_CLIENT_SECRET \
    -n tanzu-system-auth
 # Wait for certificate to be ready that generates the dex-cert-tls secret.  It took me about 2m20s
 watch kubectl get certificate -n tanzu-system-auth
