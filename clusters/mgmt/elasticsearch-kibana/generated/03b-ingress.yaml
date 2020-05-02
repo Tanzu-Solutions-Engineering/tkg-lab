@@ -7,7 +7,7 @@ metadata:
     app: elasticsearch
 spec:
   rules:
-  - host: elasticsearch.mgmt.tkg-aws-lab.winterfell.live
+  - host: elasticsearch.mgmt.tkg-vsp-lab.hyrulelab.com
     http:
       paths:
       - backend:

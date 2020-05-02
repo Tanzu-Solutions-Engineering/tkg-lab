@@ -19,13 +19,13 @@ type: SOA
 kind: dns#resourceRecordSet
 name: '*.mgmt.tkg-vsp-lab.hyrulelab.com.'
 rrdatas:
-- 192.168.14.200.
+- 192.168.14.200
 ttl: 300
-type: CNAME
+type: A
 ---
 kind: dns#resourceRecordSet
 name: '*.wlc-1.tkg-vsp-lab.hyrulelab.com.'
 rrdatas:
-- .
+- 192.168.14.200
 ttl: 300
-type: CNAME
+type: A
