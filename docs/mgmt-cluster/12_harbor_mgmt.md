@@ -16,9 +16,9 @@ Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be
 ### Create Create Harbor namespace and certs
 Create the Harbor namespace and certificate.  Wait for the certificate to be ready.
 ```bash
-kubectl apply -f clusters/mgmt/harbor/generated/01-namespace.yaml 
+kubectl apply -f clusters/mgmt/harbor/generated/01-namespace.yaml
 kubectl apply -f clusters/mgmt/harbor/generated/02-certs.yaml  
-watch kubectl get certificate -n harbor 
+watch kubectl get certificate -n harbor
 ```
 
 ### Add helm repo and install harbor
@@ -28,12 +28,8 @@ helm install harbor harbor/harbor -f clusters/mgmt/harbor/generated/harbor-value
 ```
 
 ## Validation Step
-1. The signed harbor ceritificate should become ready:
+1. All harbor pods are in a running state:
 ```bash
-kubectl get certificate -n harbor 
+kubectl get po -n harbor
 ```
-2. All harbor pods are in a running state:
-```bash
-kubectl get po -n harbor 
-```
-3. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
+2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
