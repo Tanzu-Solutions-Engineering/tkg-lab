@@ -25,6 +25,7 @@ Prepare the YAML manifests for the related dex K8S objects.  Manifest will be ou
 ```
 
 ## Deploy Dex
+We can currently use the base aws yaml for any environment.
 
 ```bash
 kubectl apply -f tkg-extensions/authentication/dex/aws/oidc/01-namespace.yaml
