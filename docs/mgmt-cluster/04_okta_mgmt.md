@@ -4,7 +4,7 @@ Setup a free Okta account: https://developer.okta.com/signup/
 
 Once logged in...
 
-Choose Directory (top menu) > People > Add Person (For each user you want to add):
+Choose Directory (top menu) > People > Add Person:
 - Set First Name, Last Name and Email: (e.g: Alana Smith, alana@winterfell.live)
 - Password Set by Admin, YOUR_PASSWORD
 - Uncheck user must change password on first login
