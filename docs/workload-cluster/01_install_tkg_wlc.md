@@ -9,13 +9,24 @@ The scripts to prepare the YAML to deploy dex depend on a few environmental vari
 export DEX_CN=dex.mgmt.tkg-aws-lab.winterfell.live
 ```
 
-## Deploy workload cluster with OIDC plan
+## Prepare the OIDC plan
 
+For AWS
 ```bash
-
 # Note  Double check the version number below incase it has changed - ~/.tkg/providers/infrastructure-aws/v0.5.2/
 cp tkg-extensions/authentication/dex/aws/cluster-template-oidc.yaml ~/.tkg/providers/infrastructure-aws/v0.5.2/
 
+```
+
+For vSphere
+```bash
+# Note  Double check the version number below incase it has changed - ~/.tkg/providers/infrastructure-vsphere/v0.6.3/
+cp tkg-extensions/authentication/dex/vsphere/cluster-template-oidc.yaml ~/.tkg/providers/infrastructure-vsphere/v0.6.3/
+```
+
+## Deploy workload cluster with OIDC plan
+
+```bash
 export OIDC_ISSUER_URL=https://$DEX_CN
 export OIDC_USERNAME_CLAIM=email
 export OIDC_GROUPS_CLAIM=groups
@@ -26,16 +37,16 @@ tkg create cluster wlc-1 --plan=oidc -w 2 -v 6
 ```
 
 >Note: Wait until your cluster has been created. It may take 12 minutes.
-
-## Set context to the newly created cluster
-
-```bash
-tkg get credentials wlc-1
-kubectl config use-context wlc-1-admin@wlc-1
-```
+>Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credential
 
 ## Install Default Storage Class on Workload Cluster
 
+For AWS
 ```bash
-kubectl apply -f clusters/wlc-1/default-storage-class.yaml
+kubectl apply -f clusters/wlc-1/default-storage-class-aws.yaml
+```
+
+For vSphere
+```bash
+kubectl apply -f clusters/wlc-1/default-storage-class-vsphere.yaml
 ```

@@ -51,7 +51,7 @@ metadata:
     app: kibana
 spec:
   rules:
-  - host: logs.mgmt.tkg-aws-lab.winterfell.live
+  - host: logs.mgmt.tkg-vsp-lab.hyrulelab.com
     http:
       paths:
       - backend:

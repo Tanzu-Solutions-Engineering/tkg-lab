@@ -49,7 +49,7 @@ data:
         Name                record_modifier
         Match               *
         Record tkg_cluster mgmt
-        Record tkg_instance tkg-aws-lab
+        Record tkg_instance tkg-vsp-lab
   output-elasticsearch.conf: |
     [OUTPUT]
         Name            es

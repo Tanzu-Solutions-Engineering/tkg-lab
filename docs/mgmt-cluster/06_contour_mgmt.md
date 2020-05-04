@@ -72,12 +72,25 @@ The scripts to prepare the YAML to deploy the contour cluster issuer depend on a
 export LETS_ENCRYPT_ACME_EMAIL=dpfeffer@vmware.com
 ```
 
+## Setup GCP Cloud DNS Service Account (vSphere and GCP Cloud DNS)
+
+When using GCP Cloud DNS and vSphere or non-internet facing AWS environments, you'll need to use a `dns` challenge and so allow `cert-manager` to configure your Cloud DNS zone to solve the challenge.
+
+Create a service account in GCP following these [instructions](https://certbot-dns-google.readthedocs.io/en/stable/) and then store the service account json file at *keys/certbot-gcp-service-account.json*
+
+Then create a secret with that json file:
+```bash
+kubectl create secret generic certbot-gcp-service-account \
+        --from-file=keys/certbot-gcp-service-account.json \
+        -n cert-manager
+```
+
 ## Prepare and Apply Cluster Issuer Manifests
 
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/contour/generated/` in case you want to inspect.
-
+Select `http` or `dns` challenge for ACME Issuer. `dns` challenge is recommended for vSphere or non-internet facing AWS environments
 ```bash
-./scripts/generate-contour-yaml.sh mgmt
+./scripts/generate-contour-yaml.sh mgmt http
 kubectl apply -f clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/contour-cluster-issuer.yaml
 ```
 

@@ -23,7 +23,7 @@ gcloud dns managed-zones list
 Before creating the DNS Zone on either DNS Cloud solution, set the BASE_DOMAIN and LAB_SUBDOMAIN into the shell.  These will be used throughout the lab:
 
 ```bash
-export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
+export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com
 export LAB_NAME=YOUR_AWS_OR_VSPHERE_LAB # Example tkg-aws-lab or tkg-vsphere-lab
 export LAB_SUBDOMAIN=$LAB_NAME.${BASE_DOMAIN}
 ```
@@ -40,14 +40,14 @@ export AWS_HOSTED_ZONE=XXXXXXXXX # From the output, just the ID characters
 For GCP, this will use GCP Cloud DNS:
 
 ```bash
-export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com 
+export BASE_DOMAIN=YOUR_BASE_DOMAIN   # Example (must own this): abcdef.com
 gcloud dns managed-zones create ${LAB_SUBDOMAIN} \
   --dns-name ${LAB_SUBDOMAIN} \
   --description "TKG AWS Lab domains"
 ```
 
 # Retrieve the CA Cert from Let's Encrypt for use later
-
+It's not required to set up a Let's Encrypt account in advance. Only needed to be able to solve the (http01 or dns01) challenges by proving that the requester of the certificate owns the domain.
 ```bash
 curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o keys/letsencrypt-ca.pem
 chmod 600 keys/letsencrypt-ca.pem

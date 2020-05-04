@@ -1,7 +1,9 @@
 # Install Tanzu Observability by WaveFront on the management cluster
 
-Use your Pivotal Okta to get into wavefront, and then retrieve your API_KEY.
-Assuming you have helm3 installed.
+You'll need a Wavefront API_KEY to integrate thee cluster with Wavefront.
+If you have access to Pivotal Okta then use it to get into wavefront, and then retrieve your API_KEY.
+
+Assuming you have helm3 installed, run these commands:
 
 ```bash
 export TO_API_KEY=YOUR_API_KEY
