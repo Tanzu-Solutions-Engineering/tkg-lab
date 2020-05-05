@@ -13,12 +13,15 @@ Locate the folder where you unbundled the TGK extensions (e.g: `tkg-extensions`)
 Deploy cert-manager
 ```bash
 kubectl apply -f tkg-extensions/cert-manager/
+# Wait for all pods to be ready
+watch kubectl get pods -n cert-manager
 ```
 
-Wait a couple of minutes ... And apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.
+Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.
 ```bash
 kubectl apply -f tkg-extensions/ingress/contour/aws/
 ```
+
 ## Verify Contour and AWS ELB (AWS Only)
 
 Once it is deployed, wait until you can see the Load Balancer up.  The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI:
