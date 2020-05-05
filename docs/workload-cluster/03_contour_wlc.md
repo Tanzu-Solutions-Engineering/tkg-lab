@@ -77,7 +77,7 @@ export LETS_ENCRYPT_ACME_EMAIL=dpfeffer@vmware.com
 
 ## Prepare and Apply Cluster Issuer Manifests
 
-Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/contour/generated/` in case you want to inspect.
+Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/wlc-1/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect.
 Select `http` or `dns` challenge for ACME Issuer. `dns` challenge is recommended for vSphere or non-internet facing AWS environments
 ```bash
 ./scripts/generate-contour-yaml.sh wlc-1 http
