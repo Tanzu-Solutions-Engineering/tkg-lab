@@ -10,6 +10,11 @@ spec:
       name: acme-account-key
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
-    - http01:
-        ingress:
-          class: contour
+    - dns01:
+        clouddns:
+          # The ID of the GCP project
+          project: fe-jaguilar
+          # This is the secret used to access the service account
+          serviceAccountSecretRef:
+            name: certbot-gcp-service-account
+            key: certbot-gcp-service-account.json
