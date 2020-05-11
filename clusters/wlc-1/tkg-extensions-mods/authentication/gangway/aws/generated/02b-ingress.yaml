@@ -5,7 +5,7 @@ metadata:
   namespace: tanzu-system-auth
 spec:
   virtualhost:
-    fqdn: gangway.wlc-1.tkg-aws-lab.winterfell.live
+    fqdn: gangway.wlc-1.tkg-vsp-lab.hyrulelab.com
     tls:
       passthrough: true
   tcpproxy:

@@ -43,10 +43,10 @@ open http://logs.mgmt.tkg-aws-lab.winterfell.live
 
 You should see the kibana welcome screen.  
 
-Click the Discover icon at the top of the right menu bar.
+Click the Discover icon at the top of the left menu bar.
 
 You will see widget to create an index pattern.  Enter `logstash-*` and click `next step`.
 
 Select `@timestamp` for the Time filter field name. and then click `Create index pattern`
 
-Now click the Discover icon at the top of the right menu bar.  You can start searching for logs.
+Now click the Discover icon at the top of the left menu bar.  You can start searching for logs.

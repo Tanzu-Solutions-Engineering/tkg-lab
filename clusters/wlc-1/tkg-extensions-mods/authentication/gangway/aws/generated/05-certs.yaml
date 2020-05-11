@@ -12,14 +12,14 @@ spec:
   renewBefore: 360h # 15d
   organization:
   - vmware
-  commonName: gangway.wlc-1.tkg-aws-lab.winterfell.live
+  commonName: gangway.wlc-1.tkg-vsp-lab.hyrulelab.com
   isCA: false
   keySize: 2048
   keyAlgorithm: rsa
   keyEncoding: pkcs1
   # At least one of a DNS Name, USI SAN, or IP address is required.
   dnsNames:
-  - gangway.wlc-1.tkg-aws-lab.winterfell.live
+  - gangway.wlc-1.tkg-vsp-lab.hyrulelab.com
   # Issuer references are always required.
   issuerRef:
     name: letsencrypt-contour-cluster-issuer

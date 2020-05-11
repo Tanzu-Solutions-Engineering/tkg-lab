@@ -75,6 +75,15 @@ The scripts to prepare the YAML to deploy the contour cluster issuer depend on a
 export LETS_ENCRYPT_ACME_EMAIL=dpfeffer@vmware.com
 ```
 
+## Create GCP Cloud DNS Secret (vSphere and GCP Cloud DNS)
+Create a secret with the same json file we created during the mgmt lab:
+
+```bash
+kubectl create secret generic certbot-gcp-service-account \
+        --from-file=keys/certbot-gcp-service-account.json \
+        -n cert-manager
+```
+
 ## Prepare and Apply Cluster Issuer Manifests
 
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/wlc-1/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect.

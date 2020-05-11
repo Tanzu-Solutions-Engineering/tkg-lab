@@ -32,11 +32,11 @@ data:
 
     # OAuth2 URL to start authorization flow.
     # Env var: GANGWAY_AUTHORIZE_URL
-    authorizeURL: "https://dex.mgmt.tkg-aws-lab.winterfell.live/auth"
+    authorizeURL: "https://dex.mgmt.tkg-vsp-lab.hyrulelab.com/auth"
 
     # OAuth2 URL to obtain access tokens.
     # Env var: GANGWAY_TOKEN_URL
-    tokenURL: "https://dex.mgmt.tkg-aws-lab.winterfell.live/token"
+    tokenURL: "https://dex.mgmt.tkg-vsp-lab.hyrulelab.com/token"
 
     # Endpoint that provides user profile information [optional]. Not all providers
     # will require this.
@@ -50,7 +50,7 @@ data:
     # Typically this also needs to be registered as part of the oauth application
     # with the oAuth provider.
     # Env var: GANGWAY_REDIRECT_URL
-    redirectURL: "https://gangway.wlc-1.tkg-aws-lab.winterfell.live/callback"
+    redirectURL: "https://gangway.wlc-1.tkg-vsp-lab.hyrulelab.com/callback"
 
     # API client ID as indicated by the identity provider
     # Env var: GANGWAY_CLIENT_ID
@@ -70,7 +70,7 @@ data:
 
     # The API server endpoint used to configure kubectl
     # Env var: GANGWAY_APISERVER_URL
-    apiServerURL: "https://wlc-1-apiserver-1077432545.us-east-2.elb.amazonaws.com:6443"
+    apiServerURL: "https://192.168.14.33:6443"
 
     # The path to find the CA bundle for the API server. Used to configure kubectl.
     # This is typically mounted into the default location for workloads running on
