@@ -1,4 +1,4 @@
-# Install Contour on management cluster
+# Install Contour on Workload cluster
 
 ## Deploy MetalLB (only for vSphere installations!!)
 Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
