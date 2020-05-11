@@ -2,7 +2,7 @@
 
 ![TKG Lab Deployment Diagram](docs/tkg-deployment.png)
 
-In this lab, we will deploy Tanzu Kubernetes Grid (standalone deployment model) to AWS.  We will additionally deploy TKG extensions for ingress, authentication, and logging.
+In this lab, we will deploy Tanzu Kubernetes Grid (standalone deployment model) to AWS or vSphere.  We will additionally deploy TKG extensions for ingress, authentication, and logging.
 
 OSS Signed and Supported Extensions:
 
@@ -34,14 +34,14 @@ The following demo is for Tanzu field team members to see how various components
 
 Disclaimers
 
-- Arguably, we have products, like TAS or PKS that deliver components of these features and more with tighter integration, automation, and enterprise readiness.
-- Additionally, it is early days in our product integrations, automation, and enterprise readiness as these products are either just entering GA or are being integrated for the first time.
+- Arguably, we have products, like TAS or TKGI that deliver components of these features and more with tighter integration, automation, and enterprise readiness today.
+- Additionally, it is early days in our product integrations, automation, and enterprise readiness as these products have recently entered GA or are being integrated for the first time.
 
 What we do have is a combination of open source and proprietary components, with a bias towards providing VMware built/signed OSS components by default, with flexibility to swap components and flexible integrations.
 
-VMware commercial products included are: TKG, TO, TMC and OSS products included with CRE Add-on.
+VMware commercial products included are: TKG, TO, TMC and OSS products.
 
-3rd-party SaaS services included are: AWS S3, GCP Cloud DNS, Let's Encrypt, Okta.  Note: There is flexibility in deployment planning.  For instance, You could Swap GCP Cloud DNS with Route53.  Or you could swap Okta for Google or Auth0 for OpenID Connect.
+3rd-party SaaS services included are: AWS S3, AWS Route 53, GCP Cloud DNS, Let's Encrypt, Okta.  Note: There is flexibility in deployment planning.  For instance, You could Swap GCP Cloud DNS with Route53.  Or you could swap Okta for Google or Auth0 for OpenID Connect.
 
 ## Scenario Business Context
 
