@@ -9,7 +9,7 @@ The scripts to prepare the YAML to deploy gangway depend on a few environmental 
 export DEX_CN=dex.mgmt.tkg-aws-lab.winterfell.live
 # the DNS CN that will ultimately map to the ganway service on your first workload cluster
 export GANGWAY_CN=gangway.wlc-1.tkg-aws-lab.winterfell.live
-# the cluster name
+# the workload cluster name
 export CLUSTER_NAME=wlc-1
 ```
 
