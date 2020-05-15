@@ -4,12 +4,12 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "FQDN",
+        "Name": "*.dorn.tkg-aws-e2-lab.winterfell.live",
         "Type": "CNAME",
         "TTL": 300,
         "ResourceRecords": [
           {
-            "Value": "LBHOST" 
+            "Value": "a928a731ec6844be4bcdf1d1b5d442b7-1101259253.us-east-2.elb.amazonaws.com" 
           }
         ]
       }

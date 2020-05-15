@@ -100,11 +100,35 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 6. [Install Contour Ingress Controller](docs/mgmt-cluster/06_contour_mgmt.md)
 #### 7. [Install Dex](docs/mgmt-cluster/07_dex_mgmt.md)
 #### 8. [Install Tanzu Observability](docs/mgmt-cluster/08_to_mgmt.md)
-#### 9. [Install ElasticSearch and Kibana](docs/mgmt-cluster/09_ek_mgmt.md)
-#### 10. [Install FluentBit](docs/mgmt-cluster/10_fluentbit_mgmt.md)
-#### 11. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/11_velero_mgmt.md)
+
+-----------------
+
+## Setup Shared Services Cluster
+
+#### 1. [Create new Shared Services Cluster](docs/shared-services-cluster/01_install_tkg_ssc.md)
+#### 2. [Attach Shared Services Cluster to TMC](docs/shared-services-cluster/02_attach_tmc_ssc.md)
+#### 3. [Set policy on Shared Services Cluster and Namespace](docs/shared-services-cluster/03_policy_ssc.md)
+#### 4. [Install Contour Ingress Controller](docs/shared-services-cluster/04_contour_ssc.md)
+#### 5. [Install Gangway](docs/shared-services-cluster/05_gangway_ssc.md)
+#### 6. [Install ElasticSearch and Kibana](docs/shared-services-cluster/06_ek_scc.md)
+#### 7. [Install FluentBit](docs/shared-services-cluster/07_fluentbit_ssc.md)
+#### 8. [Install Tanzu Observability](docs/shared-services-cluster/08_to_wlc.md)
+#### 9. [Install Velero and Setup Nightly Backup](docs/shared-services-cluster/9_velero_ssc.md)
+-----------------
+
+## Finalize Management Cluster
+
+#### 1. [Install FluentBit](docs/mgmt-cluster/9_fluentbit_mgmt.md)
+#### 2. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/10_velero_mgmt.md)
+
+
+-----------------
+
+## Optional Shared Services Cluster Configuration
+
 #### 12. [Install Harbor Image Registry](docs/mgmt-cluster/12_harbor_mgmt.md)
 
+-----------------
 
 ## Now you have a simulated request to setup cluster for a new team
 

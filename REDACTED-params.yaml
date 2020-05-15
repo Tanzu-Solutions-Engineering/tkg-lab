@@ -1,0 +1,36 @@
+iaas: aws
+vmware-id: dpfeffer
+environment-name: tkg-aws-e2-lab # used for aws ssh key name
+subdomain: tkg-aws-e2-lab.winterfell.live
+lets-encrypt-acme-email: dpfeffer@vmware.com
+tmc:
+  cluster-group: se-dpfeffer-dev
+aws:
+  region: us-east-2
+  access-key-id: REDACTED
+  secret-access-key: REDACTED
+  hosted-zone-id: Z00636703RP40GVIAWHLA
+management-cluster:
+  worker-replicas: 2
+  name: dragonstone
+  ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
+  dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
+shared-services-cluster:
+  worker-replicas: 2
+  name: dorn
+  ingress-fqdn: '*.dorn.tkg-aws-e2-lab.winterfell.live'
+  gangway-fqdn: gangway.dorn.tkg-aws-e2-lab.winterfell.live
+  elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
+  kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
+okta:
+  auth-server-fqdn: dev-677945.okta.com
+  dex-app-client-id: REDACTED
+  dex-app-client-secret: REDACTED
+wavefront:
+  api-key: REDACTED
+  url: https://surf.wavefront.com
+  cluster-name-prefix: dpfeffer
+velero:
+  bucket: pa-dpfeffer-mgmt-velero
+  region: us-east-2
+

@@ -15,6 +15,9 @@ export VMWARE_ID=dpfeffer
 tmc cluster iam add-binding se-$VMWARE_ID-wlc-1 --role cluster.admin --groups platform-team
 ```
 
+tmc cluster iam add-binding dpfeffer-dorn --role cluster.admin --groups platform-team
+
+
 ### Validation Step
 
 1. Access TMC UI

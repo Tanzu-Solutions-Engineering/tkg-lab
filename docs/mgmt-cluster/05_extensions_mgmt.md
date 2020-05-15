@@ -9,3 +9,7 @@ mv tkg-extensions-v1.0.0 tkg-extensions
 ```
 
 > Note: v1.0.0 has a spelling error one of the yaml files that needs to be fixed.  `tkg-extensions/authentication/gangway/aws/06-deployment.yaml`.  Search for `sesssionKey` and replace it with `sessionKey`.
+
+## Go to Next Step
+
+[Install Contour Ingress Controller](docs/mgmt-cluster/06_contour_mgmt.md)

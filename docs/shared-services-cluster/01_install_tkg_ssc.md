@@ -31,4 +31,4 @@ All of the steps above can be accomplished by running the following script:
 
 ## Go to Next Step
 
-[Update Okta for Application Team Users and Group](docs/workload-cluster/02_okta_wlc.md)
+[Attach Shared Services Cluster to TMC](docs/workload-cluster/02_attach_tmc_ssc.md)

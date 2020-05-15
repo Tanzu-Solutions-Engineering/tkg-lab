@@ -43,3 +43,7 @@ On the top left, Choose the arrow next to Developer Console and choose Classic U
 Choose Applications (top menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
   - Groups claim type => Filter
   - Groups claim filter => **groups** Matches regex **.\***
+
+## Go to Next Step
+
+[Retrieve TKG Extensions](docs/mgmt-cluster/05_extensions_mgmt.md)

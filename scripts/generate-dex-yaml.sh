@@ -2,9 +2,9 @@
 
 : ${DEX_CN?"Need to set DEX_CN environment variable"}
 : ${GANGWAY_CN?"Need to set GANGWAY_CN environment variable"}
-: ${OCTA_AUTH_SERVER_CN?"Need to set OCTA_AUTH_SERVER_CN environment variable"}
-: ${OCTA_DEX_APP_CLIENT_ID?"Need to set OCTA_DEX_APP_CLIENT_ID environment variable"}
-: ${OCTA_DEX_APP_CLIENT_SECRET?"Need to set OCTA_DEX_APP_CLIENT_SECRET environment variable"}
+: ${OKTA_AUTH_SERVER_CN?"Need to set OKTA_AUTH_SERVER_CN environment variable"}
+: ${OKTA_DEX_APP_CLIENT_ID?"Need to set OKTA_DEX_APP_CLIENT_ID environment variable"}
+: ${OKTA_DEX_APP_CLIENT_SECRET?"Need to set OKTA_DEX_APP_CLIENT_SECRET environment variable"}
 
 mkdir -p clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive
 
@@ -28,13 +28,13 @@ if [ `uname -s` = 'Darwin' ];
 then
   sed -i '' -e 's/$DEX_CN/'$DEX_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
   sed -i '' -e 's/$GANGWAY_CN/'$GANGWAY_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-  sed -i '' -e 's/$OCTA_AUTH_SERVER_CN/'$OCTA_AUTH_SERVER_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-  sed -i '' -e 's/$OCTA_DEX_APP_CLIENT_ID/'$OCTA_DEX_APP_CLIENT_ID'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-  sed -i '' -e 's/$OCTA_DEX_APP_CLIENT_SECRET/'$OCTA_DEX_APP_CLIENT_SECRET'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+  sed -i '' -e 's/$OKTA_AUTH_SERVER_CN/'$OKTA_AUTH_SERVER_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+  sed -i '' -e 's/$OKTA_DEX_APP_CLIENT_ID/'$OKTA_DEX_APP_CLIENT_ID'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+  sed -i '' -e 's/$OKTA_DEX_APP_CLIENT_SECRET/'$OKTA_DEX_APP_CLIENT_SECRET'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 else
   sed -i -e 's/$DEX_CN/'$DEX_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
   sed -i -e 's/$GANGWAY_CN/'$GANGWAY_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-  sed -i -e 's/$OCTA_AUTH_SERVER_CN/'$OCTA_AUTH_SERVER_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-  sed -i -e 's/$OCTA_DEX_APP_CLIENT_ID/'$OCTA_DEX_APP_CLIENT_ID'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
-  sed -i -e 's/$OCTA_DEX_APP_CLIENT_SECRET/'$OCTA_DEX_APP_CLIENT_SECRET'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+  sed -i -e 's/$OKTA_AUTH_SERVER_CN/'$OKTA_AUTH_SERVER_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+  sed -i -e 's/$OKTA_DEX_APP_CLIENT_ID/'$OKTA_DEX_APP_CLIENT_ID'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+  sed -i -e 's/$OKTA_DEX_APP_CLIENT_SECRET/'$OKTA_DEX_APP_CLIENT_SECRET'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 fi

@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: elasticsearch
-  namespace: tanzu-system-logging
+  namespace: elasticsearch-kibana
   labels:
     app: elasticsearch
 spec:
