@@ -5,6 +5,8 @@
 : ${OCTA_AUTH_SERVER_CN?"Need to set OCTA_AUTH_SERVER_CN environment variable"}
 : ${OCTA_DEX_APP_CLIENT_ID?"Need to set OCTA_DEX_APP_CLIENT_ID environment variable"}
 : ${OCTA_DEX_APP_CLIENT_SECRET?"Need to set OCTA_DEX_APP_CLIENT_SECRET environment variable"}
+: ${CLUSTER_NAME?"Need to set workload CLUSTER_NAME environment variable"}
+
 
 mkdir -p clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive
 
@@ -23,8 +25,10 @@ yq write -d0 clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/gener
 
 # 04-cm.yaml
 yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/04-cm.yaml > clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+sed -i '' -e "s/ wlc-1/ "$CLUSTER_NAME"/" clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
+sed -i '' -e "s/ 'wlc-1'/ '"$CLUSTER_NAME"'/" clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
 
-if [ `uname -s` = 'Darwin' ]; 
+if [ `uname -s` = 'Darwin' ];
 then
   sed -i '' -e 's/$DEX_CN/'$DEX_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml
   sed -i '' -e 's/$GANGWAY_CN/'$GANGWAY_CN'/g' clusters/mgmt/tkg-extensions-mods/authentication/dex/aws/oidc/generated/sensitive/04-cm.yaml

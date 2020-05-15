@@ -14,6 +14,8 @@ export OCTA_AUTH_SERVER_CN=dev-866321145.okta.com
 # the client id and secret from the app you created in Okta for Dex
 export OCTA_DEX_APP_CLIENT_ID=123adsfsadf3234r
 export OCTA_DEX_APP_CLIENT_SECRET=123adsfsadf3234r
+# the workload cluster name
+export CLUSTER_NAME=wlc-1
 ```
 
 ## Prepare Manifests

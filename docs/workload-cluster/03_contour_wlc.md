@@ -1,4 +1,4 @@
-# Install Contour on management cluster
+# Install Contour on Workload cluster
 
 ## Deploy MetalLB (only for vSphere installations!!)
 Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
@@ -18,6 +18,13 @@ watch kubectl get pods -n cert-manager
 ```
 
 Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.
+Edit the `tkg-extensions/ingress/contour/aws/01-contour-config.yaml` file and uncomment lines 27 through 29:
+```yaml
+leaderelection:
+  configmap-name: leader-elect
+  configmap-namespace: tanzu-system-ingress
+```
+Run:
 ```bash
 kubectl apply -f tkg-extensions/ingress/contour/aws/
 ```
