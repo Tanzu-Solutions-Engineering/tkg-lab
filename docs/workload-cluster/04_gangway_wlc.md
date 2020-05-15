@@ -37,6 +37,7 @@ kubectl apply -f clusters/wlc-1/tkg-extensions-mods/authentication/gangway/aws/g
 watch kubectl get certificate -n tanzu-system-auth
 # Wait for above certificate to be ready.  It took me about 2m20s
 kubectl create cm dex-ca -n tanzu-system-auth --from-file=dex-ca.crt=keys/letsencrypt-ca.pem
+# Edit tkg-extensions/authentication/gangway/aws/06-deployment.yaml, and fix line 30 to read "sessionKey" instead of "sesssionKey"
 kubectl apply -f tkg-extensions/authentication/gangway/aws/06-deployment.yaml
 ```
 
