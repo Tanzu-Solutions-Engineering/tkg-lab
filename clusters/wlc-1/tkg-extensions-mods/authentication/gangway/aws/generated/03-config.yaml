@@ -28,7 +28,7 @@ data:
 
     # The cluster name. Used in UI and kubectl config instructions.
     # Env var: GANGWAY_CLUSTER_NAME
-    clusterName: "wlc-1"
+    clusterName: "zora"
 
     # OAuth2 URL to start authorization flow.
     # Env var: GANGWAY_AUTHORIZE_URL
@@ -54,7 +54,7 @@ data:
 
     # API client ID as indicated by the identity provider
     # Env var: GANGWAY_CLIENT_ID
-    clientID: "wlc-1"
+    clientID: "zora"
 
     # Some identity providers accept an empty client secret, this
     # is not generally considered a good idea. If you have to use an
