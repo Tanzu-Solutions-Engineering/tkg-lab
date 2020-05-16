@@ -9,22 +9,22 @@ export HARBOR_CN=harbor.mgmt.tkg-aws-lab.winterfell.live
 export NOTARY_CN=notary.mgmt.tkg-aws-lab.winterfell.live
 ```
 ### Prepare Manifests
-Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `clusters/mgmt/harbor/generated/` in case you want to inspect.
+Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
 ```bash
-./clusters/mgmt/harbor/00-generate_yaml.sh
+./harbor/00-generate_yaml.sh
 ```
 ### Create Create Harbor namespace and certs
 Create the Harbor namespace and certificate.  Wait for the certificate to be ready.
 ```bash
-kubectl apply -f clusters/mgmt/harbor/generated/01-namespace.yaml
-kubectl apply -f clusters/mgmt/harbor/generated/02-certs.yaml  
+kubectl apply -f harbor/generated/01-namespace.yaml
+kubectl apply -f harbor/generated/02-certs.yaml  
 watch kubectl get certificate -n harbor
 ```
 
 ### Add helm repo and install harbor
 ```bash
 helm repo add harbor https://helm.goharbor.io
-helm install harbor harbor/harbor -f clusters/mgmt/harbor/generated/harbor-values.yaml --namespace harbor
+helm install harbor harbor/harbor -f harbor/generated/harbor-values.yaml --namespace harbor
 ```
 
 ## Validation Step

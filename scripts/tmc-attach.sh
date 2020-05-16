@@ -6,6 +6,9 @@ if [ ! $# -eq 1 ]; then
 fi
 
 CLUSTER_NAME=$1
+
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+
 IAAS=$(yq r params.yaml iaas)
 VMWARE_ID=$(yq r params.yaml vmware-id)
 TMC_CLUSTER_GROUP=$(yq r params.yaml tmc.cluster-group)

@@ -74,7 +74,7 @@ Follow these steps in vCenter:
 Then run the following command to apply a default storage class that uses the CNS provisioner to the cluster.
 
 ```bash
-kubectl apply -f clusters/mgmt/default-storage-class-vsphere.yaml
+./scripts/set-default-storage-class.sh
 ```
 
 4. Validation Step. Check management cluster is provisioned, pods are running and sc is configured;

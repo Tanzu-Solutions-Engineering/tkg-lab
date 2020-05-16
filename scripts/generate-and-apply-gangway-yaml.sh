@@ -5,6 +5,9 @@ if [ ! $# -eq 2 ]; then
   exit 1
 fi
 CLUSTER_NAME=$1
+
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+
 GANGWAY_CN=$2
 
 DEX_CN=$(yq r params.yaml management-cluster.dex-fqdn)

@@ -4,7 +4,7 @@ IAAS=$(yq r params.yaml iaas)
 
 if [ "$IAAS" = "aws" ];
 then
-  kubectl apply -f clusters/mgmt/default-storage-class-aws.yaml
+  kubectl apply -f storage-classes/default-storage-class-aws.yaml
 else
-  kubectl apply -f clusters/mgmt/default-storage-class-vsphere.yaml
+  kubectl apply -f storage-classes/default-storage-class-vsphere.yaml
 fi

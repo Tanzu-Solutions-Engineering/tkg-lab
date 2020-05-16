@@ -4,12 +4,12 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "*.dorn.tkg-aws-e2-lab.winterfell.live",
+        "Name": "*.highgarden.tkg-aws-e2-lab.winterfell.live",
         "Type": "CNAME",
         "TTL": 300,
         "ResourceRecords": [
           {
-            "Value": "a928a731ec6844be4bcdf1d1b5d442b7-1101259253.us-east-2.elb.amazonaws.com" 
+            "Value": "a7da1c3d8b60842368ad3035bfaa9b62-589163181.us-east-2.elb.amazonaws.com" 
           }
         ]
       }

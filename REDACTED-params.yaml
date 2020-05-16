@@ -5,6 +5,9 @@ subdomain: tkg-aws-e2-lab.winterfell.live
 lets-encrypt-acme-email: dpfeffer@vmware.com
 tmc:
   cluster-group: se-dpfeffer-dev
+acme-fitness:
+  tmc-workspace: dpfeffer-acme-fitness-dev
+  fqdn: acme-fitness.highgarden.tkg-aws-e2-lab.winterfell.live
 aws:
   region: us-east-2
   access-key-id: REDACTED
@@ -22,6 +25,11 @@ shared-services-cluster:
   gangway-fqdn: gangway.dorn.tkg-aws-e2-lab.winterfell.live
   elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
   kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
+workload-cluster:
+  worker-replicas: 2
+  name: highgarden
+  ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
+  gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
 okta:
   auth-server-fqdn: dev-677945.okta.com
   dex-app-client-id: REDACTED

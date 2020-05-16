@@ -121,7 +121,6 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 1. [Install FluentBit](docs/mgmt-cluster/9_fluentbit_mgmt.md)
 #### 2. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/10_velero_mgmt.md)
 
-
 -----------------
 
 ## Optional Shared Services Cluster Configuration
@@ -134,15 +133,9 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 
 ### Workload Cluster
 
-#### 1. [Create new workload Cluster](docs/workload-cluster/01_install_tkg_wlc.md)
+#### 1. [Create new workload Cluster](docs/workload-cluster/01_install_tkg_and_components_wlc.md)
 #### 2. [Update Okta for Application Team Users and Group](docs/workload-cluster/02_okta_wlc.md)
-#### 3. [Install Contour Ingress Controller](docs/workload-cluster/03_contour_wlc.md)
-#### 4. [Install Gangway](docs/workload-cluster/04_gangway_wlc.md)
-#### 5. [Attach Workload Cluster to TMC](docs/workload-cluster/05_attach_tmc_wlc.md)
-#### 6. [Set policy on Workload Cluster and Namespace](docs/workload-cluster/06_policy_wlc.md)
-#### 7. [Install FluentBit](docs/workload-cluster/07_fluentbit_wlc.md)
-#### 8. [Install Tanzu Observability](docs/workload-cluster/08_to_wlc.md)
-#### 9. [Install Velero and Setup Nightly Backup](docs/workload-cluster/09_velero_wlc.md)
+#### 3. [Set policy on Workload Cluster and Namespace](docs/workload-cluster/03_policy_wlc.md)
 
 ## Now Switch to Acme-Fitness Dev Team Perspective
 
@@ -151,18 +144,3 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 1. [Log-in to workload cluster and setup kubeconfig](docs/app-team/01-login-kubeconfg.md)
 #### 2. [Get, update, and deploy Acme-fitness app](docs/app-team/02-deploy-app.md)
 
-
-## Teardown
-
-```bash
-kubectl delete all,secret,cm,ingress,pvc -l app=acmefit
-tmc cluster namespace delete acme-fitness pa-dpfeffer-wlc-1
-tmc workspace delete dpfeffer-acme-fitness-dev
-tmc cluster delete pa-dpfeffer-mgmt
-tmc cluster delete pa-dpfeffer-wlc-1
-```
-
-## TODO
-
-- Set network access policy for acme-fitness
-- Use bitnami for elasticsearch

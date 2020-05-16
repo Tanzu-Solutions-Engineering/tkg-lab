@@ -55,3 +55,6 @@
 ./scripts/generate-and-apply-fluent-bit-yaml.sh $(yq r params.yaml management-cluster.name)
 # Management Step 10
 ./scripts/velero.sh $(yq r params.yaml management-cluster.name)
+
+# Workload Step 1
+./scripts/deploy-all-workload-cluster-components.sh

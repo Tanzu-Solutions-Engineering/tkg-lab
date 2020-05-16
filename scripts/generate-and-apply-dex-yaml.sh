@@ -6,6 +6,8 @@ OKTA_AUTH_SERVER_CN=$(yq r params.yaml okta.auth-server-fqdn)
 OKTA_DEX_APP_CLIENT_ID=$(yq r params.yaml okta.dex-app-client-id)
 OKTA_DEX_APP_CLIENT_SECRET=$(yq r params.yaml okta.dex-app-client-secret)
 
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+
 mkdir -p generated/$CLUSTER_NAME/dex/
 
 # 02-service.yaml
