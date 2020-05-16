@@ -1,5 +1,6 @@
 # TKG Lab
 
+![TKG Lab Base Diagram](docs/tkg-lab-base.png)
 ![TKG Lab Deployment Diagram](docs/tkg-deployment.png)
 
 In this lab, we will deploy Tanzu Kubernetes Grid (standalone deployment model) to AWS or vSphere.  We will additionally deploy TKG extensions for ingress, authentication, and logging.
@@ -90,7 +91,8 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - helm 3
 - yt
 
-## Installation Steps
+## Foundational Lab Setup Steps
+
 ### Management Cluster
 #### 1. [Install Management Cluster](docs/mgmt-cluster/01_install_tkg_mgmt.md)
 #### 2. [Attach Management Cluster to TMC](docs/mgmt-cluster/02_attach_tmc_mgmt.md)
@@ -101,10 +103,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 7. [Install Dex](docs/mgmt-cluster/07_dex_mgmt.md)
 #### 8. [Install Tanzu Observability](docs/mgmt-cluster/08_to_mgmt.md)
 
------------------
-
-## Setup Shared Services Cluster
-
+### Setup Shared Services Cluster
 #### 1. [Create new Shared Services Cluster](docs/shared-services-cluster/01_install_tkg_ssc.md)
 #### 2. [Attach Shared Services Cluster to TMC](docs/shared-services-cluster/02_attach_tmc_ssc.md)
 #### 3. [Set policy on Shared Services Cluster and Namespace](docs/shared-services-cluster/03_policy_ssc.md)
@@ -114,33 +113,32 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 7. [Install FluentBit](docs/shared-services-cluster/07_fluentbit_ssc.md)
 #### 8. [Install Tanzu Observability](docs/shared-services-cluster/08_to_wlc.md)
 #### 9. [Install Velero and Setup Nightly Backup](docs/shared-services-cluster/9_velero_ssc.md)
------------------
 
-## Finalize Management Cluster
-
+### Finalize Management Cluster
 #### 1. [Install FluentBit](docs/mgmt-cluster/9_fluentbit_mgmt.md)
 #### 2. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/10_velero_mgmt.md)
 
------------------
+At this point you have the basis for the lab exercises!
 
-## Optional Shared Services Cluster Configuration
+## Acme Fitness Lab
 
-#### 12. [Install Harbor Image Registry](docs/mgmt-cluster/12_harbor_mgmt.md)
+This lab will go through our simulated experience of receiving a request from an app team for cloud resources and following the steps for both the platform team receiving the request and the app team accessing and deploying their app once the request has been fulfilled.
 
------------------
+### Platform Team Steps
 
-## Now you have a simulated request to setup cluster for a new team
+#### 1. [Update Okta for Application Team Users and Group](docs/acme-fitness-lab/01_okta_setup.md)
+#### 2. [Set policy on Workload Cluster and Namespace](docs/acme-fitness-lab/02_policy_acme.md)
 
-### Workload Cluster
+### Switch to the App Team Perspective
 
-#### 1. [Create new workload Cluster](docs/workload-cluster/01_install_tkg_and_components_wlc.md)
-#### 2. [Update Okta for Application Team Users and Group](docs/workload-cluster/02_okta_wlc.md)
-#### 3. [Set policy on Workload Cluster and Namespace](docs/workload-cluster/03_policy_wlc.md)
+#### 3. [Log-in to workload cluster and setup kubeconfig](docs/acme-fitness-lab/03-login-kubeconfg.md)
+#### 4. [Get, update, and deploy Acme-fitness app](docs/acme-fitness-lab/04-deploy-app.md)
 
-## Now Switch to Acme-Fitness Dev Team Perspective
+## Bonus Labs
 
-### Workload Cluster
+The following labs additional labs can be run on the base lab configuration.
 
-#### 1. [Log-in to workload cluster and setup kubeconfig](docs/app-team/01-login-kubeconfg.md)
-#### 2. [Get, update, and deploy Acme-fitness app](docs/app-team/02-deploy-app.md)
-
+#### [Deploy Harbor Image Registry to Shared Services Cluster](docs/bonus-labs/harbor.md)
+#### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/deploy_gitlab.md)
+#### [Apply Image Registry Policy with TMC](docs/bonus-labs/tmc_image_policy.md)
+#### [Restore Bacup with Velero](docs/bonus-labs/velero_restore.md)

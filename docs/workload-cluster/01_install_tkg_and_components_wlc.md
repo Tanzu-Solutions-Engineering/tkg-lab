@@ -44,7 +44,3 @@ There are lots of potential validation steps, but let's focus on the ability to 
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 ```
 
-## Go to Next Step
-
-[Update Okta for Application Team Users and Group](docs/workload-cluster/02_okta_wlc.md)
-

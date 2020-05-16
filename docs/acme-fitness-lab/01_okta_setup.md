@@ -18,4 +18,4 @@ Click on acme-fitness-devs group > Manage People: Then add cody and naomi to the
 
 ## Go to Next Step
 
-[Set policy on Workload Cluster and Namespace](docs/workload-cluster/03_policy_wlc.md)
+[Set policy on Workload Cluster and Namespace](docs/acme-fitness-lab/02_policy_acme.md)

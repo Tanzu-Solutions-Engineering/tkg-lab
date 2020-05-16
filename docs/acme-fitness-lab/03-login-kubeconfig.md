@@ -12,3 +12,7 @@ KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -n acme-fitness
 ```
 
 >Note: If you get "No resources found in acme-fitness namespace." then you successfully logged in.  Meaning you have permission to get resources in this namespace.
+
+## Go to Next Step
+
+[Get, update, and deploy Acme-fitness app](docs/acme-fitness-lab/04-deploy-app.md)
