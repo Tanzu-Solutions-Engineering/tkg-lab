@@ -1,0 +1,15 @@
+{
+    "DiskProvisioning": "thin",
+    "IPProtocol": "IPv4",
+    "NetworkMapping": [
+        {
+            "Name": "VM Network",
+            "Network": "Extra"
+        }
+    ],
+    "MarkAsTemplate": true,
+    "PowerOn": false,
+    "InjectOvfEnv": true,
+    "WaitForIP": false,
+    "Name": "photon-3-v1.17.3_vmware.2"
+}

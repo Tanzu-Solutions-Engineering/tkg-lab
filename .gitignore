@@ -1,7 +1,8 @@
 keys/
-config.yaml
+
 .secrets
 tkg-extensions
 acme_fitness_demo
 tmc.token
+kubeconfig
 sensitive/

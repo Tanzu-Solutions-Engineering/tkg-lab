@@ -1,0 +1,67 @@
+{
+
+    "DiskProvisioning": "thin",
+    "IPProtocol": "IPv4",
+    "PropertyMapping": [
+        {
+            "Key": "guestinfo.hostname",
+            "Value": "tkg.vmware.corp"
+        },
+        {
+          "Key": "guestinfo.ipaddress",
+          "Value": "10.197.118.34"
+        },
+        {
+          "Key": "guestinfo.netmask",
+          "Value": "24 (255.255.255.0)"
+        },
+        {
+          "Key": "guestinfo.gateway",
+          "Value": "10.197.118.1"
+        },
+        {
+          "Key": "guestinfo.vlan",
+          "Value": ""
+        },
+        {
+          "Key": "guestinfo.dns",
+          "Value": "10.192.2.10"
+        },
+        {
+          "Key": "guestinfo.domain",
+          "Value": "vmware.corp"
+        },
+        {
+          "Key": "guestinfo.ntp",
+          "Value": "pool.ntp.org"
+        },
+        {
+          "Key": "guestinfo.syslog",
+          "Value": ""
+        },
+        {
+          "Key": "guestinfo.root_password",
+          "Value": "VMware1!"
+        },
+        {
+          "Key": "guestinfo.ssh",
+          "Value": "True"
+        },
+        {
+          "Key": "guestinfo.createvmfs",
+          "Value": "False"
+        }
+        
+    ],
+    "NetworkMapping": [
+        {
+            "Name": "VM Network",
+            "Network": "VM Network"
+        }
+    ],
+    "MarkAsTemplate": false,
+    "PowerOn": true,
+    "InjectOvfEnv": true,
+    "WaitForIP": true,
+    "Name": "TKG-Demo-Appliance"
+}
