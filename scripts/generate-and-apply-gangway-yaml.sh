@@ -67,5 +67,14 @@ while kubectl get certificate gangway-cert -n tanzu-system-auth | grep True ; [ 
 done
 
 kubectl create cm dex-ca -n tanzu-system-auth --from-file=dex-ca.crt=keys/letsencrypt-ca.pem
+
+# Hack the mispelling in the tkg-extensions.  This has been fixed in an upcoming release
+if [ `uname -s` = 'Darwin' ]; 
+then
+  sed -i '' -e 's/sesssionKey/sessionKey/g' tkg-extensions/authentication/gangway/aws/06-deployment.yaml
+else
+  sed -i -e 's/sesssionKey/sessionKey/g' tkg-extensions/authentication/gangway/aws/06-deployment.yaml
+fi
+
 kubectl apply -f tkg-extensions/authentication/gangway/aws/06-deployment.yaml
 
