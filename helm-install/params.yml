@@ -7,7 +7,10 @@ vsphere:
   datastore: 'LUN01'
   resourcepool: '/Datacenter/host/Cluster/Resources/tkg'
   sshKey: 'ssh-rsa ..'
-  folder: 'tkg'
+  folder: '/Datacenter/vm/tkg'
+  ovafolder: /Users/khan/Documents/Homelab/tkg/download/
+  phtonosova: photon-3-v1.17.3_vmware.2.ova
+  haproxyova: 'photon-3-capv-haproxy-v0.6.3_vmware.1.ova'
 
 dns:
   mgmt:
