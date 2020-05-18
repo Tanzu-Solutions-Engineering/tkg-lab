@@ -14,6 +14,6 @@ helm install dex ./tkg-extensions-helm-charts/dex-0.1.0.tgz \
 --set oidc.oidcUrl=$(yq r $PARAM_FILE oidc.oidcUrl) \
 --set oidc.oidcClientId=$(yq r $PARAM_FILE oidc.oidcClientId) \
 --set oidc.oidcClientSecret=$(yq r $PARAM_FILE oidc.oidcClientSecret) \
---set ingress.host=$(yq r $PARAM_FILE dex.host) --wait
+--set ingress.host=$(yq r $PARAM_FILE dex.host) --replace --wait
 
 kubectl get secret dex-cert-tls -n tanzu-system-auth -o 'go-template={{ index .data "ca.crt" }}' | base64 -D > ./management-cluster-setup/generated/dex-ca.crt

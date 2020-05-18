@@ -1,3 +1,3 @@
 
 
-helm install metallb bitnami/metallb -f $METALLB_VALUES_FILE
+helm install metallb bitnami/metallb --replace -f $METALLB_VALUES_FILE

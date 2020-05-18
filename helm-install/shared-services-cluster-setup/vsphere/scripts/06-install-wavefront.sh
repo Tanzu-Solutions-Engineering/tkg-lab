@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./shared-services-cluster-setup/common/scripts/install_wavefront.sh
+./shared-services-cluster-setup/common/scripts/install-wavefront.sh

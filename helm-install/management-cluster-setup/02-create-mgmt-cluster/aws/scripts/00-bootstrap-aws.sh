@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
-export AWS_ACCESS_KEY_ID=$(yq r ./params.yml aws.access-key-id)
-export AWS_SECRET_ACCESS_KEY=$(yq r ./params.yml aws.secret-access-key)
-export AWS_REGION=$(yq r ./params.yml aws.region)
+export AWS_ACCESS_KEY_ID=$(yq r $PARAM_FILE aws.access-key-id)
+export AWS_SECRET_ACCESS_KEY=$(yq r $PARAM_FILE aws.secret-access-key)
+export AWS_REGION=$(yq r $PARAM_FILE aws.region)
 
 clusterawsadm alpha bootstrap create-stack
 

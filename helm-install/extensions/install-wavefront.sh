@@ -12,4 +12,4 @@ helm install wavefront wavefront/wavefront \
   --set wavefront.url=https://surf.wavefront.com \
   --set wavefront.token=$API_KEY \
   --set clusterName=$VMWARE_ID-$CLUSTER_NAME \
-  --namespace wavefront
+  --namespace wavefront --replace

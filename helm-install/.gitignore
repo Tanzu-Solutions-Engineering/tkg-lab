@@ -7,3 +7,4 @@
 tkg-extensions/
 **/dex-ca.crt
 **/aws-ssh.pem
+generated/*.json

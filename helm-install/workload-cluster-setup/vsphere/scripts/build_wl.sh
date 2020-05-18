@@ -9,7 +9,7 @@ sleep 5s
 sleep 5s 
 ./workload-cluster-setup/vsphere/scripts/05-install-gangway.sh
 sleep 5s
-./workload-cluster-setup/vsphere/scripts/06-install-wavefront.sh
+./workload-cluster-setup/vsphere/scripts/06-install-fluent-bit.sh
 sleep 5s
-./workload-cluster-setup/vsphere/scripts/07-install-fluent-bit.sh
+./workload-cluster-setup/vsphere/scripts/07-install-wavefront.sh
 sleep 5s
