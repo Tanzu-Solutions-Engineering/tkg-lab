@@ -13,7 +13,7 @@
   platform-team
 # Workload Step 4
 ./scripts/deploy-cert-manager.sh
-./scripts/deploy-contour.sh
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml workload-cluster.name)
 ./scripts/update-dns-records-aws.sh $(yq r params.yaml workload-cluster.ingress-fqdn)
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml workload-cluster.name) http
 # Workload Step 5

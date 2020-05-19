@@ -10,7 +10,7 @@
 ./scripts/create-hosted-zone.sh
 ./scripts/retrieve-lets-encrypt-ca-cert.sh
 # Management Step 6
-./scripts/deploy-contour.sh
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml management-cluster.name)
 ./scripts/update-dns-records-aws.sh $(yq r params.yaml management-cluster.ingress-fqdn)
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name) http
 # Management Step 7
@@ -31,7 +31,7 @@
   platform-team
 # Shared Services Step 4
 ./scripts/deploy-cert-manager.sh
-./scripts/deploy-contour.sh
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml shared-services-cluster.name)
 ./scripts/update-dns-records-aws.sh $(yq r params.yaml shared-services-cluster.ingress-fqdn)
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml shared-services-cluster.name) http
 # Shared Services Step 5
