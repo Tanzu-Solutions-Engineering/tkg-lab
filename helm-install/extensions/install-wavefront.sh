@@ -6,10 +6,13 @@ export VMWARE_ID=$(yq r ./params.yml vmware.id)
 
 helm repo add wavefront https://wavefronthq.github.io/helm/
 helm repo update
+
+helm delete wavefront -n wavefront
+kubectl delete namespace wavefront
 kubectl create namespace wavefront
 
-helm install wavefront wavefront/wavefront \
+helm upgrade --install wavefront wavefront/wavefront \
   --set wavefront.url=https://surf.wavefront.com \
   --set wavefront.token=$API_KEY \
   --set clusterName=$VMWARE_ID-$CLUSTER_NAME \
-  --namespace wavefront --replace
+  --namespace wavefront
