@@ -14,4 +14,4 @@ Go to the TMC UI and find your cluster.  It should take a few minutes to appear 
 
 ## Go to Next Step
 
-[Configure DNS and Prep Certificate Signing](docs/mgmt-cluster/03_dns_certs_mgmt.md)
+[Configure DNS and Prep Certificate Signing](03_dns_certs_mgmt.md)
