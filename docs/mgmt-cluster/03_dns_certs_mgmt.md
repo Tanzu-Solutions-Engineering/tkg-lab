@@ -50,4 +50,4 @@ It's not required to set up a Let's Encrypt account in advance. Only needed to b
 
 ## Go to Next Step
 
-[Configure Okta](docs/mgmt-cluster/04_okta_mgmt.md)
+[Configure Okta](04_okta_mgmt.md)
