@@ -10,4 +10,4 @@ mv tkg-extensions-v1.0.0 tkg-extensions
 
 ## Go to Next Step
 
-[Install Contour Ingress Controller](docs/mgmt-cluster/06_contour_mgmt.md)
+[Install Contour Ingress Controller](06_contour_mgmt.md)
