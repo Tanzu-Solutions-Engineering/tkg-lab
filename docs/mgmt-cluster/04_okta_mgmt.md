@@ -46,4 +46,4 @@ Choose Applications (top menu) > Applications > Pick your app > Sign On tab > Ed
 
 ## Go to Next Step
 
-[Retrieve TKG Extensions](docs/mgmt-cluster/05_extensions_mgmt.md)
+[Retrieve TKG Extensions](05_extensions_mgmt.md)
