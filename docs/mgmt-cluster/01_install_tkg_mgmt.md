@@ -87,4 +87,4 @@ kubectl get sc
 
 ## Go to Next Step
 
-[Attach Management Cluster to TMC](docs/mgmt-cluster/02_attach_tmc_mgmt.md)
+[Attach Management Cluster to TMC](02_attach_tmc_mgmt.md)
