@@ -14,9 +14,9 @@ if [ -z "$AWS_B64ENCODED_CREDENTIALS" ];then
   export AWS_ACCESS_KEY_ID=$(echo $AWS_CREDENTIALS | jq .AccessKey.AccessKeyId -r)
   export AWS_SECRET_ACCESS_KEY=$(echo $AWS_CREDENTIALS | jq .AccessKey.SecretAccessKey -r)
   export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm alpha bootstrap encode-aws-credentials)
-  yq -w ../k8/config.yaml -i "AWS_ACCESS_KEY_ID" $AWS_ACCESS_KEY_ID
-  yq -w ../k8/config.yaml -i "AWS_SECRET_ACCESS_KEY" $AWS_SECRET_ACCESS_KEY
-  yq -w ../k8/config.yaml -i "AWS_B64ENCODED_CREDENTIALS" $AWS_B64ENCODED_CREDENTIALS
+  yq w ../k8/config.yaml -i "AWS_ACCESS_KEY_ID" $AWS_ACCESS_KEY_ID
+  yq w ../k8/config.yaml -i "AWS_SECRET_ACCESS_KEY" $AWS_SECRET_ACCESS_KEY
+  yq w ../k8/config.yaml -i "AWS_B64ENCODED_CREDENTIALS" $AWS_B64ENCODED_CREDENTIALS
 fi
 
 tkg init --infrastructure=aws --name=$(yq r $PARAM_FILE mgmtCluster.name) --plan=dev -v 5 --config=./k8/config.yaml
