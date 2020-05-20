@@ -8,27 +8,22 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 
 ## Install TKG Management Cluster on AWS
 
-1. Complete `Prepare to Deploy the Management Cluster to Amazon EC2` which does setup activity in EC2. You can use the following script which hard codes us-east-2 (but you can change this) and stores the private key at keys/aws-ssh.pem
+1. Complete `Prepare to Deploy the Management Cluster to Amazon EC2` which does setup activity in EC2. You can use the following script and stores the private key in the `keys` directory.
 
 ```bash
-#make sure you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_REGION vars set
 ./scripts/01-prep-aws-objects.sh
 ```
 
 2. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`. You can use a config-REDACTED.yaml locate at the root of this repo.  You can use that as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
 
 ```bash
-#make sure you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY vars set
-./02-deploy-aws-mgmt-cluster.sh
-
-# Once completed scale the worker nodes for the management cluster
-tkg scale cluster tkg-mgmt-aws --namespace tkg-system -w 2
+./scripts/02-deploy-aws-mgmt-cluster.sh
 ```
 
-3. Install Default Storage Class. Run the following command to apply a default storage class that uses the AWS EBS provisioner to the cluster.
+3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's deploy a default storage class.  The following script will perform these actions.
 
 ```bash
-kubectl apply -f clusters/mgmt/default-storage-class-aws.yaml
+./scripts/03-post-deploy-mgmt-cluster.sh
 ```
 
 4. Validation Step. Check management cluster is provisioned, pods are running and sc is configured;
@@ -79,7 +74,7 @@ Follow these steps in vCenter:
 Then run the following command to apply a default storage class that uses the CNS provisioner to the cluster.
 
 ```bash
-kubectl apply -f clusters/mgmt/default-storage-class-vsphere.yaml
+./scripts/set-default-storage-class.sh
 ```
 
 4. Validation Step. Check management cluster is provisioned, pods are running and sc is configured;
@@ -89,3 +84,7 @@ tkg get management-clusters
 kubectl get pods -A
 kubectl get sc
 ```
+
+## Go to Next Step
+
+[Attach Management Cluster to TMC](02_attach_tmc_mgmt.md)

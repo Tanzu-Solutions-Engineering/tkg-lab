@@ -4,12 +4,12 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "FQDN",
+        "Name": "*.highgarden.tkg-aws-e2-lab.winterfell.live",
         "Type": "CNAME",
         "TTL": 300,
         "ResourceRecords": [
           {
-            "Value": "LBHOST" 
+            "Value": "a7da1c3d8b60842368ad3035bfaa9b62-589163181.us-east-2.elb.amazonaws.com" 
           }
         ]
       }
