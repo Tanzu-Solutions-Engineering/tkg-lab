@@ -17,7 +17,6 @@ Our solution leverages cert manager to generate valid ssl certs.  Use this scrip
 
 ## Deploy Contour
 
-
 Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use the script to update the contour configmap to enable `leaderelection` and apply yamls.
 ```bash
 ./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml shared-services-cluster.name)
