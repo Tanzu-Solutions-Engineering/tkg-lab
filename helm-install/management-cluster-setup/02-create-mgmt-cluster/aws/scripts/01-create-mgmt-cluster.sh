@@ -21,4 +21,4 @@ fi
 
 tkg init --infrastructure=aws --name=$(yq r $PARAM_FILE mgmtCluster.name) --plan=dev -v 5 --config=./k8/config.yaml
 # default storage class
-kubectl apply -f ./k8/default-storage-class.yaml
+#kubectl apply -f ./k8/default-storage-class.yaml
