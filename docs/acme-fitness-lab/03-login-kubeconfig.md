@@ -15,4 +15,4 @@ KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -n acme-fitness
 
 ## Go to Next Step
 
-[Get, update, and deploy Acme-fitness app](docs/acme-fitness-lab/04-deploy-app.md)
+[Get, update, and deploy Acme-fitness app](04-deploy-app.md)

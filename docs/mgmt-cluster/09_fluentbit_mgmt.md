@@ -36,4 +36,4 @@ Now click the Discover icon at the top of the left menu bar.  You can start sear
 
 ## Go to Next Step
 
-[Install Velero and Setup Nightly Backup](docs/mgmt-cluster/10_velero_mgmt.md)
+[Install Velero and Setup Nightly Backup](10_velero_mgmt.md)

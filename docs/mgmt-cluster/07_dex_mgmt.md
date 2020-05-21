@@ -34,4 +34,4 @@ kubectl get po -n tanzu-system-auth
 
 ## Go to Next Step
 
-[Install Tanzu Observability](docs/mgmt-cluster/08_to_mgmt.md)
+[Install Tanzu Observability](08_to_mgmt.md)

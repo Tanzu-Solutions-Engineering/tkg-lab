@@ -105,4 +105,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Gangway](docs/workload-cluster/05_gangway_ssc.md)
+[Install Gangway](05_gangway_ssc.md)

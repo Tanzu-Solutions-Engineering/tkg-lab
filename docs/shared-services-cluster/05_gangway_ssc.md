@@ -53,4 +53,4 @@ KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 
 ## Go to Next Step
 
-[Install ElasticSearch and Kibana](docs/shared-services-cluster/06_ek_mgmt.md)
+[Install ElasticSearch and Kibana](06_ek_mgmt.md)

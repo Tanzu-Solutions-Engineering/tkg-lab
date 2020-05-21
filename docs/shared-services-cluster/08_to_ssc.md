@@ -11,4 +11,8 @@ Assuming you have helm3 installed, run this script:
 
 ## Validation Step
 
-Follow the URL provided in the helm install command and filter the cluster list to your $VMWARE_ID-wlc-1 cluster.
+Follow the URL provided in the helm install command and filter the cluster list to your $VMWARE_ID clusters.
+
+## Go to Next Step
+
+[Install Velero and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)

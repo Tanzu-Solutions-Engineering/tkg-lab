@@ -27,4 +27,4 @@ kubectl get pods -n tanzu-system-logging
 
 ## Go to Next Step
 
-[Install Tanzu Observability](docs/shared-services-cluster/08_to_wlc.md)
+[Install Tanzu Observability](08_to_wlc.md)

@@ -11,8 +11,8 @@ Assuming you have helm3 installed, run this script:
 
 ## Validation Step
 
-Follow the URL provided in the helm install command and filter the cluster list to your $VMWARE_ID-mgmt cluster.
+Follow the URL provided in the helm install command and filter the cluster list to your $VMWARE_ID clusters.
 
 ## Go to Next Step
 
-[Install Tanzu Observability](docs/mgmt-cluster/08_to_mgmt.md)
+[Create new Shared Services Cluster](../shared-services-cluster/01_install_tkg_ssc.md)

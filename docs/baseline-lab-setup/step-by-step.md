@@ -23,10 +23,10 @@ The following labs guide you through the steps to create the three clusters cons
 ### 6. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_scc.md)
 ### 7. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
 ### 8. [Install Tanzu Observability](../shared-services-cluster/08_to_wlc.md)
-### 9. [Install Velero and Setup Nightly Backup](../shared-services-cluster/9_velero_ssc.md)
+### 9. [Install Velero and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
 
 ## Finalize Management Cluster
-### 1. [Install FluentBit](../mgmt-cluster/9_fluentbit_mgmt.md)
+### 1. [Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
 ### 2. [Install Velero and Setup Nightly Backup](../mgmt-cluster/10_velero_mgmt.md)
 
 At this point you have the basis for the lab exercises!
