@@ -27,13 +27,13 @@ Now you can execute the following script to perform all of those tasks:
 ```
 
 >Note: Wait until your cluster has been created and components installed. It may take 12 minutes.
->Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credential
+>Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credentials
 
 ## Validation Step
 
 There are lots of potential validation steps, but let's focus on the ability to login.
 
-1. (Using Incognito Window) Login to the workload cluster at the configured `shared-services-cluster.gangway-fqdn` using `https://`
+1. (Using Incognito Window) Login to the workload cluster at the configured `workload-cluster.gangway-fqdn` using `https://`
 2. Click Sign In
 3. Log into okta as alana user
 4. Give a secret password
@@ -43,4 +43,3 @@ There are lots of potential validation steps, but let's focus on the ability to 
 ```bash
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 ```
-
