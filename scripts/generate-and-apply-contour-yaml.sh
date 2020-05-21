@@ -21,12 +21,10 @@ else
   sed -i -e 's/# leaderelection:/  leaderelection:/g' generated/$CLUSTER_NAME/contour/01-contour-config.yaml
   sed -i -e 's/#   configmap-/    configmap-/g' generated/$CLUSTER_NAME/contour/01-contour-config.yaml
 fi
-
 kubectl apply -f tkg-extensions/ingress/contour/aws/00-common.yaml
 kubectl apply -f generated/$CLUSTER_NAME/contour/01-contour-config.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/01-crds.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/02-certs-selfsigned.yaml
-kubectl apply -f tkg-extensions/ingress/contour/aws/02-certs-with-provided-CA.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/02-rbac.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/02-service-contour.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/02-service-envoy.yaml
