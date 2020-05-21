@@ -24,3 +24,4 @@ fi
 
 # Execute the change
 aws route53 change-resource-record-sets --hosted-zone-id ${AWS_HOSTED_ZONE} --change-batch file://dns/tkg-aws-lab-record-sets-aws.json
+rm dns/tkg-aws-lab-record-sets-aws.json
