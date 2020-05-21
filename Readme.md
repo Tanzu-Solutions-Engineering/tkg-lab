@@ -118,6 +118,9 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 #### 1. [Install FluentBit](docs/mgmt-cluster/9_fluentbit_mgmt.md)
 #### 2. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/10_velero_mgmt.md)
 
+### Setup Workload Cluster
+#### 1. [Create new Workload Cluster](docs/workload-cluster/01_install_tkg_and_components_wlc.md)
+
 At this point you have the basis for the lab exercises!
 
 ## Acme Fitness Lab
