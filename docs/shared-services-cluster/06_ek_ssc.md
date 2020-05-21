@@ -29,4 +29,4 @@ curl -v http://$(yq r params.yaml shared-services-cluster.elasticsearch-fqdn)
 
 ## Go to Next Step
 
-[Install FluentBit](docs/shared-services-cluster/07_fluentbit_ssc.md)
+[Install FluentBit](07_fluentbit_ssc.md)

@@ -12,7 +12,7 @@ Go to AWS console S3 service and create a bucket for cluster backups.
 
 ## Set configuration parameters
 
-The scripts to prepare the YAML to deploy velero depend on a parameters to be set.  Ensure the following are set in `params.yaml' based upon your environment:
+The scripts to prepare the YAML to deploy velero depend on a parameters to be set.  Ensure the following are set in `params.yaml` based upon your environment:
 
 ```yaml
 velero.bucket: my-bucket
@@ -35,3 +35,7 @@ Ensure schedule is created and the first backup is starting
 velero schedule get
 velero backup get | grep $(yq r params.yaml shared-services-cluster.name)
 ```
+
+## Go to Next Step
+
+[Install FluentBit on Shared Services Cluster](../mgmt-cluster/09_fluentbit_mgmt.md)

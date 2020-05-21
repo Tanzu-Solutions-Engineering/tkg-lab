@@ -90,4 +90,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Dex](docs/mgmt-cluster/07_dex_mgmt.md)
+[Install Dex](07_dex_mgmt.md)

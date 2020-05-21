@@ -14,4 +14,4 @@ Go to the TMC UI and find your cluster.  It should take a few minutes to appear 
 
 ## Go to Next Step
 
-[Set policy on Shared Services Cluster](docs/workload-cluster/03_policy_ssc.md)
+[Set policy on Shared Services Cluster](03_policy_ssc.md)

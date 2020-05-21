@@ -18,4 +18,4 @@
 
 ## Go to Next Step
 
-[Install Contour Ingress Controller](docs/workload-cluster/04_contour_ssc.md)
+[Install Contour Ingress Controller](04_contour_ssc.md)

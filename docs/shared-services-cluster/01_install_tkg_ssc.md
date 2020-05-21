@@ -31,4 +31,4 @@ All of the steps above can be accomplished by running the following script:
 
 ## Go to Next Step
 
-[Attach Shared Services Cluster to TMC](docs/workload-cluster/02_attach_tmc_ssc.md)
+[Attach Shared Services Cluster to TMC](02_attach_tmc_ssc.md)
