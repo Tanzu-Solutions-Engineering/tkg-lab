@@ -91,34 +91,12 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - helm 3
 - yt
 
-## Foundational Lab Setup Steps
+## Foundational Lab Setup Guides
 
-### Management Cluster
-#### 1. [Install Management Cluster](docs/mgmt-cluster/01_install_tkg_mgmt.md)
-#### 2. [Attach Management Cluster to TMC](docs/mgmt-cluster/02_attach_tmc_mgmt.md)
-#### 3. [Configure DNS and Prep Certificate Signing](docs/mgmt-cluster/03_dns_certs_mgmt.md)
-#### 4. [Configure Okta](docs/mgmt-cluster/04_okta_mgmt.md)
-#### 5. [Retrieve TKG Extensions](docs/mgmt-cluster/05_extensions_mgmt.md)
-#### 6. [Install Contour Ingress Controller](docs/mgmt-cluster/06_contour_mgmt.md)
-#### 7. [Install Dex](docs/mgmt-cluster/07_dex_mgmt.md)
-#### 8. [Install Tanzu Observability](docs/mgmt-cluster/08_to_mgmt.md)
+There are are few options to setup the foundation lab setup of three clusters: management cluster, shared services cluster, and workload cluster.
 
-### Setup Shared Services Cluster
-#### 1. [Create new Shared Services Cluster](docs/shared-services-cluster/01_install_tkg_ssc.md)
-#### 2. [Attach Shared Services Cluster to TMC](docs/shared-services-cluster/02_attach_tmc_ssc.md)
-#### 3. [Set policy on Shared Services Cluster and Namespace](docs/shared-services-cluster/03_policy_ssc.md)
-#### 4. [Install Contour Ingress Controller](docs/shared-services-cluster/04_contour_ssc.md)
-#### 5. [Install Gangway](docs/shared-services-cluster/05_gangway_ssc.md)
-#### 6. [Install ElasticSearch and Kibana](docs/shared-services-cluster/06_ek_scc.md)
-#### 7. [Install FluentBit](docs/shared-services-cluster/07_fluentbit_ssc.md)
-#### 8. [Install Tanzu Observability](docs/shared-services-cluster/08_to_wlc.md)
-#### 9. [Install Velero and Setup Nightly Backup](docs/shared-services-cluster/9_velero_ssc.md)
-
-### Finalize Management Cluster
-#### 1. [Install FluentBit](docs/mgmt-cluster/9_fluentbit_mgmt.md)
-#### 2. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/10_velero_mgmt.md)
-
-At this point you have the basis for the lab exercises!
+1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  Best really learning how each cluster is setup and the extensions and integration configured for the lab.  The guidance includes options for AWS and vSphere.
+2. [One Step Scripted Deployment for AWS](docs/baseline-lab-setup/one-step-aws.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
 
 ## Acme Fitness Lab
 
