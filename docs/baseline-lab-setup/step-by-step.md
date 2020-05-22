@@ -2,7 +2,7 @@
 
 The following labs guide you through the steps to create the three clusters considered the baseline setup.
 
->Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `params.yaml` file is included at the root of this repo.  It is recommended you copy this file and rename it to params.yaml, and then start making your adjustments.  `params.yaml` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
+>Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `REDACTED-params.yaml` file is included at the root of this repo.  It is recommended you copy this file and rename it to `params.yaml`, and then start making your adjustments.  `params.yaml` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
 
 ## Management Cluster
 ### 1. [Install Management Cluster](../mgmt-cluster/01_install_tkg_mgmt.md)
