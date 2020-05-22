@@ -14,7 +14,7 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 ./scripts/01-prep-aws-objects.sh
 ```
 
-2. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`. You can use a REDACTED-config.yaml locate at the root of this repo.  You can use that as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
+2. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`. You can use the `REDACTED-config.yaml` locate at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
 
 ```bash
 ./scripts/02-deploy-aws-mgmt-cluster.sh
@@ -50,7 +50,8 @@ You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc
 ./scripts/01-prep-vsphere-objects.sh
 ```
 
-2. Complete `Deploy the Management Cluster to vSphere with the CLI`. You can use a REDACTED-config.yaml locate at the root of this repo.  You can use that as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
+2. Complete `Deploy the Management Cluster to vSphere with the CLI`.
+You can use the `REDACTED-config.yaml` locate at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs. If you run the script in the previous step you'll see the `~/.tkg/config.yaml` has been already pre-populated with some variables. Make sure to add the rest as per the docs and/or the the `REDACTED-config.yaml` for vSphere. Also, you can use this script to complete the deployment.
 
 ```bash
 ./scripts/02-deploy-vsphere-mgmt-cluster.sh
@@ -74,7 +75,7 @@ Then run the following command to scale to 2 worker nodes and apply a default st
 ./scripts/03-post-deploy-mgmt-cluster.sh
 ```
 
-4. Validation Step. Check management cluster is provisioned, pods are running and sc is configured;
+4. Validation Step. Check management cluster is provisioned, pods are running and the sc is configured;
 
 ```bash
 tkg get management-clusters

@@ -13,6 +13,14 @@ aws:
   access-key-id: REDACTED
   secret-access-key: REDACTED
   hosted-zone-id: Z00636703RP40GVIAWHLA
+vsphere:
+  server: vcenter7.hyrulelab.com
+  username: administrator@vsphere.local
+  password: "REDACTED_VALUE_KEEP_DOUBLE_QUOTES"
+  insecure: true
+  datastore: datastore2
+  template_folder: /Datacenter/vm/tkg
+  local_ova_folder: /Users/jaguilar/Code/tkg/
 management-cluster:
   worker-replicas: 2
   name: dragonstone
@@ -41,4 +49,3 @@ wavefront:
 velero:
   bucket: pa-dpfeffer-mgmt-velero
   region: us-east-2
-
