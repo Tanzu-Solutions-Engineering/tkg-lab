@@ -1,5 +1,18 @@
 #!/bin/bash -e
 
+if [ ! $# -eq 3 ]; then
+  echo "Must supply cluster_name, metallb start and end ips as args"
+  exit 1
+fi
+
+CLUSTER_NAME=$1
+METALLB_START_IP=$2
+METALLB_END_IP=$3
+
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+
+mkdir -p generated/$CLUSTER_NAME/metallb/
+
 # usage: ./deploy-metallb.sh VIP-RANGE-FROM VIP-RANGE-TO
 
 # Deploy metalLB
@@ -8,8 +21,10 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manife
 # On first install only
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
+
+
 # Create Layer2 configuration
-cat > metallb-configmap.yaml << EOF
+cat > generated/$CLUSTER_NAME/metallb/metallb-configmap.yaml << EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -21,6 +36,6 @@ data:
     - name: default
       protocol: layer2
       addresses:
-      - $1-$2
+      - $METALLB_START_IP-$METALLB_END_IP
 EOF
-kubectl apply -f metallb-configmap.yaml
+kubectl apply -f generated/$CLUSTER_NAME/metallb/metallb-configmap.yaml

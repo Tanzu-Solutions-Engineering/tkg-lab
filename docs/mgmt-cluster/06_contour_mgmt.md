@@ -3,8 +3,12 @@
 ## Deploy MetalLB (only for vSphere installations!!)
 Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
 Run the script passing the range as parameters. Example:
+
 ```bash
-./scripts/deploy-metallb.sh 192.168.14.200 192.168.14.220
+./scripts/deploy-metallb.sh \
+        $(yq r params.yaml management-cluster.name) \
+        $(yq r params.yaml management-cluster.metallb-start-ip) \
+        $(yq r params.yaml management-cluster.metallb-end-ip)
 ```
 
 ## Deploy Contour
@@ -14,38 +18,29 @@ Apply Contour configuration. We will use AWS one for any environment (including 
 ./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml management-cluster.name)
 ```
 
-## Verify Contour and AWS ELB (AWS Only)
+## Verify Contour
 
-Once it is deployed, wait until you can see the Load Balancer up.  The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI:
+Once it is deployed, wait until you can see the Load Balancer up.  
+
+```bash
+kubectl get svc -n tanzu-system-ingress
+```
+
+## Check out Cloud Load Balancer (AWS Only)
+
+The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI:
 
 ```bash
 kubectl get svc -n tanzu-system-ingress
 aws elb describe-load-balancers
 ```
 
-## Set environment variables (vSphere and/or GCP Cloud DNS)
-The scripts update Google Cloud DNS depend on a few environmental variables to b
-```bash
-# the DNS CN to be used for base domain
-export BASE_DOMAIN=winterfell.live
-# the Lab name to be used as subdomain
-export LAB_NAME=tkg-aws-lab
-```
-
-## Setup DNS for Contour Ingress (AWS Only)
+## Setup DNS for Contour Ingress
 
 Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
 
 ```bash
-./scripts/update-dns-records-aws.sh $(yq r params.yaml management-cluster.ingress-fqdn)
-```
-
-## Setup DNS for Contour Ingress (vSphere and/or GCP Cloud DNS)
-
-Get the load balancer external IP for the envoy service and update Google Cloud DNS
-
-```bash
-./scripts/update-dns-records.sh "*.mgmt"
+./scripts/update-dns-records-route53.sh $(yq r params.yaml management-cluster.ingress-fqdn)
 ```
 
 ## Set environment variables (vSphere and/or GCP Cloud DNS)

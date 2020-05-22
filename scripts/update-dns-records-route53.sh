@@ -7,7 +7,16 @@ fi
 ingress_fqdn=$1
 AWS_HOSTED_ZONE=$(yq r params.yaml aws.hosted-zone-id)
 
-hostname=`kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
+IAAS=$(yq r params.yaml iaas)
+
+if [ $IAAS = 'aws' ];
+then
+  hostname=`kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
+  record_type="CNAME"
+else
+  hostname=`kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
+  record_type="A"
+fi
 
 # Grab a fresh template
 cp dns/tkg-aws-lab-record-sets-aws.json.template dns/tkg-aws-lab-record-sets-aws.json
@@ -17,9 +26,11 @@ if [ `uname -s` = 'Darwin' ];
 then
   sed -i '' -e "s/FQDN/${ingress_fqdn}/g" dns/tkg-aws-lab-record-sets-aws.json
   sed -i '' -e "s/LBHOST/${hostname}/g" dns/tkg-aws-lab-record-sets-aws.json
+  sed -i '' -e "s/CNAME/${record_type}/g" dns/tkg-aws-lab-record-sets-aws.json
 else
   sed -i -e "s/FQDN/${ingress_fqdn}/g" dns/tkg-aws-lab-record-sets-aws.json
   sed -i -e "s/LBHOST/${hostname}/g" dns/tkg-aws-lab-record-sets-aws.json
+  sed -i '' -e "s/CNAME/${record_type}/g" dns/tkg-aws-lab-record-sets-aws.json
 fi
 
 # Execute the change
