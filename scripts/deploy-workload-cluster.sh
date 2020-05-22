@@ -10,13 +10,18 @@ WORKER_REPLICAS=$2
 IAAS=$(yq r params.yaml iaas)
 DEX_CN=$(yq r params.yaml management-cluster.dex-fqdn)
 
+INFRA_COMPONENTS_PATH=$(yq read ~/.tkg/config.yaml "providers[name==vsphere].url")
+OIDC_PLAN_PATH=$(sed s/infrastructure-components/cluster-template-oidc/g <<< $INFRA_COMPONENTS_PATH)
+
 if [ $IAAS = 'aws' ];
 then
-  # Note  Double check the version number below incase it has changed - ~/.tkg/providers/infrastructure-aws/v0.5.2/
-  cp tkg-extensions/authentication/dex/aws/cluster-template-oidc.yaml ~/.tkg/providers/infrastructure-aws/v0.5.2/
+  INFRA_COMPONENTS_PATH=$(yq read ~/.tkg/config.yaml "providers[name==aws].url")
+  OIDC_PLAN_PATH=$(sed s/infrastructure-components/cluster-template-oidc/g <<< $INFRA_COMPONENTS_PATH)
+  cp tkg-extensions/authentication/dex/aws/cluster-template-oidc.yaml $OIDC_PLAN_PATH
 else
-  # Note  Double check the version number below incase it has changed - ~/.tkg/providers/infrastructure-vsphere/v0.6.3/
-  cp tkg-extensions/authentication/dex/vsphere/cluster-template-oidc.yaml ~/.tkg/providers/infrastructure-vsphere/v0.6.3/
+  INFRA_COMPONENTS_PATH=$(yq read ~/.tkg/config.yaml "providers[name==vsphere].url")
+  OIDC_PLAN_PATH=$(sed s/infrastructure-components/cluster-template-oidc/g <<< $INFRA_COMPONENTS_PATH)
+  cp tkg-extensions/authentication/dex/vsphere/cluster-template-oidc.yaml $OIDC_PLAN_PATH
 fi
 
 export OIDC_ISSUER_URL=https://$DEX_CN

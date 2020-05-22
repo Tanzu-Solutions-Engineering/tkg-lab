@@ -9,33 +9,40 @@ CLUSTER_NAME=$1
 METALLB_START_IP=$2
 METALLB_END_IP=$3
 
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+IAAS=$(yq r params.yaml iaas)
 
-mkdir -p generated/$CLUSTER_NAME/metallb/
+if [ $IAAS = 'aws' ];
+then
+  echo "Noop, as metallb is only used for vsphere"
+else
 
-# usage: ./deploy-metallb.sh VIP-RANGE-FROM VIP-RANGE-TO
+  kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-# Deploy metalLB
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
-# On first install only
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+  mkdir -p generated/$CLUSTER_NAME/metallb/
+
+  # Deploy metalLB
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+  # On first install only
+  kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
 
 
-# Create Layer2 configuration
-cat > generated/$CLUSTER_NAME/metallb/metallb-configmap.yaml << EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: metallb-system
-  name: config
-data:
-  config: |
-    address-pools:
-    - name: default
-      protocol: layer2
-      addresses:
-      - $METALLB_START_IP-$METALLB_END_IP
+  # Create Layer2 configuration
+  cat > generated/$CLUSTER_NAME/metallb/metallb-configmap.yaml << EOF
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    namespace: metallb-system
+    name: config
+  data:
+    config: |
+      address-pools:
+      - name: default
+        protocol: layer2
+        addresses:
+        - $METALLB_START_IP-$METALLB_END_IP
 EOF
-kubectl apply -f generated/$CLUSTER_NAME/metallb/metallb-configmap.yaml
+  kubectl apply -f generated/$CLUSTER_NAME/metallb/metallb-configmap.yaml
+
+fi
