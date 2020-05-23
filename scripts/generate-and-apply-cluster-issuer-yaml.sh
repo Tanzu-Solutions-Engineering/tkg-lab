@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 if [ ! $# -eq 1 ]; then
-  echo "Must supply cluster_name and challenge type (http or dns) as args"
+  echo "Must supply cluster_name as args"
   exit 1
 fi
 

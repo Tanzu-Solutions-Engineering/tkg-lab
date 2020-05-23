@@ -15,15 +15,15 @@
 IAAS=$(yq r params.yaml iaas)
 if [ $IAAS = 'vsphere' ];
 then
-  /scripts/deploy-metallb.sh \
-          $(yq r params.yaml shared-services-cluster.name) \
-          $(yq r params.yaml shared-services-cluster.metallb-start-ip) \
-          $(yq r params.yaml shared-services-cluster.metallb-end-ip)
+  ./scripts/deploy-metallb.sh \
+          $(yq r params.yaml workload-cluster.name) \
+          $(yq r params.yaml workload-cluster.metallb-start-ip) \
+          $(yq r params.yaml workload-cluster.metallb-end-ip)
 fi
 ./scripts/deploy-cert-manager.sh
 ./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml workload-cluster.name)
-./scripts/update-dns-records-aws.sh $(yq r params.yaml workload-cluster.ingress-fqdn)
-./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml workload-cluster.name) http
+./scripts/update-dns-records-route53.sh $(yq r params.yaml workload-cluster.ingress-fqdn)
+./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml workload-cluster.name)
 # Workload Step 5
 ./scripts/generate-and-apply-gangway-yaml.sh \
    $(yq r params.yaml workload-cluster.name) \
