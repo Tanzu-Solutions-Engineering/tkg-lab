@@ -24,7 +24,9 @@ We can currently use the base aws yaml for any environment.
 ./scripts/generate-and-apply-dex-yaml.sh
 ```
 
-## Validation Step
+This script will check at the end that the Dex certificate is valid, which depends on the Let's Encrypt / Acme challenge to be resolved, that can take a couple of minutes.
+
+## Final validation Step
 
 Check to see dex pod is ready
 
