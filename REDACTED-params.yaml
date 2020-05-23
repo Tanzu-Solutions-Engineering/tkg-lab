@@ -1,4 +1,4 @@
-iaas: aws
+iaas: aws # aws or vsphere
 vmware-id: dpfeffer
 environment-name: tkg-aws-e2-lab # used for aws ssh key name
 subdomain: tkg-aws-e2-lab.winterfell.live

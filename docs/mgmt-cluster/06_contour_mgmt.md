@@ -47,7 +47,7 @@ Need to get the load balancer external IP for the envoy service and update AWS R
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect.
 It is assumed that if you IaaS is AWS, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment..
 ```bash
-./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name) http
+./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name)
 ```
 
 ## Verify Cluster Issuer

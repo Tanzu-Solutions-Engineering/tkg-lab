@@ -12,6 +12,14 @@
   cluster.admin \
   platform-team
 # Workload Step 4
+IAAS=$(yq r params.yaml iaas)
+if [ $IAAS = 'vsphere' ];
+then
+  /scripts/deploy-metallb.sh \
+          $(yq r params.yaml shared-services-cluster.name) \
+          $(yq r params.yaml shared-services-cluster.metallb-start-ip) \
+          $(yq r params.yaml shared-services-cluster.metallb-end-ip)
+fi
 ./scripts/deploy-cert-manager.sh
 ./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml workload-cluster.name)
 ./scripts/update-dns-records-aws.sh $(yq r params.yaml workload-cluster.ingress-fqdn)
