@@ -20,10 +20,10 @@ Apply Contour configuration. We will use AWS one for any environment (including 
 
 ## Verify Contour
 
-Once it is deployed, wait until you can see the Load Balancer up.  
+Once it is deployed, wait until you can see all pods `Running` and the the Load Balancer up.  
 
 ```bash
-kubectl get svc -n tanzu-system-ingress
+kubectl get pod,svc -n tanzu-system-ingress
 ```
 
 ## Check out Cloud Load Balancer (AWS Only)
@@ -34,7 +34,7 @@ The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elas
 aws elb describe-load-balancers
 ```
 
-## Setup DNS for Contour Ingress
+## Setup DNS for Contour Ingress (Route 53 Only)
 
 Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
 
@@ -45,7 +45,7 @@ Need to get the load balancer external IP for the envoy service and update AWS R
 ## Prepare and Apply Cluster Issuer Manifests
 
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect.
-It is assumed that if you IaaS is AWS, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment..
+It is assumed that if you IaaS is AWS, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment. If using the `dns` challenge, this script assumes Route 53 DNS.
 ```bash
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name)
 ```

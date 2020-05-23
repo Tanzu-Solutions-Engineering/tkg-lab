@@ -2,10 +2,10 @@
 
 We can use any DNS provider that is publicly available.  This is required because any certificate that is generated will use cert-manager and Let's Encrypt, with an HTTP01 or a DNS01 challenge, depending on the environment's connectivity. To learn more about the different challenges go [here](https://letsencrypt.org/docs/challenge-types/).
 
-In this lab we will follow the steps to set this up with AWS Route53, but a similar approach can be followed with Google Cloud DNS and other publicly available DNS providers. We also follow a command line / script driven approach but all the AWS Route 53 configuration steps can be done via browser.
+Throughout these labs we will follow the steps to set this up with AWS Route 53, but a similar approach can be followed with Google Cloud DNS and other publicly available DNS providers. We also follow a command line / script driven approach but all the AWS Route 53 configuration steps can be done via browser.
 
 
-# Pre-requisites
+# Pre-requisites for Route 53
 
 We need to have the CLI set up for proper access to perform these actions.  These commands should return either no zones or a list of existing zones, which will prove access to perform the commands we need to run as part of the lab.  If you cannot access the DNS zones properly, you can create the zone and associated entries at each step using the browser.
 
@@ -16,7 +16,7 @@ aws route53 list-hosted-zones
 ```
 
 
-# DNS Zone
+# Route 53 DNS Zone
 
 This will require an AWS Route53 Hosted Zone.  Later we will add record sets as necessary, but we cannot do this until the Contour Load Balancer and AWS ELB get created.  For now, run the following script that will create a new hosted zone and store its ID in the params.yaml file.  It leverages the following configuration you have already set: `subdomain`.
 
