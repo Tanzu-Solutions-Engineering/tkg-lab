@@ -18,10 +18,10 @@ Click on platform-team group > Manage People: Then add alana to the platform-tea
 Choose Applications (top menu) > Add Application > Create New App > Web, Click Next.
   - Give your app a name: TKG
   - Remove Base URL
-  - Login redirect URIs: https://dex.mgmt.tkg-aws-lab.winterfell.live/callback
-  - Logout redirect URIs: https://dex.mgmt.tkg-aws-lab.winterfell.live/logout
+  - Login redirect URIs: https://dex.dragonstone.tkg-aws-e2-lab.winterfell.live/callback
+  - Logout redirect URIs: https://dex.dragonstone.tkg-aws-e2-lab.winterfell.live/logout
   - Grant type allowed: Authorization Code
-> Note: Use your root domain above
+> Note: Use your dex-fqdn domain as defined in your params.yaml
 
 Click Done button
 
