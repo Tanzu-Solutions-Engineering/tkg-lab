@@ -28,13 +28,13 @@ Apply Contour configuration. We will use AWS one for any environment (including 
 
 ## Verify Contour
 
-Once it is deployed, wait until you can see the Load Balancer up.  
+Once it is deployed, wait until you can see all pods `Running` and the the Load Balancer up.  
 
 ```bash
-kubectl get svc -n tanzu-system-ingress
+kubectl get pod,svc -n tanzu-system-ingress
 ```
 
-## Setup DNS for Contour Ingress
+## Setup DNS for Contour Ingress (Route 53 Only)
 
 Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
 
