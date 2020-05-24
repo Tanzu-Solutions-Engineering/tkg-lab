@@ -33,4 +33,6 @@ export DEX_CA=$(cat keys/letsencrypt-ca.pem | gzip | base64)
 tkg create cluster $CLUSTER_NAME --plan=oidc -w $WORKER_REPLICAS -v 6
 tkg get credentials $CLUSTER_NAME
 
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+
 ./scripts/set-default-storage-class.sh
