@@ -29,7 +29,7 @@ The following labs guide you through the steps to create the three clusters cons
 ### 1. [Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
 ### 2. [Install Velero and Setup Nightly Backup](../mgmt-cluster/10_velero_mgmt.md)
 
-### Setup Workload Cluster
-#### 1. [Create new Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)
+## Setup Workload Cluster
+### 1. [Create new Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)
 
 At this point you have the basis for the lab exercises!
