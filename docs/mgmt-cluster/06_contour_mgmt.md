@@ -34,7 +34,7 @@ The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elas
 aws elb describe-load-balancers
 ```
 
-## Setup DNS for Contour Ingress (Route 53 Only)
+## Setup Route 53 DNS for Contour Ingress
 
 Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
 
@@ -49,6 +49,8 @@ It is assumed that if you IaaS is AWS, then you will use the `http` challenge ty
 ```bash
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name)
 ```
+
+>Note: This script assumes AWS Route 53 configuration. If not using Route 53 then tweak `generate-and-apply-cluster-issuer-yaml.sh` script for the right DNS challenge.
 
 ## Verify Cluster Issuer
 
