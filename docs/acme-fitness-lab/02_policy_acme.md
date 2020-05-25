@@ -18,4 +18,4 @@ We want to limit the resources that acme-fitness team can consume on the cluster
 
 ## Go to Next Step
 
-[Log-in to workload cluster and setup kubeconfig](02-login-kubeconfg.md)
+[Log-in to workload cluster and setup kubeconfig](03-login-kubeconfg.md)
