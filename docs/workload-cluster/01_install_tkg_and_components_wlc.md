@@ -26,6 +26,7 @@ Now you can execute the following script to perform all of those tasks:
 ./scripts/deploy-all-workload-cluster-components.sh
 ```
 
+>Note: This script assumes AWS Route 53 configuration needs to be updated. If not using Route 53 then disable running `update-dns-records-route53.sh` script and tweak `generate-and-apply-cluster-issuer-yaml.sh` script for the right DNS challenge
 >Note: Wait until your cluster has been created and components installed. It may take 12 minutes.
 >Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credentials
 

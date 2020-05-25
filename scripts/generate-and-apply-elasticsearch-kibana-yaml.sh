@@ -13,8 +13,8 @@ yq write -d2 generated/$CLUSTER_NAME/ek/04-kibana.yaml -i "spec.rules[0].host" $
 
 kubectl apply -f generated/$CLUSTER_NAME/ek/
 
-#Wait for cert to be ready
+#Wait for pod to be ready
 while kubectl get po -n elasticsearch-kibana elasticsearch-0 | grep Running ; [ $? -ne 0 ]; do
 	echo Elasticsearch is not yet ready
 	sleep 5s
-done   
+done

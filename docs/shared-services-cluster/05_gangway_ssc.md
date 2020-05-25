@@ -21,7 +21,9 @@ Prepare the YAML manifests for the related gangway K8S objects.  Manifests will 
    $(yq r params.yaml shared-services-cluster.gangway-fqdn)
 ```
 
-## Validation Step
+This script will check at the end that the Gangway certificate is valid, which depends on the Let's Encrypt / Acme challenge to be resolved, that can take a couple of minutes.
+
+## Final validation Step
 
 Check to see gangway pod is ready
 
@@ -53,4 +55,4 @@ KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 
 ## Go to Next Step
 
-[Install ElasticSearch and Kibana](06_ek_mgmt.md)
+[Install ElasticSearch and Kibana](06_ek_ssc.md)

@@ -3,8 +3,12 @@
 ## Deploy MetalLB (only for vSphere installations!!)
 Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
 Run the script passing the range as parameters. Example:
+
 ```bash
-./scripts/deploy-metallb.sh 192.168.14.200 192.168.14.220
+./scripts/deploy-metallb.sh \
+        $(yq r params.yaml management-cluster.name) \
+        $(yq r params.yaml management-cluster.metallb-start-ip) \
+        $(yq r params.yaml management-cluster.metallb-end-ip)
 ```
 
 ## Deploy Contour
@@ -14,69 +18,39 @@ Apply Contour configuration. We will use AWS one for any environment (including 
 ./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml management-cluster.name)
 ```
 
-## Verify Contour and AWS ELB (AWS Only)
+## Verify Contour
 
-Once it is deployed, wait until you can see the Load Balancer up.  The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI:
+Once it is deployed, wait until you can see all pods `Running` and the the Load Balancer up.  
 
 ```bash
-kubectl get svc -n tanzu-system-ingress
+kubectl get pod,svc -n tanzu-system-ingress
+```
+
+## Check out Cloud Load Balancer (AWS Only)
+
+The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI:
+
+```bash
 aws elb describe-load-balancers
 ```
 
-## Set environment variables (vSphere and/or GCP Cloud DNS)
-The scripts update Google Cloud DNS depend on a few environmental variables to b
-```bash
-# the DNS CN to be used for base domain
-export BASE_DOMAIN=winterfell.live
-# the Lab name to be used as subdomain
-export LAB_NAME=tkg-aws-lab
-```
-
-## Setup DNS for Contour Ingress (AWS Only)
+## Setup Route 53 DNS for Contour Ingress
 
 Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
 
 ```bash
-./scripts/update-dns-records-aws.sh $(yq r params.yaml management-cluster.ingress-fqdn)
-```
-
-## Setup DNS for Contour Ingress (vSphere and/or GCP Cloud DNS)
-
-Get the load balancer external IP for the envoy service and update Google Cloud DNS
-
-```bash
-./scripts/update-dns-records.sh "*.mgmt"
-```
-
-## Set environment variables (vSphere and/or GCP Cloud DNS)
-
-The scripts to prepare the YAML to deploy the contour cluster issuer depend on a few environmental variables to be set.  Set the following variables in you terminal session:
-
-```bash
-# the email to be used with Lets Encrypt / ACME
-export LETS_ENCRYPT_ACME_EMAIL=dpfeffer@vmware.com
-```
-
-## Setup GCP Cloud DNS Service Account (vSphere and GCP Cloud DNS)
-
-When using GCP Cloud DNS and vSphere or non-internet facing AWS environments, you'll need to use a `dns` challenge and so allow `cert-manager` to configure your Cloud DNS zone to solve the challenge.
-
-Create a service account in GCP following these [instructions](https://certbot-dns-google.readthedocs.io/en/stable/) and then store the service account json file at *keys/certbot-gcp-service-account.json*
-
-Then create a secret with that json file:
-```bash
-kubectl create secret generic certbot-gcp-service-account \
-        --from-file=keys/certbot-gcp-service-account.json \
-        -n cert-manager
+./scripts/update-dns-records-route53.sh $(yq r params.yaml management-cluster.ingress-fqdn)
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests
 
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect.
-Select `http` or `dns` challenge for ACME Issuer. `dns` challenge is recommended for vSphere or non-internet facing AWS environments
+It is assumed that if you IaaS is AWS, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment. If using the `dns` challenge, this script assumes Route 53 DNS.
 ```bash
-./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name) http
+./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name)
 ```
+
+>Note: This script assumes AWS Route 53 configuration. If not using Route 53 then tweak `generate-and-apply-cluster-issuer-yaml.sh` script for the right DNS challenge.
 
 ## Verify Cluster Issuer
 

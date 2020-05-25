@@ -20,3 +20,7 @@ Ensure schedule is created and the first backup is starting
 velero schedule get
 velero backup get | grep $(yq r params.yaml management-cluster.name)
 ```
+
+## Go to Next Step
+
+[Create new Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)
