@@ -119,4 +119,4 @@ The following labs additional labs can be run on the base lab configuration.
 #### [Deploy Harbor Image Registry to Shared Services Cluster](docs/bonus-labs/harbor.md)
 #### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/deploy_gitlab.md)
 #### [Apply Image Registry Policy with TMC](docs/bonus-labs/tmc_image_policy.md)
-#### [Restore Bacup with Velero](docs/bonus-labs/velero_restore.md)
+#### [Restore Backup with Velero](docs/bonus-labs/velero_restore.md)
