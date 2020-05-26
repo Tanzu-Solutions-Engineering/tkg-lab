@@ -39,7 +39,7 @@ aws elb describe-load-balancers
 Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
 
 ```bash
-./scripts/update-dns-records-aws.sh $(yq r params.yaml management-cluster.ingress-fqdn)
+./scripts/update-dns-records-route53.sh $(yq r params.yaml management-cluster.ingress-fqdn)
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests
