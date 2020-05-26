@@ -5,3 +5,6 @@ tkg-extensions
 acme_fitness_demo
 tmc.token
 sensitive/
+params.yaml
+generated/
+.DS_Store

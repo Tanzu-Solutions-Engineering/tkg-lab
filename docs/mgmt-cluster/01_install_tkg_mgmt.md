@@ -8,27 +8,22 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 
 ## Install TKG Management Cluster on AWS
 
-1. Complete `Prepare to Deploy the Management Cluster to Amazon EC2` which does setup activity in EC2. You can use the following script which hard codes us-east-2 (but you can change this) and stores the private key at keys/aws-ssh.pem
+1. Complete `Prepare to Deploy the Management Cluster to Amazon EC2` which does setup activity in EC2. You can use the following script and stores the private key in the `keys` directory.
 
 ```bash
-#make sure you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_REGION vars set
 ./scripts/01-prep-aws-objects.sh
 ```
 
-2. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`. You can use a config-REDACTED.yaml locate at the root of this repo.  You can use that as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
+2. Complete `Deploy the Management Cluster to Amazon EC2 with the CLI`. You can use the `REDACTED-config.yaml` locate at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
 
 ```bash
-#make sure you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY vars set
-./02-deploy-aws-mgmt-cluster.sh
-
-# Once completed scale the worker nodes for the management cluster
-tkg scale cluster tkg-mgmt-aws --namespace tkg-system -w 2
+./scripts/02-deploy-aws-mgmt-cluster.sh
 ```
 
-3. Install Default Storage Class. Run the following command to apply a default storage class that uses the AWS EBS provisioner to the cluster.
+3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's deploy a default storage class.  The following script will perform these actions.
 
 ```bash
-kubectl apply -f clusters/mgmt/default-storage-class-aws.yaml
+./scripts/03-post-deploy-mgmt-cluster.sh
 ```
 
 4. Validation Step. Check management cluster is provisioned, pods are running and sc is configured;
@@ -44,27 +39,25 @@ kubectl get sc
 1. Complete `Prepare to Deploy the Management Cluster to vSphere` which prepares an SSH key and the OS image templates to be used for all clusters.
 
 First thing you need to do is to download the OVAs from https://www.vmware.com/go/get-tkg. You need to get:
-- VMware Tanzu Kubernetes Grid 1.0.0 Kubernetes v1.17.3 OVA (Photon OS)
-- VMware Tanzu Kubernetes Grid 1.0.0 Load Balancer OVA
+- VMware Tanzu Kubernetes Grid 1.1.0 Kubernetes v1.18.3 OVA (Photon OS)
+- VMware Tanzu Kubernetes Grid 1.1 Load Balancer OVA
 
-Then you can follow the manual steps in the documentation or use this script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at keys/tkg_rsa and tkg/tkg_rsa.pub
+Then you can follow the manual steps in the documentation or use the following script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at `keys/tkg_rsa` and `keys/tkg_rsa.pub`.
 
-You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc#installation). Then run the script replacing the parameters with the values in your vsphere environment and local folders:
-
-```bash
-./scripts/01-prep-vsphere-objects.sh URL USERNAME PASSWORD DATASTORE TEMPLATE_FOLDER OVA_FOLDER
-```
-
-2. Complete `Deploy the Management Cluster to vSphere with the CLI`. You can use a config-REDACTED.yaml locate at the root of this repo.  You can use that as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  Also, you can use this script to complete the deployment.
+You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc#installation). You'll also need to fill the `vsphere` configuration block of the `params.yaml` file with the values from your vSphere environment and local folders. Then run this script:
 
 ```bash
-./02-deploy-vsphere-mgmt-cluster.sh
-
-# Once completed scale the worker nodes for the management cluster
-tkg scale cluster tkg-mgmt-vsphere --namespace tkg-system -w 2
+./scripts/01-prep-vsphere-objects.sh
 ```
 
-3. Configure CSI Storage Policy and Install Default Storage Class.
+2. Complete `Deploy the Management Cluster to vSphere with the CLI`.
+You can use the `REDACTED-config.yaml` locate at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs. If you run the script in the previous step you'll see the `~/.tkg/config.yaml` has been already pre-populated with some variables. Make sure to add the rest as per the docs and/or the the `REDACTED-config.yaml` for vSphere. Also, you can use this script to complete the deployment.
+
+```bash
+./scripts/02-deploy-vsphere-mgmt-cluster.sh
+```
+
+3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's configure a CSI Storage Policy deploy a default storage class.
 
 Follow these steps in vCenter:
 - Tags & Custom Attributes -> Categories -> New -> k8s-storage (Datastore, Datastore Cluster)
@@ -76,16 +69,20 @@ Follow these steps in vCenter:
   - Choose category and tag created previously
   - Confirm your storage Datastore is compatible
 
-Then run the following command to apply a default storage class that uses the CNS provisioner to the cluster.
+Then run the following command to scale to 2 worker nodes and apply a default storage class that uses the CNS provisioner to the cluster.
 
 ```bash
-kubectl apply -f clusters/mgmt/default-storage-class-vsphere.yaml
+./scripts/03-post-deploy-mgmt-cluster.sh
 ```
 
-4. Validation Step. Check management cluster is provisioned, pods are running and sc is configured;
+4. Validation Step. Check management cluster is provisioned, pods are running and the sc is configured;
 
 ```bash
 tkg get management-clusters
 kubectl get pods -A
 kubectl get sc
 ```
+
+## Go to Next Step
+
+[Attach Management Cluster to TMC](02_attach_tmc_mgmt.md)

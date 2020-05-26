@@ -4,7 +4,7 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "SUBDOMAIN.tkg-aws-lab.BASE_DOMAIN",
+        "Name": "FQDN",
         "Type": "CNAME",
         "TTL": 300,
         "ResourceRecords": [

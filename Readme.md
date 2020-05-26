@@ -1,5 +1,6 @@
 # TKG Lab
 
+![TKG Lab Base Diagram](docs/tkg-lab-base.png)
 ![TKG Lab Deployment Diagram](docs/tkg-deployment.png)
 
 In this lab, we will deploy Tanzu Kubernetes Grid (standalone deployment model) to AWS or vSphere.  We will additionally deploy TKG extensions for ingress, authentication, and logging.
@@ -90,55 +91,32 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - helm 3
 - yt
 
-## Installation Steps
-### Management Cluster
-#### 1. [Install Management Cluster](docs/mgmt-cluster/01_install_tkg_mgmt.md)
-#### 2. [Attach Management Cluster to TMC](docs/mgmt-cluster/02_attach_tmc_mgmt.md)
-#### 3. [Configure DNS and Prep Certificate Signing](docs/mgmt-cluster/03_dns_certs_mgmt.md)
-#### 4. [Configure Okta](docs/mgmt-cluster/04_okta_mgmt.md)
-#### 5. [Retrieve TKG Extensions](docs/mgmt-cluster/05_extensions_mgmt.md)
-#### 6. [Install Contour Ingress Controller](docs/mgmt-cluster/06_contour_mgmt.md)
-#### 7. [Install Dex](docs/mgmt-cluster/07_dex_mgmt.md)
-#### 8. [Install Tanzu Observability](docs/mgmt-cluster/08_to_mgmt.md)
-#### 9. [Install ElasticSearch and Kibana](docs/mgmt-cluster/09_ek_mgmt.md)
-#### 10. [Install FluentBit](docs/mgmt-cluster/10_fluentbit_mgmt.md)
-#### 11. [Install Velero and Setup Nightly Backup](docs/mgmt-cluster/11_velero_mgmt.md)
-#### 12. [Install Harbor Image Registry](docs/mgmt-cluster/12_harbor_mgmt.md)
+## Foundational Lab Setup Guides
 
+There are are few options to setup the foundation lab setup of three clusters: management cluster, shared services cluster, and workload cluster.
 
-## Now you have a simulated request to setup cluster for a new team
+1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  Best really learning how each cluster is setup and the extensions and integration configured for the lab.  The guidance includes options for AWS and vSphere.
+2. [One Step Scripted Deployment for AWS](docs/baseline-lab-setup/one-step-aws.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
 
-### Workload Cluster
+## Acme Fitness Lab
 
-#### 1. [Create new workload Cluster](docs/workload-cluster/01_install_tkg_wlc.md)
-#### 2. [Update Okta for Application Team Users and Group](docs/workload-cluster/02_okta_wlc.md)
-#### 3. [Install Contour Ingress Controller](docs/workload-cluster/03_contour_wlc.md)
-#### 4. [Install Gangway](docs/workload-cluster/04_gangway_wlc.md)
-#### 5. [Attach Workload Cluster to TMC](docs/workload-cluster/05_attach_tmc_wlc.md)
-#### 6. [Set policy on Workload Cluster and Namespace](docs/workload-cluster/06_policy_wlc.md)
-#### 7. [Install FluentBit](docs/workload-cluster/07_fluentbit_wlc.md)
-#### 8. [Install Tanzu Observability](docs/workload-cluster/08_to_wlc.md)
-#### 9. [Install Velero and Setup Nightly Backup](docs/workload-cluster/09_velero_wlc.md)
+This lab will go through our simulated experience of receiving a request from an app team for cloud resources and following the steps for both the platform team receiving the request and the app team accessing and deploying their app once the request has been fulfilled.
 
-## Now Switch to Acme-Fitness Dev Team Perspective
+### Platform Team Steps
 
-### Workload Cluster
+#### 1. [Update Okta for Application Team Users and Group](docs/acme-fitness-lab/01_okta_setup.md)
+#### 2. [Set policy on Workload Cluster and Namespace](docs/acme-fitness-lab/02_policy_acme.md)
 
-#### 1. [Log-in to workload cluster and setup kubeconfig](docs/app-team/01-login-kubeconfg.md)
-#### 2. [Get, update, and deploy Acme-fitness app](docs/app-team/02-deploy-app.md)
+### Switch to the App Team Perspective
 
+#### 3. [Log-in to workload cluster and setup kubeconfig](docs/acme-fitness-lab/03-login-kubeconfg.md)
+#### 4. [Get, update, and deploy Acme-fitness app](docs/acme-fitness-lab/04-deploy-app.md)
 
-## Teardown
+## Bonus Labs
 
-```bash
-kubectl delete all,secret,cm,ingress,pvc -l app=acmefit
-tmc cluster namespace delete acme-fitness pa-dpfeffer-wlc-1
-tmc workspace delete dpfeffer-acme-fitness-dev
-tmc cluster delete pa-dpfeffer-mgmt
-tmc cluster delete pa-dpfeffer-wlc-1
-```
+The following labs additional labs can be run on the base lab configuration.
 
-## TODO
-
-- Set network access policy for acme-fitness
-- Use bitnami for elasticsearch
+#### [Deploy Harbor Image Registry to Shared Services Cluster](docs/bonus-labs/harbor.md)
+#### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/deploy_gitlab.md)
+#### [Apply Image Registry Policy with TMC](docs/bonus-labs/tmc_image_policy.md)
+#### [Restore Backup with Velero](docs/bonus-labs/velero_restore.md)

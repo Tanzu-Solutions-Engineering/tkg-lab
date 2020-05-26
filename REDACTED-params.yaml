@@ -1,0 +1,57 @@
+iaas: aws # aws or vsphere
+vmware-id: dpfeffer
+environment-name: tkg-aws-e2-lab # used for aws ssh key name
+subdomain: tkg-aws-e2-lab.winterfell.live
+lets-encrypt-acme-email: dpfeffer@vmware.com
+tmc:
+  cluster-group: se-dpfeffer-dev
+acme-fitness:
+  tmc-workspace: dpfeffer-acme-fitness-dev
+  fqdn: acme-fitness.highgarden.tkg-aws-e2-lab.winterfell.live
+aws:
+  region: us-east-2
+  access-key-id: REDACTED
+  secret-access-key: REDACTED
+  hosted-zone-id: Z00636703RP40GVIAWHLA
+vsphere:
+  server: vcenter7.hyrulelab.com
+  username: administrator@vsphere.local
+  password: "REDACTED_VALUE_KEEP_DOUBLE_QUOTES"
+  insecure: true
+  datastore: datastore2
+  template_folder: /Datacenter/vm/tkg
+  local_ova_folder: /Users/jaguilar/Code/tkg/
+management-cluster:
+  worker-replicas: 2
+  name: dragonstone
+  ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
+  dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
+  metallb-start-ip: 192.168.7.200 # only required for vsphere iaas
+  metallb-end-ip: 192.168.7.209 # only required for vsphere iaas
+shared-services-cluster:
+  worker-replicas: 2
+  name: dorn
+  ingress-fqdn: '*.dorn.tkg-aws-e2-lab.winterfell.live'
+  gangway-fqdn: gangway.dorn.tkg-aws-e2-lab.winterfell.live
+  elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
+  kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
+  metallb-start-ip: 192.168.7.210 # only required for vsphere iaas
+  metallb-end-ip: 192.168.7.219 # only required for vsphere iaas
+workload-cluster:
+  worker-replicas: 2
+  name: highgarden
+  ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
+  gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
+  metallb-start-ip: 192.168.7.220 # only required for vsphere iaas
+  metallb-end-ip: 192.168.7.229 # only required for vsphere iaas
+okta:
+  auth-server-fqdn: dev-677945.okta.com
+  dex-app-client-id: REDACTED
+  dex-app-client-secret: REDACTED
+wavefront:
+  api-key: REDACTED
+  url: https://surf.wavefront.com
+  cluster-name-prefix: dpfeffer
+velero:
+  bucket: pa-dpfeffer-mgmt-velero
+  region: us-east-2

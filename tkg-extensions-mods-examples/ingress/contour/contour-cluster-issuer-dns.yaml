@@ -11,10 +11,9 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
     - dns01:
-        clouddns:
-          # The ID of the GCP project
-          project: fe-jaguilar
-          # This is the secret used to access the service account
-          serviceAccountSecretRef:
-            name: certbot-gcp-service-account
-            key: certbot-gcp-service-account.json
+        route53:
+          region: eu-central-1
+          accessKeyID: AKIAIOSFODNN7EXAMPLE
+          secretAccessKeySecretRef:
+            name: prod-route53-credentials-secret
+            key: secret-access-key            

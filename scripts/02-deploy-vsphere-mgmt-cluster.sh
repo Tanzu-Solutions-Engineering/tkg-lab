@@ -1,4 +1,5 @@
 #!/bin/bash -e
-# usage: ./02-deploy-vsphere-mgmt-cluster.sh
 
-tkg init --infrastructure=vsphere --name=tkg-mgmt-vsphere --plan=dev -v 6
+export MANAGEMENT_CLUSTER_NAME=$(yq r params.yaml management-cluster.name)
+
+tkg init --infrastructure=vsphere --name=$MANAGEMENT_CLUSTER_NAME --plan=dev -v 6
