@@ -25,6 +25,7 @@ else
         -n cert-manager
   yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.accessKeyID" $(yq r params.yaml aws.access-key-id)
   yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.region" $(yq r params.yaml aws.region)
+  yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.hostedZoneID" $(yq r params.yaml aws.hosted-zone-id)
 fi
 yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.email" $LETS_ENCRYPT_ACME_EMAIL
 
