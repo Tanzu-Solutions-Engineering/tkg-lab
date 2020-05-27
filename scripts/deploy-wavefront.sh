@@ -5,6 +5,7 @@ if [ ! $# -eq 1 ]; then
   exit 1
 fi
 CLUSTER_NAME=$1
+IAAS=$(yq r params.yaml iaas)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
@@ -18,5 +19,5 @@ helm repo update
 helm install wavefront wavefront/wavefront -f wavefront/wf.yml \
   --set wavefront.url=$WAVEFRONT_URL \
   --set wavefront.token=$WAVEFRONT_API_KEY \
-  --set clusterName=$WAVEFRONT_PREFIX-$CLUSTER_NAME \
+  --set clusterName=$WAVEFRONT_PREFIX-$CLUSTER_NAME-$IAAS \
   --namespace wavefront
