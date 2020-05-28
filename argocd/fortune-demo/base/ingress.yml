@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: fortune-ingress
+ annotations:
+   cert-manager.io/cluster-issuer: letsencrypt-contour-cluster-issuer
+spec:
+ rules:
+ - host: fortune.mgmt.tanzu.private.cloud.zwickey.net
+   http:
+     paths:
+     - backend:
+         serviceName: fortune-service
+         servicePort: 80
+ tls:
+ - hosts:
+   - fortune.mgmt.tanzu.private.cloud.zwickey.net
+   secretName: ingress-tls
