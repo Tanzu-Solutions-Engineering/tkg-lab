@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: jaeger-agent
+  labels:
+    app: jaeger-agent
+    jaeger-infra: agent-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: jaeger-agent
+  template:
+    metadata:
+      labels:
+        app: jaeger-agent
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      containers:
+      - name: jaeger-agent
+        image: jaegertracing/jaeger-agent:1.16.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - --reporter.tchannel.host-port=wavefront-proxy.wavefront:30001
+        - --reporter.type=tchannel
+        - --log-level=debug
+        ports:
+        - containerPort: 5778
+          name: config-rest
+          protocol: TCP
+        - containerPort: 6831
+          name: jg-compact-trft
+          protocol: UDP
+        - containerPort: 6832
+          name: jg-binary-trft
+          protocol: UDP
+        - containerPort: 14271
+          name: admin-http
+          protocol: TCP
