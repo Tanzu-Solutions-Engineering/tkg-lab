@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fortune-service-dev
+  name: fortune-service-prod
   labels:
-    app: fortune-service-dev
+    app: fortune-service-prod
 spec:
   ports:
   - port: 80
     targetPort: 8080
     name: boot
   selector:
-    app: fortune-app-dev
-  type: ClusterIP
+    app: fortune-app-prod
+  type: LoadBalancer
   selector:
-    app: fortune-app-dev
+    app: fortune-app-prod

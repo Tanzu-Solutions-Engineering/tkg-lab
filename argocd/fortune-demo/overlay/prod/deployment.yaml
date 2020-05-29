@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fortune-app-dev
+  name: fortune-app-prod
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fortune-app-dev
+      app: fortune-app-prod
   template:
     metadata:
-      name: fortune-app-dev
+      name: fortune-app-prod
       labels:
-        app: fortune-app-dev
+        app: fortune-app-prod
       annotations:
         prometheus.io/path: '/actuator/prometheus'
         prometheus.io/port: '8080'
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - image: azwickey/fortune-demo:latest
-        name: fortune-app-dev
+        name: fortune-app-prod
         ports:
         - containerPort: 8080
           protocol: TCP
