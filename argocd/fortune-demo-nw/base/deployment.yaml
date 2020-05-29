@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fortune-app
+  template:
+    metadata:
+      name: fortune-app
+      labels:
+        app: fortune-app
+      annotations:
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8080'
+        prometheus.io/scrape: 'true'  
+    spec:
+      containers:
+      - image: azwickey/fortune-demo:latest
+        name: fortune-app
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: SPRING_REDIS_HOST
+          value: "fortune-redis-master.default.svc.cluster.local"
