@@ -89,7 +89,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - tkg
 - velero
 - helm 3
-- yt
+- yq
 
 ## Foundational Lab Setup Guides
 
