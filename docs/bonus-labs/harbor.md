@@ -33,12 +33,16 @@ watch kubectl get certificate -n harbor
 ### Add helm repo and install harbor
 ```bash
 helm repo add harbor https://helm.goharbor.io
-helm install harbor harbor/harbor -f harbor/generated/harbor-values.yaml --namespace harbor
+helm upgrade --install harbor harbor/harbor -f harbor/generated/harbor-values.yaml --namespace harbor
 ```
 
 ## Validation Step
 1. All harbor pods are in a running state:
 ```bash
 kubectl get po -n harbor
+```
+2. Certificate is True and Ingress created:
+```bash
+kubectl get cert,ing -n harbor
 ```
 2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
