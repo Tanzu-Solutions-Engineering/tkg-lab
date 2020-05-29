@@ -1,13 +1,22 @@
 # Install Harbor Image Registry
 
 ### Set environment variables
-The scripts to prepare the YAML to deploy Harbor depend on a few environmental variables to be set.  Set the following variables in you terminal session:
+The following section should be added to or exist in your local params.yaml file:
+
 ```bash
-# the DNS CN to be used for harbor services
-export HARBOR_CN=harbor.mgmt.tkg-aws-lab.winterfell.live
-# the DNS CN to be used for notary services
-export NOTARY_CN=notary.mgmt.tkg-aws-lab.winterfell.live
+harbor:
+  harbor-cn: harbor.<shared-cluster domain name>
+  notary-cn: notary.<shared-cluster domain name>
 ```
+
+### Change to Shared Services Cluster
+Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  We need to ensure we are in the correct context before proceeding.
+
+```bash
+CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+```
+
 ### Prepare Manifests
 Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
 ```bash
@@ -24,12 +33,16 @@ watch kubectl get certificate -n harbor
 ### Add helm repo and install harbor
 ```bash
 helm repo add harbor https://helm.goharbor.io
-helm install harbor harbor/harbor -f harbor/generated/harbor-values.yaml --namespace harbor
+helm upgrade --install harbor harbor/harbor -f harbor/generated/harbor-values.yaml --namespace harbor
 ```
 
 ## Validation Step
 1. All harbor pods are in a running state:
 ```bash
 kubectl get po -n harbor
+```
+2. Certificate is True and Ingress created:
+```bash
+kubectl get cert,ing -n harbor
 ```
 2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
