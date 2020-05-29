@@ -1,5 +1,0 @@
-bases:
-- ../../base
-patches:
-- service.yaml
-- deployment.yaml
