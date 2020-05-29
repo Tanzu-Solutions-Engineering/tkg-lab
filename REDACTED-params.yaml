@@ -55,3 +55,6 @@ wavefront:
 velero:
   bucket: pa-dpfeffer-mgmt-velero
   region: us-east-2
+harbor:
+  harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
+  notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
