@@ -1,5 +1,8 @@
 #bin/bash
 
+HARBOR_CN=$(yq r params.yaml harbor.harbor-cn)
+NOTARY_CN=$(yq r params.yaml harbor.notary-cn)
+
 mkdir -p harbor/generated/
 
 # 01-namespace.yaml
