@@ -6,8 +6,16 @@ Steps to Install and Validate Dex & Gangway workflow:
 
 - Install Gangway through the below command
 
+## AWS
+
   ```bash
-  ./workload-cluster-setup/scripts/04-install-gangway.sh
+  ./workload-cluster-setup/aws/scripts/04-install-gangway.sh
+  ```
+
+## vSphere
+
+  ```bash
+  ./workload-cluster-setup/vsphere/scripts/05-install-gangway.sh
   ```
 
 - Validate all the objects have been initialized
@@ -58,4 +66,4 @@ Steps to Install and Validate Dex & Gangway workflow:
 
 
 
-Continue to Next Step: [Configure Wavefront](05-install-wavefront.md)
+Continue to Next Step: [Install Fluentbit](06-install-fluent-bit.md)

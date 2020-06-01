@@ -1,8 +1,17 @@
 # Configure Ingress Controller
 
 ###### Below script is going to deploy contour and also create an A record in route53 for the envoy service.
+
+## AWS
+
 ```bash
-./workload-cluster-setup/scripts/03-install-contour.sh
+./workload-cluster-setup/aws/scripts/03-install-contour.sh
+```
+
+## vSphere
+
+```bash
+./workload-cluster-setup/vsphere/scripts/04-install-contour.sh
 ```
 
 ###### Validate Contour Installation

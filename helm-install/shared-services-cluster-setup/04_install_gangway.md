@@ -4,8 +4,16 @@ Steps to Install and Validate Dex & Gangway workflow:
 
 - Install Gangway through the below command
 
+## AWS
+
   ```bash
-  ./shared-services-cluster-setup/scripts/04-install-gangway.sh
+  ./shared-services-cluster-setup/aws/scripts/05-install-gangway.sh
+  ```
+
+## vSphere
+
+  ```bash
+  ./shared-services-cluster-setup/vsphere/scripts/05-install-gangway.sh
   ```
 
 - Validate all the objects have been initialized

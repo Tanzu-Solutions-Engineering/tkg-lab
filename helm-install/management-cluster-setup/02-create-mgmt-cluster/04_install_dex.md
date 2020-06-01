@@ -1,8 +1,14 @@
 ### Deploy Dex
 Below script installs dex on management cluster. Make sure to update params.yaml file according to your env.
 
+## AWS
 ```bash
-./management-cluster-setup/02-create-mgmt-cluster/03-install-dex.sh
+./management-cluster-setup/02-create-mgmt-cluster/aws/scripts/03-install-dex.sh
+```
+
+## vSphere
+```bash
+./management-cluster-setup/02-create-mgmt-cluster/vsphere/scripts/04-install-dex.sh
 ```
 
 ###### Validate Dex installation

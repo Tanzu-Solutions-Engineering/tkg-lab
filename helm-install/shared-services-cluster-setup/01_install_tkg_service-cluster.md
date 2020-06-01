@@ -5,19 +5,36 @@ Make sure you have params.yaml file already updated with all required parameters
 
 ## Option 1 - Consolidated Script
 
-If you want to create `service cluster`, deploy `contour`, `gangway`, `elasticsearch-kibana` and `fluent-bit` then execute below script otherwise go to option 2.
+If you want to create `service cluster`, deploy `External DNS`, `contour`, `gangway`, `elasticsearch-kibana` and `fluent-bit` then execute below script otherwise go to option 2.
+
+## AWS
 
 ```bash
-./shared-services-cluster-setup/scripts/build_svc.sh
+./shared-services-cluster-setup/aws/scripts/build_svc.sh
+```
+
+## vSphere
+
+```bash
+./shared-services-cluster-setup/vsphere/scripts/build_svc.sh
 ```
 
 ## Option 2 - Individual Scripts
 
 ### Create Shared Services Cluster
 
+## AWS
+
 ```bash
-./shared-services-cluster-setup/scripts/01-create-workload-cluster.sh
+./shared-services-cluster-setup/aws/scripts/01-create-workload-cluster.sh
 ```
+
+## vSphere
+
+```bash
+./shared-services-cluster-setup/vsphere/scripts/01-create-workload-cluster.sh
+```
+
 
 ###### Validate the TKG management-cluster installation
 ```bash

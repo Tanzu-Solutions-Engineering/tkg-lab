@@ -1,8 +1,15 @@
 
 ### Deploy Contour
-Below script is going to deploy contour and also create an A record in route53 for the envoy service.
+Below script is going to deploy contour. External DNS is going to create a wild card A record for envoy service.
+
+## AWS
 ```bash
-./management-cluster-setup/02-create-mgmt-cluster/scripts/02-install-contour.sh
+./management-cluster-setup/02-create-mgmt-cluster/aws/scripts/02-install-contour.sh
+```
+
+## vSphere
+```bash
+./management-cluster-setup/02-create-mgmt-cluster/vsphere/scripts/03-install-contour.sh
 ```
 
 ###### Validate Contour Installation

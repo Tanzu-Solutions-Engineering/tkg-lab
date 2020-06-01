@@ -2,8 +2,16 @@
 
 Run the below command which will install the Wavefront Helm chart and configure it the the wavefront api token you provided.
 
+## AWS
+
 ```bash
-./shared-services-cluster-setup/scripts/05-install-wavefront.sh
+./shared-services-cluster-setup/aws/scripts/05-install-wavefront.sh
+```
+
+## vSphere
+
+```bash
+./shared-services-cluster-setup/vsphere/scripts/06-install-wavefront.sh
 ```
 
 ## Access wavefront
