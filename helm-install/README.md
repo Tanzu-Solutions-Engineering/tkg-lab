@@ -43,6 +43,7 @@ helm upgrade -n tanzu-system-auth --create-namespace --install dex ./tkg-extensi
 ```
 #### Gangway
 
+```bash
 helm upgrade -n tanzu-system-auth --create-namespace --install gangway ./tkg-extensions-helm-charts/gangway-0.1.0.tgz \
 --set gangway.secret=$(echo -n $SECRET | base64) \
 --set gangway.secretKey=$(openssl rand -base64 32) \
@@ -50,24 +51,31 @@ helm upgrade -n tanzu-system-auth --create-namespace --install gangway ./tkg-ext
 --set cluster.apiServerName=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}") \
 --set dex.hostname=$dex_dns \
 --set ingress.host=$GANGWAY_INGRESS
+```
 
 #### Elastic Search - Kibana
 
+```bash
 helm upgrade -n tanzu-system-logging --create-namespace --install elasticsearch-kibana ./tkg-extensions-helm-charts/elasticsearch-kibana-0.1.0.tgz \
 --set elasticsearch.host=$elasticsearch_dns \
 --set kibana.host=$kibana_dns
+```
 
 #### Fluentbit
 
+```bash
 helm upgrade -n tanzu-system-logging --create-namespace --install fluent-bit ./tkg-extensions-helm-charts/fluent-bit-0.1.0.tgz \
  --set elasticsearch.host=$elasticsearch_dns \
  --set elasticsearch.port=$elasticsearch_port) \
  --set tkg.clusterName=$CLUSTER_NAME \
  --set tkg.instanceName=$CLUSTER_NAME
- 
+ ```
+
 #### Metallb
 
+```bash
 helm upgrade -n metallb --create-namespace --install metallb bitnami/metallb -f $METALLB_VALUES_FILE
+```
 
 ## Steps:
 
