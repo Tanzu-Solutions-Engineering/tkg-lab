@@ -90,6 +90,10 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - velero
 - helm 3
 - [yq](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases)
+
+
+
 
 ## Foundational Lab Setup Guides
 
