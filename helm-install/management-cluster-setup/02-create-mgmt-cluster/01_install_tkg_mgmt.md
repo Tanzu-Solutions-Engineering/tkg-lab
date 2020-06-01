@@ -5,7 +5,7 @@ Make sure you have params.yaml file already updated with all required parameters
 
 ## Option 1 - Consolidated Script
 
-If you want to create `Management Cluster`, install `External DNS', `Contour` and `Dex` then execute below script otherwise go to option 2.
+If you want to create `Management Cluster`, install `External DNS`, `Contour` and `Dex` then execute below script otherwise go to option 2.
 
 ### For AWS
 ```bash

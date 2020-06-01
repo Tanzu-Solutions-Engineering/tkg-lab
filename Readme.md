@@ -29,6 +29,10 @@ Leverages the following external services:
 - **GCP Cloud DNS / Router 53** as DNS provider
 - **Let's Encrypt** as Certificate Authority
 
+## Helm Install
+If you want to go down the path of using helm charts for all cluster extensions, Please follow below url and come back to complete lab. Helm install gives you Management Cluster, Shared Services Clusters and Workload clusters with all extensions for both AWS and vSphere. 
+[Step by Step Guide](./helm-install/README.md)
+
 ## Goals and Audience
 
 The following demo is for Tanzu field team members to see how various components of Tanzu and OSS ecosystem come together to build a modern application platform.  We will highlight two different roles of the platform team and the application team's dev ops role.  This could be delivered as a presentation and demo.  Or it could be extended to include having the audience actually deploy the full solution on their own using their cloud resources. The latter would be for SE’s and likely require a full day.

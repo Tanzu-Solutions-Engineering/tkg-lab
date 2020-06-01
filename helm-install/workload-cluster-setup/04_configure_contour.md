@@ -1,6 +1,6 @@
 # Configure Ingress Controller
 
-###### Below script is going to deploy contour and also create an A record in route53 for the envoy service.
+###### Below script is going to deploy contour. External DNS is going to create a wild card A record for envoy service.
 
 ## AWS
 
