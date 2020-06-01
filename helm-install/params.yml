@@ -1,14 +1,14 @@
 vsphere:
-  vcenterserver: 'vcsa-01.haas-461.pez.pivotal.io'
+  vcenterserver: 'vcenterserver'
   vcenterUser: 'administrator@vsphere.local'
   vcenterPwd: 'vcenterPwd'
-  dataCenter: 'Datacenter'
+  dataCenter: '/Datacenter'
   network: 'Extra'
-  datastore: 'LUN01'
+  datastore: '/Datacenter/datastore/LUN01'
   resourcepool: '/Datacenter/host/Cluster/Resources/tkg'
-  sshKey: 'ssh-rsa ...'
+  sshKey: 'ssh-rsa ..'
   folder: '/Datacenter/vm/tkg'
-  ovafolder: /path_to_ova_folder
+  ovafolder: /path to ova folder/
   phtonosova: photon-3-v1.17.3_vmware.2.ova
   haproxyova: 'photon-3-capv-haproxy-v0.6.3_vmware.1.ova'
 
@@ -28,6 +28,7 @@ aws:
   secret-access-key: secret-access-key
   dns:
     hosted-zone-id:  hosted-zone-id
+  account-id: account-id
 
 mgmtCluster:
   name: tkg-mgmt-cluster
@@ -37,7 +38,7 @@ svcCluster:
   secret: supersecret
   workdernodes: 2
 wlCluster:
-  name: workload-cluster-aws
+  name: workload-cluster
   gangway: gangway.app.tkg.lab.yourdomain.com
   secret: supersecret
   workdernodes: 2
@@ -47,7 +48,7 @@ oidc:
   oidcClientSecret: oidcClientSecret
 
 dex:
-  host: dex.mgmt.tkg.lab.jkcloudmesh.com
+  host: dex.mgmt.tkg.lab.yourdomain.com
 
 wavefront:
   apiKey: apiKey

@@ -1,3 +1,3 @@
 # Git Hub
 
-# Follow Original docs.
+# Follow TKG-Lab docs to complete OIDC setup.

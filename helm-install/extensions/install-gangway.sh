@@ -2,7 +2,7 @@
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-helm upgrade --install gangway ./tkg-extensions-helm-charts/gangway-0.1.0.tgz \
+helm upgrade -n tanzu-system-auth --create-namespace --install gangway ./tkg-extensions-helm-charts/gangway-0.1.0.tgz \
 --set gangway.secret=$(echo -n $SECRET | base64) \
 --set gangway.secretKey=$(openssl rand -base64 32) \
 --set cluster.name=$CLUSTER_NAME \

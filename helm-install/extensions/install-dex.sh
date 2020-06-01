@@ -2,7 +2,7 @@
 
 kubectl config use-context $(yq r $PARAM_FILE mgmtCluster.name)-admin@$(yq r $PARAM_FILE mgmtCluster.name)
 
-helm upgrade --install dex ./tkg-extensions-helm-charts/dex-0.1.0.tgz \
+helm upgrade -n tanzu-system-auth --create-namespace --install dex ./tkg-extensions-helm-charts/dex-0.1.0.tgz \
 --set svcCluster.gangway=$(yq r $PARAM_FILE svcCluster.gangway) \
 --set svcCluster.id=$(yq r $PARAM_FILE svcCluster.name) \
 --set svcCluster.name=$(yq r $PARAM_FILE svcCluster.name) \

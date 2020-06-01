@@ -6,6 +6,7 @@ sleep 5s
 sleep 5s
 ./shared-services-cluster-setup/vsphere/scripts/03-install-metallb.sh
 sleep 5s
+./shared-services-cluster-setup/vsphere/scripts/04a-install-external-dns.sh
 ./shared-services-cluster-setup/vsphere/scripts/04-install-contour.sh
 sleep 5s
 ./shared-services-cluster-setup/vsphere/scripts/05-install-gangway.sh

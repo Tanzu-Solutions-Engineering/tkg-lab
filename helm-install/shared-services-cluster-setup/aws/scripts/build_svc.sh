@@ -4,6 +4,7 @@
 sleep 5s
 ./shared-services-cluster-setup/aws/scripts/02-install-certmanager.sh
 sleep 5s
+./shared-services-cluster-setup/aws/scripts/03a-install-external-dns.sh
 ./shared-services-cluster-setup/aws/scripts/03-install-contour.sh
 sleep 5s
 ./shared-services-cluster-setup/aws/scripts/04-install-gangway.sh
