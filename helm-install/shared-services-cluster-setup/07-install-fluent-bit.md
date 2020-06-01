@@ -19,4 +19,4 @@ Once installed, go back to your kibana dashboard and configure with "logstash-*"
 ![mgmt-cls-2](../img/shared-cls-10.png)
 
 
-Back To [Home](../../README.md)
+Back To [Home](../README.md)
