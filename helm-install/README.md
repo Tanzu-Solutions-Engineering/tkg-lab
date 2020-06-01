@@ -127,11 +127,11 @@ Make sure you have the below CLI's installed on your machine. Please make sure t
 
     Please follow acme fitness lab. You need to make sure that you are using right ingress.
 
-## 4 Single Click Deploy
+## 4 - Single Click Deploy
 
  - [Single click deploy](docs/single-deploy.md)
 
-## 5 Delete Clusters
+## 5 - Delete Clusters
 
  - [Tear down env](docs/tear-down.md)
 
