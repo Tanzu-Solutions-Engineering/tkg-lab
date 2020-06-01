@@ -45,4 +45,4 @@ tkg get management-clusters --config ./k8/config.yaml
 ![mgmt-cls-1](../../img/mgmt-cls-1.png)
 
 
-Continue to Next Step: [Configure Contour](02_install_external_dns.md)
+Continue to Next Step: [Configure External DNS](02_install_external_dns.md)

@@ -22,4 +22,4 @@ This will also add a `CNAME` entry in AWS Hosted zone which you created earlier.
 
 Example: Example: *.mgmt.tkg.lab.your-domain
 
-Continue to Next Step: [Configure Dex](03_install_dex.md)
+Continue to Next Step: [Configure Dex](04_install_dex.md)
