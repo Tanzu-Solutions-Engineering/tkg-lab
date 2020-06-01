@@ -25,4 +25,4 @@ This will also add a `CNAME` entry in AWS Hosted zone which you created earlier.
 Example: *.app.tkg.lab.your-domain
 
 
-Continue to Next Step: [Configure Gangway](04_install_gangway.md)
+Continue to Next Step: [Configure Gangway](05_install_gangway.md)
