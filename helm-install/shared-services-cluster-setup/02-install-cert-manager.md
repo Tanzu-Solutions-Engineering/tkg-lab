@@ -16,4 +16,4 @@ Run the below command to install Cert Manager. Wait till all the objects are pro
 
     kubectl get all -n cert-manager
 
-Continue to Next Step: [Configure Contour](03_install_external_dns.md)
+Continue to Next Step: [Install External DNS](03_install_external_dns.md)
