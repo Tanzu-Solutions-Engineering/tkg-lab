@@ -19,6 +19,7 @@ aws route53 list-hosted-zones
 # Route 53 DNS Zone
 
 This will require an AWS Route53 Hosted Zone.  Later we will add record sets as necessary, but we cannot do this until the Contour Load Balancer and AWS ELB get created.  For now, run the following script that will create a new hosted zone and store its ID in the params.yaml file.  It leverages the following configuration you have already set: `subdomain`.
+**Note** If you intend to create the `subdomain` with following script then leave the `hosted-zone-id` blank.
 
 ```bash
 ./scripts/create-hosted-zone.sh
