@@ -13,7 +13,8 @@ Run
 ```bash
 aws configure
 ```
-to select the default region. 
+to select the default region. This doc is tested on **us-east-1** so try to use the same region.
+Particularly, `clusterawsadm alpha bootstrap create-stack` doesn't behave well when us-east-2 was used.
 
 ## Install TKG Management Cluster on AWS
 
@@ -28,6 +29,8 @@ to select the default region.
 ```bash
 ./scripts/02-deploy-aws-mgmt-cluster.sh
 ```
+Setup `dragonstone-admin@dragonstone` as current context for Kubectl.
+E.g. You can use `[kubectx](https://formulae.brew.sh/formula/kubectx) dragonstone-admin@dragonstone`. 
 
 3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's deploy a default storage class.  The following script will perform these actions.
 
