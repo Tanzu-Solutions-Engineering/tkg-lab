@@ -26,29 +26,10 @@ kubectl get po,deployment,cert,ing -n acme-fitness
 
 ## Modify Wavefront
 
-Assuming that the wavefront proxy is as installed per the instructions earlier in the lab, make the following modifications:
+Re-deploy the Wavefront helm chart with the following script, which enables the "traceJaegerApplicationName" parameter (which you set in params.yaml within the acme-fitness section).  It also enables Wavefront Proxy pre-processor rules, which allow you to modify and add tags to be sent with the trace data.
 
 ```bash
-IAAS=$(yq r params.yaml iaas)
-
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-
-WAVEFRONT_API_KEY=$(yq r params.yaml wavefront.api-key)
-WAVEFRONT_URL=$(yq r params.yaml wavefront.url)
-WAVEFRONT_PREFIX=$(yq r params.yaml wavefront.cluster-name-prefix)
-WAVEFRONT_JAEGER_NAME=$(yq r params.yaml wavefront.jaeger-app-name-prefix)
-
-kubectl create namespace wavefront
-helm repo add wavefront https://wavefronthq.github.io/helm/
-helm repo update
-helm upgrade --install wavefront wavefront/wavefront -f wavefront/wf.yml \
-  --set wavefront.url=$WAVEFRONT_URL \
-  --set wavefront.token=$WAVEFRONT_API_KEY \
-  --set clusterName=$WAVEFRONT_PREFIX-$CLUSTER_NAME-$IAAS \
-  --set proxy.jaegerPort=30001 \
-  --set proxy.args="--traceJaegerApplicationName $WAVEFRONT_JAEGER_NAME" \
-  --namespace wavefront
-
+./scripts/deploy-wavefront-tracing.sh $CLUSTER_NAME
 ```
 
 After a moment, the wavefront proxy should be redeployed.  You can check it with:
