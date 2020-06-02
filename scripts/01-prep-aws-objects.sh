@@ -10,6 +10,8 @@ SSH_KEY_FILE_NAME=$TKG_ENVIRONMENT_NAME-ssh.pem
 
 mkdir -p keys/
 if [[ ! -f ./keys/$SSH_KEY_FILE_NAME ]]; then
-    aws ec2 delete-key-pair --key-name tkg-$TKG_ENVIRONMENT_NAME-default
-    aws ec2 create-key-pair --key-name tkg-$TKG_ENVIRONMENT_NAME-default --output json | jq .KeyMaterial -r > keys/$SSH_KEY_FILE_NAME
+    # aws ec2 delete-key-pair --key-name tkg-$TKG_ENVIRONMENT_NAME-default
+    # aws ec2 create-key-pair --key-name tkg-$TKG_ENVIRONMENT_NAME-default --output json | jq .KeyMaterial -r > keys/$SSH_KEY_FILE_NAME
+    aws ec2 delete-key-pair --key-name $TKG_ENVIRONMENT_NAME-default
+    aws ec2 create-key-pair --key-name $TKG_ENVIRONMENT_NAME-default --output json | jq .KeyMaterial -r > keys/$SSH_KEY_FILE_NAME
 fi
