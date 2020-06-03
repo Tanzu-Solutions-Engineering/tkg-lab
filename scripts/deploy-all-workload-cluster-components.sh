@@ -21,8 +21,9 @@ then
           $(yq r params.yaml workload-cluster.metallb-end-ip)
 fi
 ./scripts/deploy-cert-manager.sh
-./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml workload-cluster.name)
-./scripts/update-dns-records-route53.sh $(yq r params.yaml workload-cluster.ingress-fqdn)
+./externalDNS/aws/deploy.sh $(yq r params.yaml workload-cluster.name)
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml workload-cluster.name) $(yq r params.yaml workload-cluster.ingress-fqdn)
+#./scripts/update-dns-records-route53.sh $(yq r params.yaml workload-cluster.ingress-fqdn)
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml workload-cluster.name)
 # Workload Step 5
 ./scripts/generate-and-apply-gangway-yaml.sh \

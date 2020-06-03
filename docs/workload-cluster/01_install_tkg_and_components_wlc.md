@@ -5,7 +5,7 @@ The example workload cluster leverages common components that were used to creat
 - Creating a workload cluster enabled for OIDC
 - Attaching the newly created cluster to TMC
 - Applying default policy on the cluster allowing platform-team admin access
-- Setting up contour for ingress with a cluster certificate issuer
+- Setting up external dns and contour for ingress with a cluster certificate issuer
 - Setting up fluent-bit to send logging to the centralized Elasticsearch server on shared services cluster
 - Setting up Tanzu Observability for metrics
 - Setting up daily Velero backups

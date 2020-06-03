@@ -1,0 +1,1 @@
+aws iam create-policy --policy-name AllowExternalDNSUpdates --policy-document file://externalDNS/aws/AllowExternalDNSUpdates.json

@@ -10,8 +10,9 @@
 ./scripts/create-hosted-zone.sh
 ./scripts/retrieve-lets-encrypt-ca-cert.sh
 # Management Step 6
-./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml management-cluster.name)
-./scripts/update-dns-records-route53.sh $(yq r params.yaml management-cluster.ingress-fqdn)
+./externalDNS/aws/deploy.sh $(yq r params.yaml management-cluster.name)
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml management-cluster.name) $(yq r params.yaml management-cluster.ingress-fqdn)
+#./scripts/update-dns-records-route53.sh $(yq r params.yaml management-cluster.ingress-fqdn)
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml management-cluster.name)
 # Management Step 7
 ./scripts/generate-and-apply-dex-yaml.sh
@@ -31,8 +32,9 @@
   platform-team
 # Shared Services Step 4
 ./scripts/deploy-cert-manager.sh
-./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml shared-services-cluster.name)
-./scripts/update-dns-records-route53.sh $(yq r params.yaml shared-services-cluster.ingress-fqdn)
+./externalDNS/aws/deploy.sh $(yq r params.yaml shared-services-cluster.name)
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml shared-services-cluster.name) $(yq r params.yaml shared-services-cluster.ingress-fqdn)
+#./scripts/update-dns-records-route53.sh $(yq r params.yaml shared-services-cluster.ingress-fqdn)
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r params.yaml shared-services-cluster.name)
 # Shared Services Step 5
 ./scripts/generate-and-apply-gangway-yaml.sh \

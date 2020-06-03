@@ -19,13 +19,19 @@ Our solution leverages cert manager to generate valid ssl certs.  Use this scrip
 ./scripts/deploy-cert-manager.sh
 ```
 
-## Deploy Contour
+## Deploy External DNS and Contour
 
-Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use the script to update the contour configmap to enable `leaderelection` and apply yamls.
+Apply External DNS and Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use the script to update the contour configmap to enable `leaderelection` and apply yamls.
+
 ```bash
-./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml shared-services-cluster.name)
+./externalDNS/aws/deploy.sh $(yq r params.yaml shared-services-cluster.name)
+./scripts/generate-and-apply-contour-yaml.sh $(yq r params.yaml shared-services-cluster.name) $(yq r params.yaml shared-services-cluster.ingress-fqdn)
 ```
+## Verify External DNS. Make sure external dns pods are running in default namespace.
 
+```bash
+kubectl get po
+```
 ## Verify Contour
 
 Once it is deployed, wait until you can see all pods `Running` and the the Load Balancer up.  
@@ -36,10 +42,11 @@ kubectl get pod,svc -n tanzu-system-ingress
 
 ## Setup Route 53 DNS for Contour Ingress
 
-Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
+External DNS should have added a wild card DNS entry.
 
 ```bash
-./scripts/update-dns-records-route53.sh $(yq r params.yaml shared-services-cluster.ingress-fqdn)
+export HOSTED_ZONE_ID=$(yq r params.yaml aws.hosted-zone-id)
+aws route53 list-resource-record-sets --output json --hosted-zone-id "/hostedzone/$HOSTED_ZONE_ID"
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests
