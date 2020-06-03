@@ -50,8 +50,6 @@ argocd cluster add
 argocd cluster add argocd
 ```
 
-
-
 ### Test ArgoCD Installation
 
 Deploy ArgoCD guestbook example application
@@ -70,3 +68,15 @@ Change ArgoCD guestbook example application Service type to LoadBalancer
 1. kubectl patch svc guestbook-ui -p '{"spec": {"type": "LoadBalancer"}}'
 2. service/guestbook-ui patched
 ```
+Test access to the ArgoCD Web UI
+
+```bash
+kubectl get svc -n argocd
+    argocd        argocd-server              LoadBalancer   100.64.104.223   192.168.40.201   80:30962/TCP,443:32173/TCP   33m
+```
+Get External-IP Address for the   <argocd-server>  service in the <argocd>  Namespace
+
+1. In Chrome, navigate to the UI on External IP Address, here its 192.168.40.201 : 80
+2. Login with 
+    1. admin and the password you set earlier.
+3. Click on the guestbook app you created from the argocd CLI and investigate it 
