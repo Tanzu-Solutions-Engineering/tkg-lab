@@ -3,9 +3,7 @@
 ### Prerequisites
 1. Configure or setup a Kubernetes Cloud Load Balancer such as MetalLB.
 
-
 ### Install ArgoCD
-
 Based on the following https://argoproj.github.io/argo-cd/getting_started/
 
 ```bash
