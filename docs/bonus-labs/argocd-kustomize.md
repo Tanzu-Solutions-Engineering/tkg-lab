@@ -81,3 +81,34 @@ Get External-IP Address for the   <argocd-server>  service in the <argocd>  Name
 2. Login with 
     1. admin and the password you set earlier.
 3. Click on the guestbook app you created from the argocd CLI and investigate it 
+
+
+# Demonstrate Continuous Deployment 
+
+In this example we will use ArgoCD CLI to deploy two different configurations for the same Application using the Kustomize overlays. 
+
+Create two different namespaces for the two different configurations of our application. this could easily be two different clusters as well.
+
+```bash
+kubectl create ns production
+kubectl create ns development
+```
+
+Deploy the Development version of the fortune Application. This version shares the base configuration from the argocd/base folder but overrides the following configuration values:
+1. 2 replicas in the deployment
+2. Service Type of ClusterIP instead of LoadBalancer as we will be running E2E tests against the application via another Pod deployed in the same cluster so we don’t need to waste a VIP and Service type LoadBalancer.  
+3. Deployed to the “development" Namespace in our Kubernetes cluster.
+
+```bash
+argocd app create fortune-app-dev --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git --revision argocd-integration-exercise --path argocd/dev --dest-server https://192.168.40.107:6443 --dest-namespace development --sync-policy automated
+application 'fortune-app-dev' created
+```
+Deploy the Production version of the fortune Application. This version shares the base configuration from the argocd/base folder but overrides the following configuration values:
+1. 4 replicas in the deployment
+2. Service Type of LoadBalancer to expose the application outside the Kubernetes cluster.
+3. Deployed to the “production" Namespace in our Kubernetes cluster.
+```bash
+kargocd app create fortune-app-prod --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git --revision argocd-integration-exercise --path argocd/production --dest-server https://192.168.40.107:6443 --dest-namespace production --sync-policy automated
+application 'fortune-app-prod' created
+```
+
