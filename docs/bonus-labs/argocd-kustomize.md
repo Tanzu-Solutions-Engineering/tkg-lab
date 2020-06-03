@@ -17,6 +17,7 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 On a Linux or MAC Machine with network access to Kubernetes clusters,  Download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest. 
 
 ```bash
+wget https://github.com/argoproj/argo-cd/releases/download/v1.5.5/argocd-linux-amd64 .
 chmod +x argocd-linux-amd64
 mv argocd-linux-amd64 /usr/local/bin/argocd
 argocd --help
