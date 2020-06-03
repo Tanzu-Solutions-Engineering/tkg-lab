@@ -79,7 +79,8 @@ Get External-IP Address for the   <argocd-server>  service in the <argocd>  Name
 1. In Chrome, navigate to the UI on External IP Address, here its 192.168.40.201 : 80
 2. Login with 
     1. admin and the password you set earlier.
-3. Click on the guestbook app you created from the argocd CLI and investigate it 
+3. Click on the guestbook app you created from the argocd CLI and investigate it.
+![Image of App guestbook](docs/guestbook-app.png)
 
 
 # Demonstrate Continuous Deployment 
@@ -121,7 +122,7 @@ guestbook         https://192.168.40.107:6443  default      default  Synced  Hea
 ```
 
 Look at the ArgoCD applications in the ArgoCD UI.
-![Image of Apps](https://octodex.github.com/images/yaktocat.png)
+![Image of Apps](docs/argocd-apps.png)
 
 Get details on the ArgoCD Production fortune-app application in the ArgoCD UI.
-![Image of Apps](https://octodex.github.com/images/yaktocat.png)
+![Image of App Details](docs/argocd-app-details.png)
