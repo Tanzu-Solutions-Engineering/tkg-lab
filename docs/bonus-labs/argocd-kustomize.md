@@ -1,3 +1,5 @@
+In this lab, we will use ArgoCD to deploy and synchronize two different configurations for the same Application using  Kustomize overlays. ArgoCD will deploy and continuously reconcile our intended state of the applicaiton as represented by the Kustomize configuration and Kubernetes manifests stored in our Github repo with the Kubernetes API Server. 
+
 # Install and configure ArgoCD
 
 ### Prerequisites
