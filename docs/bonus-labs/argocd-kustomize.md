@@ -1,48 +1,71 @@
 # Install and configure ArgoCD
 
-### Set environment variables
-The following section should be added to or exist in your local params.yaml file:
+### Prerequisites
+1. Create a Storage Class in your Guest Cluster where you will be running the ArgoCD controller in.
+2. Configure or setup a Kubernetes Cloud Load Balancer such as MetalLB.
+
+
+### Install ArgoCD
+
+Based on the following https://argoproj.github.io/argo-cd/getting_started/
 
 ```bash
-harbor:
-  harbor-cn: harbor.<shared-cluster domain name>
-  notary-cn: notary.<shared-cluster domain name>
+kubectl create ns argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml 
 ```
 
-### Change to Shared Services Cluster
-Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  We need to ensure we are in the correct context before proceeding.
+On a Linux or MAC Machine with network access to Kubernetes clusters,  Download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest. 
 
 ```bash
-CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+chmod +x argocd-linux-amd64
+mv argocd-linux-amd64 /usr/local/bin/argocd
+argocd --help
 ```
 
-### Prepare Manifests
-Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
+Configure ArgoCD
+
 ```bash
-./harbor/00-generate_yaml.sh
+kubectl get svc -n argocd
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+  argocd-server-656f9b895b-6n746
 ```
-### Create Create Harbor namespace and certs
-Create the Harbor namespace and certificate.  Wait for the certificate to be ready.
+Copy the current password returned from above command. 
 ```bash
-kubectl apply -f harbor/generated/01-namespace.yaml
-kubectl apply -f harbor/generated/02-certs.yaml  
-watch kubectl get certificate -n harbor
+kubectl get svc -n argocd
+argocd login 10.51.0.24
+    Username: admin
+    Password: <SEE ABOVE>
 ```
 
-### Add helm repo and install harbor
+Optional - To change your ArgoCD password 
 ```bash
-helm repo add harbor https://helm.goharbor.io
-helm upgrade --install harbor harbor/harbor -f harbor/generated/harbor-values.yaml --namespace harbor
+argocd account update-password
 ```
 
-## Validation Step
-1. All harbor pods are in a running state:
+Add your Kubernetes cluster to the ArgoCD Controller. Note it must already be configured in your Kubeconfig file.
 ```bash
-kubectl get po -n harbor
+argocd cluster add
+argocd cluster add argocd
 ```
-2. Certificate is True and Ingress created:
+
+
+
+### Test ArgoCD Installation
+
+Deploy ArgoCD guestbook example application
+
 ```bash
-kubectl get cert,ing -n harbor
+argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://192.168.40.107:6443 --dest-namespace default --sync-policy automated
+    application 'guestbook' created
+    
+argocd app list
+  NAME       CLUSTER                      NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                 PATH       TARGET
+  guestbook  https://192.168.40.107:6443  default    default  Synced  Healthy  <none>      <none>      https://github.com/argoproj/argocd-example-apps.git  guestbook
 ```
-2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
+Change ArgoCD guestbook example application Service type to LoadBalancer
+
+```bash
+1. kubectl patch svc guestbook-ui -p '{"spec": {"type": "LoadBalancer"}}'
+2. service/guestbook-ui patched
+```
