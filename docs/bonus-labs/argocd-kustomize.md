@@ -64,6 +64,7 @@ argocd app list
 ```
 Change ArgoCD guestbook example application Service type to LoadBalancer
 
+
 ```bash
 1. kubectl patch svc guestbook-ui -p '{"spec": {"type": "LoadBalancer"}}'
 2. service/guestbook-ui patched
