@@ -120,7 +120,7 @@ guestbook         https://192.168.40.107:6443  default      default  Synced  Hea
 ```
 
 Look at the ArgoCD applications in the ArgoCD UI.
-![Image of Apps](docs/argocd-apps.png)
+![Image of Apps](../argocd-apps.png)
 
 Get details on the ArgoCD Production fortune-app application in the ArgoCD UI.
-![Image of App Details](docs/argocd-app-details.png)
+![Image of App Details](../argocd-app-details.png)
