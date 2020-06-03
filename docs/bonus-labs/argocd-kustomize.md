@@ -108,7 +108,16 @@ Deploy the Production version of the fortune Application. This version shares th
 2. Service Type of LoadBalancer to expose the application outside the Kubernetes cluster.
 3. Deployed to the “production" Namespace in our Kubernetes cluster.
 ```bash
-kargocd app create fortune-app-prod --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git --revision argocd-integration-exercise --path argocd/production --dest-server https://192.168.40.107:6443 --dest-namespace production --sync-policy automated
+argocd app create fortune-app-prod --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git --revision argocd-integration-exercise --path argocd/production --dest-server https://192.168.40.107:6443 --dest-namespace production --sync-policy automated
 application 'fortune-app-prod' created
+```
+List the applications to see the current status using the ArgoCD Cli.
+
+```bash
+argocd app list                                       
+NAME              CLUSTER                      NAMESPACE    PROJECT  STATUS  HEALTH       SYNCPOLICY  CONDITIONS  REPO                                                      PATH               TARGET
+fortune-app-dev   https://192.168.40.107:6443  development  default  Synced  Progressing  Auto        <none>      https://github.com/Pivotal-Field-Engineering/tkg-lab.git  argocd/dev         argocd-integration-exercise
+fortune-app-prod  https://192.168.40.107:6443  production   default  Synced  Progressing  Auto        <none>      https://github.com/Pivotal-Field-Engineering/tkg-lab.git  argocd/production  argocd-integration-exercise
+guestbook         https://192.168.40.107:6443  default      default  Synced  Healthy      Auto        <none>      https://github.com/argoproj/argocd-example-apps.git       guestbook
 ```
 
