@@ -78,7 +78,7 @@ Get External-IP Address for the   <argocd-server>  service in the <argocd>  Name
 2. Login with 
     1. admin and the password you set earlier.
 3. Click on the guestbook app you created from the argocd CLI and investigate it.
-![Image of App guestbook](docs/guestbook-app.png)
+![Image of App guestbook](../guestbook-app.png)
 
 
 # Demonstrate Continuous Deployment 
