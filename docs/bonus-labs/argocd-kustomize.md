@@ -1,8 +1,7 @@
 # Install and configure ArgoCD
 
 ### Prerequisites
-1. Create a Storage Class in your Guest Cluster where you will be running the ArgoCD controller in.
-2. Configure or setup a Kubernetes Cloud Load Balancer such as MetalLB.
+1. Configure or setup a Kubernetes Cloud Load Balancer such as MetalLB.
 
 
 ### Install ArgoCD
@@ -95,18 +94,18 @@ kubectl create ns development
 ```
 
 Deploy the Development version of the fortune Application. This version shares the base configuration from the argocd/base folder but overrides the following configuration values:
-1. 2 replicas in the deployment
-2. Service Type of ClusterIP instead of LoadBalancer as we will be running E2E tests against the application via another Pod deployed in the same cluster so we don’t need to waste a VIP and Service type LoadBalancer.  
-3. Deployed to the “development" Namespace in our Kubernetes cluster.
+- 2 replicas in the deployment
+- Service Type of ClusterIP instead of LoadBalancer as we will be running E2E tests against the application via another Pod deployed in the same cluster so we don’t need to waste a VIP and Service type LoadBalancer.  
+- Deployed to the “development" Namespace in our Kubernetes cluster.
 
 ```bash
 argocd app create fortune-app-dev --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git --revision argocd-integration-exercise --path argocd/dev --dest-server https://192.168.40.107:6443 --dest-namespace development --sync-policy automated
 application 'fortune-app-dev' created
 ```
 Deploy the Production version of the fortune Application. This version shares the base configuration from the argocd/base folder but overrides the following configuration values:
-1. 4 replicas in the deployment
-2. Service Type of LoadBalancer to expose the application outside the Kubernetes cluster.
-3. Deployed to the “production" Namespace in our Kubernetes cluster.
+- 4 replicas in the deployment
+- Service Type of LoadBalancer to expose the application outside the Kubernetes cluster.
+- Deployed to the “production" Namespace in our Kubernetes cluster.
 ```bash
 argocd app create fortune-app-prod --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git --revision argocd-integration-exercise --path argocd/production --dest-server https://192.168.40.107:6443 --dest-namespace production --sync-policy automated
 application 'fortune-app-prod' created
@@ -121,3 +120,8 @@ fortune-app-prod  https://192.168.40.107:6443  production   default  Synced  Pro
 guestbook         https://192.168.40.107:6443  default      default  Synced  Healthy      Auto        <none>      https://github.com/argoproj/argocd-example-apps.git       guestbook
 ```
 
+Look at the ArgoCD applications in the ArgoCD UI.
+![Image of Apps](https://octodex.github.com/images/yaktocat.png)
+
+Get details on the ArgoCD Production fortune-app application in the ArgoCD UI.
+![Image of Apps](https://octodex.github.com/images/yaktocat.png)
