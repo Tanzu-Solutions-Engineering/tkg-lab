@@ -29,10 +29,6 @@ Leverages the following external services:
 - **GCP Cloud DNS / Router 53** as DNS provider
 - **Let's Encrypt** as Certificate Authority
 
-## Helm Install
-If you want to go down the path of using helm charts for all cluster extensions, Please follow below url and come back to complete lab. Helm install gives you Management Cluster, Shared Services Clusters and Workload clusters with all extensions for both AWS and vSphere. 
-[Step by Step Guide](./helm-install/README.md)
-
 ## Goals and Audience
 
 The following demo is for Tanzu field team members to see how various components of Tanzu and OSS ecosystem come together to build a modern application platform.  We will highlight two different roles of the platform team and the application team's dev ops role.  This could be delivered as a presentation and demo.  Or it could be extended to include having the audience actually deploy the full solution on their own using their cloud resources. The latter would be for SE’s and likely require a full day.
@@ -101,7 +97,8 @@ There are are few options to setup the foundation lab setup of three clusters: m
 
 1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  Best really learning how each cluster is setup and the extensions and integration configured for the lab.  The guidance includes options for AWS and vSphere.
 2. [One Step Scripted Deployment for AWS](docs/baseline-lab-setup/one-step-aws.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
-
+3. [Step by Step Guide](./helm-install/README.md) - If you want to go down the path of using helm charts for all cluster extensions, Please follow below url and come back to complete lab. Helm install gives you Management Cluster, Shared Services Clusters and Workload clusters with all extensions for both AWS and vSphere. 
+   
 ## Acme Fitness Lab
 
 This lab will go through our simulated experience of receiving a request from an app team for cloud resources and following the steps for both the platform team receiving the request and the app team accessing and deploying their app once the request has been fulfilled.
