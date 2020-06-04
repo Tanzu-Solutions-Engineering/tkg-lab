@@ -22,11 +22,6 @@ CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 ```
 
-### Prepare Manifests
-Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
-```bash
-./harbor/00-generate_yaml.sh
-```
 ### Create Concourse namespace and prepare deployment file
 Create the Concourse namespace and generate the deployment file.  This file (generated/tkg-shared/concourse/concourse-values-contour.yaml) will contain oeverrides to the default chart values.
 .
