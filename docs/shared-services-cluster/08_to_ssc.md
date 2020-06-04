@@ -1,7 +1,17 @@
 # Install Tanzu Observability by WaveFront on the Shared Services Cluster
 
-You'll need a Wavefront API_KEY to integrate thee cluster with Wavefront.
-If you have access to Pivotal Okta then use it to get into wavefront, and then retrieve your API_KEY.
+You'll need a Wavefront *API Token* to integrate the cluster with Wavefront.  This can be gotten by logging into Wavefront -> Account -> API Access -> (Generate / Copy API Token) -> Insert into params.yaml.
+
+Also note the url for wavefront.  If you are not using surf.wavefrontcom, simply place what you are using into params.yaml:
+
+```yaml
+wavefront:
+  api-key: <get from Wavefront account section>
+  url: https://surf.wavefront.com. <<-- or switch to demo.wavefront.com if using that one
+  cluster-name-prefix: <your VMWare ID>
+```
+
+NOTE: If you have access to Pivotal Okta, then use it to get into wavefront, and then retrieve your API Token for surf.wavefont.com.
 
 Assuming you have helm3 installed, run this script:
 

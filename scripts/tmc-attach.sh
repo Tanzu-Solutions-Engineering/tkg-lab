@@ -16,7 +16,7 @@ TMC_CLUSTER_GROUP=$(yq r params.yaml tmc.cluster-group)
 mkdir -p generated/$CLUSTER_NAME
 
 tmc cluster attach \
-  --name $VMWARE_ID-$CLUSTER_NAME \
+  --name $VMWARE_ID-$CLUSTER_NAME-$IAAS \
   --labels origin=$VMWARE_ID \
   --labels iaas=$IAAS \
   --group $TMC_CLUSTER_GROUP \

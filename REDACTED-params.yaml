@@ -12,7 +12,7 @@ aws:
   region: us-east-2
   access-key-id: REDACTED
   secret-access-key: REDACTED
-  hosted-zone-id: Z00636703RP40GVIAWHLA
+  hosted-zone-id: Z00636703RP40GVIAWHLA # clear this value out to start, and script will generate a new zone for you
 vsphere:
   server: vcenter7.hyrulelab.com
   username: administrator@vsphere.local
@@ -55,3 +55,6 @@ wavefront:
 velero:
   bucket: pa-dpfeffer-mgmt-velero
   region: us-east-2
+harbor:
+  harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
+  notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live

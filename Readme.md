@@ -87,9 +87,10 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - kubectl
 - tmc
 - tkg
+- clusterawsadm
 - velero
 - helm 3
-- yt
+- [yq](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
 
 ## Foundational Lab Setup Guides
 

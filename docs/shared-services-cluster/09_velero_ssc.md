@@ -4,7 +4,7 @@ This lab is currently only available when deploying on AWS
 
 brew install velero
 
-Follow [Velero Plugins for AWS Guide](https://github.com/vmware-tanzu/velero-plugin-for-aws#setup).  I chose **Option 1** for **Set Permissions for Veloro Step**.
+Follow [Velero Plugins for AWS Guide](https://github.com/vmware-tanzu/velero-plugin-for-aws#setup).  I chose **Option 1** for **Set Permissions for Velero Step**.
 
 Store your credentials-velero file in keys/
 

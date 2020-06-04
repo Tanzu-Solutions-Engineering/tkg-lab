@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 if [ ! $# -eq 1 ]; then
   echo "Must supply ingress-fqdn as arg"
@@ -30,7 +30,7 @@ then
 else
   sed -i -e "s/FQDN/${ingress_fqdn}/g" dns/tkg-aws-lab-record-sets-aws.json
   sed -i -e "s/LBHOST/${hostname}/g" dns/tkg-aws-lab-record-sets-aws.json
-  sed -i '' -e "s/CNAME/${record_type}/g" dns/tkg-aws-lab-record-sets-aws.json
+  sed -i -e "s/CNAME/${record_type}/g" dns/tkg-aws-lab-record-sets-aws.json
 fi
 
 # Execute the change
