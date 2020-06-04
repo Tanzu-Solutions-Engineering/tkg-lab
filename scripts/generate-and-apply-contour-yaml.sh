@@ -1,12 +1,7 @@
 #!/bin/bash -e
 
-if [ ! $1 -eq 1 ]; then
-  echo "Must supply cluster_name as args"
-  exit 1
-fi
-
-if [ ! $2 -eq 2 ]; then
-  echo "Must supply host name as args"
+if [ ! $# -eq 2 ]; then
+  echo "Must supply cluster_name and host_name as args"
   exit 1
 fi
 

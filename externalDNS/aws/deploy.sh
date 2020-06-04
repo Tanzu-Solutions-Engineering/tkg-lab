@@ -17,8 +17,9 @@ AWS_SECRET_ACCESS_KEY=$(yq r params.yaml secret-access-key)
 
 if [ $IAAS = 'vsphere' ];
 then
+  echo 'vsphere'
   kubectl create secret generic external-dns-iam-keys --from-literal=AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --from-literal=AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-  cp externalDNS/aws/deployment-vsphere.yaml > generated/$CLUSTER_NAME/externalDNS/deployment.yaml
+  cp externalDNS/aws/deployment-vsphere.yaml generated/$CLUSTER_NAME/externalDNS/deployment.yaml
 else
   cp externalDNS/aws/deployment-aws.yaml generated/$CLUSTER_NAME/externalDNS/deployment.yaml
 fi
