@@ -87,10 +87,11 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - kubectl
 - tmc
 - tkg
-- clusterawsadm
+- clusterawsadm (AWS Only)
 - velero
 - helm 3
-- [yq](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- [yq version 3.3+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- kind (helpful, but not required)
 
 ## Foundational Lab Setup Guides
 
