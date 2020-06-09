@@ -14,7 +14,7 @@ shared-services-cluster.kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
 Prepare the YAML manifests for the related fluent-bit K8S objects.  Manifest will be output into `generated/$SHARED_SERVICES_CLUSTER_NAME/fluent-bit/` in case you want to inspect.
 
 ```bash
-./scripts/generate-and-apply-fluent-bit-yaml.sh $(yq r params.yaml shared-services-cluster.name)
+./scripts/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
 ## Validation Step

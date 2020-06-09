@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 if [ ! $# -eq 2 ]; then
   echo "Must supply cluster name and worker replicas as args"
   exit 1
@@ -7,8 +9,8 @@ fi
 CLUSTER_NAME=$1
 WORKER_REPLICAS=$2
 
-IAAS=$(yq r params.yaml iaas)
-DEX_CN=$(yq r params.yaml management-cluster.dex-fqdn)
+IAAS=$(yq r $PARAMS_YAML iaas)
+DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
 
 INFRA_COMPONENTS_PATH=$(yq read ~/.tkg/config.yaml "providers[name==vsphere].url")
 OIDC_PLAN_PATH=$(sed s/infrastructure-components/cluster-template-oidc/g <<< $INFRA_COMPONENTS_PATH)

@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 if [ ! $# -eq 3 ]; then
   echo "Must supply cluster_name, metallb start and end ips as args"
   exit 1
@@ -9,7 +11,7 @@ CLUSTER_NAME=$1
 METALLB_START_IP=$2
 METALLB_END_IP=$3
 
-IAAS=$(yq r params.yaml iaas)
+IAAS=$(yq r $PARAMS_YAML iaas)
 
 if [ $IAAS = 'aws' ];
 then

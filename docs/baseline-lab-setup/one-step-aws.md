@@ -2,7 +2,16 @@
 
 This lab can be used to deploy all three clusters included in the foundational lab setup.  You will execute a single script that calls all the scripts included in the step-by-step guides.  
 
->Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `params.yaml` file is included at the root of this repo.  It is recommended you copy this file and rename it to params.yaml, and then start making your adjustments.  `params.yaml` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
+>Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `REDACTED-params.yaml` file is included at the root of this repo, namedp REDACTED-params.yaml.  It is recommended you copy this file and rename it to params.yaml and place it in the `secrets/` directory, and then start making your adjustments.  `secrets/` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
+
+## Setup Environment Variable for params.yaml
+
+>Set the PARAMS_YAML environment variable to the path of your `params.yaml` file.  The default is `secrets/param.yaml`, however you may choose otherwise.  This may be the case if you are using multiple `params.yaml` files in the case of AWS and vSphere deployments.
+
+```bash
+# Update the the path from the default if you have a different params.yaml file name or location.
+export PARAMS_YAML=secrets/params.yaml
+```
 
 Ensure that your copy of `params.yaml` indicates `aws` as the IaaS.
 

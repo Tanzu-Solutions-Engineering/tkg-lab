@@ -9,7 +9,7 @@ This lab is currently only available when deploying on AWS
 Prepare the YAML manifests for the related velero K8S objects and then run the following script to install velero and configure a nightly backup.
 
 ```bash
-./scripts/velero.sh $(yq r params.yaml management-cluster.name)
+./scripts/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
 ## Validation Step
@@ -18,7 +18,7 @@ Ensure schedule is created and the first backup is starting
 
 ```bash
 velero schedule get
-velero backup get | grep $(yq r params.yaml management-cluster.name)
+velero backup get | grep $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
 ## Go to Next Step

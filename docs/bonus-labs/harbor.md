@@ -13,7 +13,7 @@ harbor:
 Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  We need to ensure we are in the correct context before proceeding.
 
 ```bash
-CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
+CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 ```
 

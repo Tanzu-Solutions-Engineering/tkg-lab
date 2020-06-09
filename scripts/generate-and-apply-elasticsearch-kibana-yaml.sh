@@ -1,8 +1,12 @@
 #!/bin/bash -e
 
-ELASTICSEARCH_CN=$(yq r params.yaml shared-services-cluster.elasticsearch-fqdn)
-KIBANA_CN=$(yq r params.yaml shared-services-cluster.kibana-fqdn)
-CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
+source ./scripts/set-env.sh
+
+ELASTICSEARCH_CN=$(yq r $PARAMS_YAML shared-services-cluster.elasticsearch-fqdn)
+KIBANA_CN=$(yq r $PARAMS_YAML shared-services-cluster.kibana-fqdn)
+CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
+
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/ek/
 cp elasticsearch-kibana/*.yaml generated/$CLUSTER_NAME/ek/

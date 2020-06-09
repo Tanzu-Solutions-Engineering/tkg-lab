@@ -22,8 +22,8 @@ All of the steps above can be accomplished by running the following script:
 
 ```bash
 ./scripts/deploy-workload-cluster.sh \
-  $(yq r params.yaml shared-services-cluster.name) \
-  $(yq r params.yaml shared-services-cluster.worker-replicas)
+  $(yq r $PARAMS_YAML shared-services-cluster.name) \
+  $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas)
 ```
 
 >Note: Wait until your cluster has been created. It may take 12 minutes.

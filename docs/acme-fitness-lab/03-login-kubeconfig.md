@@ -1,6 +1,6 @@
 # Log-in to workload cluster and setup kubeconfig
 
-1. (Using Incognito Window) Login to the workload cluster at https://$(yq r params.yaml workload-cluster.gangway-fqdn)
+1. (Using Incognito Window) Login to the workload cluster at https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
 2. Click Sign In
 3. Log into okta as cody
 4. Give a secret question answer

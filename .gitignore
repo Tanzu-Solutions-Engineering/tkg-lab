@@ -8,3 +8,4 @@ sensitive/
 params.yaml
 generated/
 .DS_Store
+secrets/

@@ -4,7 +4,7 @@
 
 ```bash
 ./scripts/tmc-policy.sh \
-  $(yq r params.yaml shared-services-cluster.name) \
+  $(yq r $PARAMS_YAML shared-services-cluster.name) \
   cluster.admin \
   platform-team
 ```
