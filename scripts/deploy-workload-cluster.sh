@@ -15,7 +15,7 @@ DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
 INFRA_COMPONENTS_PATH=$(yq read ~/.tkg/config.yaml "providers[name==vsphere].url")
 OIDC_PLAN_PATH=$(sed s/infrastructure-components/cluster-template-oidc/g <<< $INFRA_COMPONENTS_PATH)
 
-if [ $IAAS = 'aws' ];
+if [ "$IAAS" = "aws" ];
 then
   INFRA_COMPONENTS_PATH=$(yq read ~/.tkg/config.yaml "providers[name==aws].url")
   OIDC_PLAN_PATH=$(sed s/infrastructure-components/cluster-template-oidc/g <<< $INFRA_COMPONENTS_PATH)
