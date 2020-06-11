@@ -59,3 +59,7 @@ velero:
 harbor:
   harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
   notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
+concourse:
+  namespace: concourse
+  fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
+  tmc-workspace: concourse-workspace
