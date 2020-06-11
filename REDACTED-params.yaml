@@ -60,5 +60,5 @@ harbor:
   notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
 concourse:
   namespace: concourse
-  url: concourse.dorn.tkg-aws-e2-lab.winterfell.live
+  fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
   tmc-workspace: concourse-workspace

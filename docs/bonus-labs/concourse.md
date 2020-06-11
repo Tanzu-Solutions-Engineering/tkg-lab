@@ -13,7 +13,7 @@ The following section should be added to or exist in your local params.yaml file
 ```bash
 concourse:
   namespace: concourse
-  url: concourse.tkg-shared.<your-domain>
+  fqdn: concourse.tkg-shared.<your-domain>
   tmc-workspace: concourse-workspace
 ```
 
@@ -91,5 +91,5 @@ kubectl get po -n $CONCOURSE_NAMESPACE -o wide
 ```bash
 kubectl get cert,ing -n $CONCOURSE_NAMESPACE
 ```
-3. Open a browser and navigate to https://<Concourse URL>.  The default user is test/test.  This can be controlled by editing the deployment values.
+3. Open a browser and navigate to the FQDN you defined for Concourse above.  The default user is test/test.  This can be controlled by editing the deployment values.
 

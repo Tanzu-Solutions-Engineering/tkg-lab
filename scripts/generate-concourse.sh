@@ -1,8 +1,7 @@
 #!/bin/bash -e
 
 CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
-CONCOURSE_URL=$(yq r params.yaml concourse.url)
-CONCOURSE_NAMEPSACE=$(yq r params.yaml concourse.url)
+CONCOURSE_URL=$(yq r params.yaml concourse.fqdn)
 
 mkdir -p generated/$CLUSTER_NAME/concourse/
 
