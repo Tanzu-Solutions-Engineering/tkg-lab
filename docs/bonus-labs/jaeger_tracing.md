@@ -37,7 +37,7 @@ After a moment, the wavefront proxy should be redeployed.  You can check it with
 kubectl get all -n wavefront
 ```
 
-## Add Jaaeger Daemonset
+## Add Jaeger Daemonset
 
 By deploying a Jaeger daemonset, the Jaeger agent is running on each node in the cluster.  Applications can point their instrumentation to the IP of the host, which is why we will later modify the acme-fitness deployments to consume the IPs of the host.  For now, install the daemonset in the acme-fitness namespace:
 
