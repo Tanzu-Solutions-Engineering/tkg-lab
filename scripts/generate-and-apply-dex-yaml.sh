@@ -1,10 +1,12 @@
 #!/bin/bash -e
 
-CLUSTER_NAME=$(yq r params.yaml management-cluster.name)
-DEX_CN=$(yq r params.yaml management-cluster.dex-fqdn)
-OKTA_AUTH_SERVER_CN=$(yq r params.yaml okta.auth-server-fqdn)
-OKTA_DEX_APP_CLIENT_ID=$(yq r params.yaml okta.dex-app-client-id)
-OKTA_DEX_APP_CLIENT_SECRET=$(yq r params.yaml okta.dex-app-client-secret)
+source ./scripts/set-env.sh
+
+CLUSTER_NAME=$(yq r $PARAMS_YAML management-cluster.name)
+DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
+OKTA_AUTH_SERVER_CN=$(yq r $PARAMS_YAML okta.auth-server-fqdn)
+OKTA_DEX_APP_CLIENT_ID=$(yq r $PARAMS_YAML okta.dex-app-client-id)
+OKTA_DEX_APP_CLIENT_SECRET=$(yq r $PARAMS_YAML okta.dex-app-client-secret)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 

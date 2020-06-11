@@ -1,7 +1,9 @@
-#bin/bash
+#!/bin/bash -e
 
-HARBOR_CN=$(yq r params.yaml harbor.harbor-cn)
-NOTARY_CN=$(yq r params.yaml harbor.notary-cn)
+source ./scripts/set-env.sh
+
+HARBOR_CN=$(yq r $PARAMS_YAML harbor.harbor-cn)
+NOTARY_CN=$(yq r $PARAMS_YAML harbor.notary-cn)
 
 mkdir -p harbor/generated/
 

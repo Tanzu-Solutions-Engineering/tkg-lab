@@ -6,7 +6,7 @@ If you have access to Pivotal Okta then use it to get into wavefront, and then r
 Assuming you have helm3 installed, run this script:
 
 ```bash
-./scripts/deploy-wavefront.sh $(yq r params.yaml management-cluster.name)
+./scripts/deploy-wavefront.sh $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
 ## Validation Step

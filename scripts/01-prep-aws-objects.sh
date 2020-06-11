@@ -1,11 +1,13 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 clusterawsadm alpha bootstrap create-stack
 
-export AWS_REGION=$(yq r params.yaml aws.region)
-export AWS_ACCESS_KEY_ID=$(yq r params.yaml aws.access-key-id)
-export AWS_SECRET_ACCESS_KEY=$(yq r params.yaml aws.secret-access-key)
-TKG_ENVIRONMENT_NAME=$(yq r params.yaml environment-name)
+export AWS_REGION=$(yq r $PARAMS_YAML aws.region)
+export AWS_ACCESS_KEY_ID=$(yq r $PARAMS_YAML aws.access-key-id)
+export AWS_SECRET_ACCESS_KEY=$(yq r $PARAMS_YAML aws.secret-access-key)
+TKG_ENVIRONMENT_NAME=$(yq r $PARAMS_YAML environment-name)
 SSH_KEY_FILE_NAME=$TKG_ENVIRONMENT_NAME-ssh.pem
 
 mkdir -p keys/

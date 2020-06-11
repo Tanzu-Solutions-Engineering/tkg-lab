@@ -1,14 +1,16 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 if [ ! $# -eq 1 ]; then
  echo "Must supply cluster name as args"
  exit 1
 fi
 CLUSTER_NAME=$1
 
-TMC_ACME_FITNESS_WORKSPACE_NAME=$(yq r params.yaml acme-fitness.tmc-workspace)
-VMWARE_ID=$(yq r params.yaml vmware-id)
-IAAS=$(yq r params.yaml iaas)
+TMC_ACME_FITNESS_WORKSPACE_NAME=$(yq r $PARAMS_YAML acme-fitness.tmc-workspace)
+VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
+IAAS=$(yq r $PARAMS_YAML iaas)
 
 mkdir -p generated/$CLUSTER_NAME/tmc
 cp -r tmc/config/* generated/$CLUSTER_NAME/tmc/

@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster name args"
   exit 1
@@ -9,9 +11,9 @@ CLUSTER_NAME=$1
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-IAAS=$(yq r params.yaml iaas)
-VMWARE_ID=$(yq r params.yaml vmware-id)
-TMC_CLUSTER_GROUP=$(yq r params.yaml tmc.cluster-group)
+IAAS=$(yq r $PARAMS_YAML iaas)
+VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
+TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
 
 mkdir -p generated/$CLUSTER_NAME
 

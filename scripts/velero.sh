@@ -1,9 +1,11 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 echo "Beginning Velero install..."
 
-VELERO_BUCKET=$(yq r params.yaml velero.bucket)
-VELERO_REGION=$(yq r params.yaml velero.region)
+VELERO_BUCKET=$(yq r $PARAMS_YAML velero.bucket)
+VELERO_REGION=$(yq r $PARAMS_YAML velero.region)
 
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster name as arg"
@@ -11,11 +13,6 @@ if [ ! $# -eq 1 ]; then
 fi
 CLUSTER_NAME=$1
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-
-if [ "$CLUSTER_NAME" = "$(yq r params.yaml management-cluster.name)" ]; 
-then
-    kubectl delete clusterrolebinding cert-manager-leaderelection
-fi
 
 velero install \
     --provider aws \

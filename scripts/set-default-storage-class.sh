@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
-IAAS=$(yq r params.yaml iaas)
+source ./scripts/set-env.sh
+
+IAAS=$(yq r $PARAMS_YAML iaas)
 
 if [ "$IAAS" = "aws" ];
 then

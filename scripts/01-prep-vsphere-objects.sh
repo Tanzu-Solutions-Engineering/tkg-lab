@@ -1,13 +1,15 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 # Get vSphere configuration vars from params.yaml
-export GOVC_URL=$(yq r params.yaml vsphere.server)
-export GOVC_USERNAME=$(yq r params.yaml vsphere.username)
-export GOVC_PASSWORD=$(yq r params.yaml vsphere.password)
-export GOVC_INSECURE=$(yq r params.yaml vsphere.insecure)
-export GOVC_DATASTORE=$(yq r params.yaml vsphere.datastore)
-export TEMPLATE_FOLDER=$(yq r params.yaml vsphere.template_folder)
-export LOCAL_OVA_FOLDER=$(yq r params.yaml vsphere.local_ova_folder)
+export GOVC_URL=$(yq r $PARAMS_YAML vsphere.server)
+export GOVC_USERNAME=$(yq r $PARAMS_YAML vsphere.username)
+export GOVC_PASSWORD=$(yq r $PARAMS_YAML vsphere.password)
+export GOVC_INSECURE=$(yq r $PARAMS_YAML vsphere.insecure)
+export GOVC_DATASTORE=$(yq r $PARAMS_YAML vsphere.datastore)
+export TEMPLATE_FOLDER=$(yq r $PARAMS_YAML vsphere.template_folder)
+export LOCAL_OVA_FOLDER=$(yq r $PARAMS_YAML vsphere.local_ova_folder)
 # Write those vars into ~/.tkg/config.yaml
 yq write ~/.tkg/config.yaml -i "VSPHERE_SERVER" $GOVC_URL
 yq write ~/.tkg/config.yaml -i "VSPHERE_USERNAME" $GOVC_USERNAME
