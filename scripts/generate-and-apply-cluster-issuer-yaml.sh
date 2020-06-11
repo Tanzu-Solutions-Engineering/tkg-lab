@@ -17,7 +17,7 @@ mkdir -p generated/$CLUSTER_NAME/contour/
 IAAS=$(yq r $PARAMS_YAML iaas)
 LETS_ENCRYPT_ACME_EMAIL=$(yq r $PARAMS_YAML lets-encrypt-acme-email)
 
-if [ $IAAS = 'aws' ];
+if [ "$IAAS" = "aws" ];
 then
   yq read tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-http.yaml > generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
 else

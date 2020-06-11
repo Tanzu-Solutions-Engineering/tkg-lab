@@ -15,7 +15,7 @@ source ./scripts/set-env.sh
   platform-team
 # Workload Step 4
 IAAS=$(yq r $PARAMS_YAML iaas)
-if [ $IAAS = 'vsphere' ];
+if [ "$IAAS" = "vsphere" ];
 then
   ./scripts/deploy-metallb.sh \
           $(yq r $PARAMS_YAML workload-cluster.name) \

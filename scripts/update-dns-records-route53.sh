@@ -11,7 +11,7 @@ AWS_HOSTED_ZONE=$(yq r $PARAMS_YAML aws.hosted-zone-id)
 
 IAAS=$(yq r $PARAMS_YAML iaas)
 
-if [ $IAAS = 'aws' ];
+if [ "$IAAS" = "aws" ];
 then
   hostname=`kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
   record_type="CNAME"

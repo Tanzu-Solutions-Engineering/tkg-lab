@@ -13,7 +13,7 @@ METALLB_END_IP=$3
 
 IAAS=$(yq r $PARAMS_YAML iaas)
 
-if [ $IAAS = 'aws' ];
+if [ "$IAAS" = "aws" ];
 then
   echo "Noop, as metallb is only used for vsphere"
 else
