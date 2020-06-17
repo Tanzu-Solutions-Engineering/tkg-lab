@@ -112,7 +112,7 @@ This lab will go through our simulated experience of receiving a request from an
 
 ### Switch to the App Team Perspective
 
-#### 3. [Log-in to workload cluster and setup kubeconfig](docs/acme-fitness-lab/03-login-kubeconfg.md)
+#### 3. [Log-in to workload cluster and setup kubeconfig](docs/acme-fitness-lab/03-login-kubeconfig.md)
 #### 4. [Get, update, and deploy Acme-fitness app](docs/acme-fitness-lab/04-deploy-app.md)
 
 ## Bonus Labs
