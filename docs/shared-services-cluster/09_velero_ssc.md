@@ -44,4 +44,6 @@ velero backup get | grep $(yq r $PARAMS_YAML shared-services-cluster.name)
 
 ## Go to Next Step
 
-[Install FluentBit on Shared Services Cluster](../mgmt-cluster/09_fluentbit_mgmt.md)
+At this point the shared services cluster is complete.  
+
+[Create Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)
