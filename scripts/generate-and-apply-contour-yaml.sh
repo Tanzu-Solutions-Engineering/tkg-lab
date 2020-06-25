@@ -30,4 +30,10 @@ kubectl apply -f tkg-extensions/ingress/contour/aws/02-service-contour.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/02-service-envoy.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/03-contour.yaml
 kubectl apply -f tkg-extensions/ingress/contour/aws/03-envoy.yaml
-sleep 10s #Wait a sec to get DNS/IP assigned
+
+# Wait until DNS/IP assigned
+echo -n "Waiting for Envoy IP Assignment"
+while [ "" = "$(kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" ]; do
+  echo -n .
+  sleep 2
+done
