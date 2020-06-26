@@ -1,4 +1,4 @@
-# Concourse for CI/CD
+# Gitlab for CI/CD
 
 In this lab we will install Gitlab to the shared cluster via a Helm chart.  The following modifications to the default chart values need to be made:
 - Use Contour Ingress
@@ -29,6 +29,8 @@ export VMWARE_ID=$(yq r params.yaml vmware-id)
 ```
 ## Create Gitlab namespace and prepare deployment file
 In order to deploy the Helm chart for Gitlab to a dedicated namespace, we need to create it first.  To do this, we can use Tanzu Mission Control, as it is already running on our shared services cluster.  This will create a "managed namespace", where we can assert additional control over what is deployed.  
+
+NOTE: if you want to avoid using TMC, simply create the namespace in the shared-services cluster manually using "kubectl create namespace ${GITLAB_NAMESPACE}"
 
 ```bash
 tmc workspace create -n $GITLAB_TMC_WORKSPACE -d "Workspace for Gitlab"
