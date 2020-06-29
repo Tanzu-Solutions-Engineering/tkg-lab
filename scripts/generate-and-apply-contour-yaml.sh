@@ -37,3 +37,5 @@ while [ "" = "$(kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.sta
   echo -n .
   sleep 2
 done
+
+echo ""
