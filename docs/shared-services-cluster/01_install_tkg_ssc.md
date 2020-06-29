@@ -27,7 +27,8 @@ All of the steps above can be accomplished by running the following script:
 ```
 
 >Note: Wait until your cluster has been created. It may take 12 minutes.
->Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credential
+
+>Note: Once cluster is created your kubeconfig will already have the new context as the active one with the necessary credentials.
 
 ## Go to Next Step
 

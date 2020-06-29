@@ -42,5 +42,11 @@ There are lots of potential validation steps, but let's focus on the ability to 
 6. Attempt to access the cluster with the new config
 
 ```bash
+open https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
+
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 ```
+
+## Congrats, Foundational Lab is Complete
+
+You are now welcome to continue on with the Acme Fitness lab, or explore our bonus labs. Visit the [Main Readme](../../../Readme.md) to continue.

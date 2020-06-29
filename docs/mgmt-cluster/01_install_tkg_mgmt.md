@@ -20,6 +20,8 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 ./scripts/02-deploy-aws-mgmt-cluster.sh
 ```
 
+>Note: This step takes about 12 minutes.  You have an opportunity here to skip ahead to [Step 3: Configure DNS and Prep Certificate Signing](03_dns_certs_mgmt.md), [Step 4: Configure Okta](04_okta_mgmt.md), and [Step 5: Retrieve TKG Extensions](05_extensions_mgmt.md) to complete steps in parallel.  Then you can come back and finish off this step.
+
 3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's deploy a default storage class.  The following script will perform these actions.
 
 ```bash
@@ -56,6 +58,8 @@ You can use the `REDACTED-config.yaml` locate at the root of this repo as a refe
 ```bash
 ./scripts/02-deploy-vsphere-mgmt-cluster.sh
 ```
+
+>Note: This step takes about 12 minutes.  You have an opportunity here to skip ahead to [Step 3: Configure DNS and Prep Certificate Signing](03_dns_certs_mgmt.md), [Step 4: Configure Okta](04_okta_mgmt.md), and [Step 5: Retrieve TKG Extensions](05_extensions_mgmt.md) to complete steps in parallel.  Then you can come back and finish off this step.
 
 3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's configure a CSI Storage Policy deploy a default storage class.
 

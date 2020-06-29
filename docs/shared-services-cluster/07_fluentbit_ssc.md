@@ -25,6 +25,24 @@ Ensure that fluent bit pods are running
 kubectl get pods -n tanzu-system-logging
 ```
 
+## Test Log Access
+
+1. Access kibana. This leverages the wildcard DNS entry on the convoy ingress. Your base domain will be different than mine.
+
+```bash
+open http://$(yq r $PARAMS_YAML shared-services-cluster.kibana-fqdn)
+```
+
+2. You should see the kibana welcome screen.
+
+3. Click the Discover icon at the top of the right menu bar.
+
+4. You will see widget to create an index pattern. Enter logstash-* and click next step.
+
+5. Select @timestamp for the Time filter field name. and then click Create index pattern.
+
+6. Now click the Discover icon at the top of the right menu bar. You can start searching for logs.
+
 ## Go to Next Step
 
 [Install Tanzu Observability](08_to_ssc.md)

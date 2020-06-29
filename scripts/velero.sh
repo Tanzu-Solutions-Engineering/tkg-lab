@@ -14,6 +14,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 VELERO_BUCKET=$(yq r $PARAMS_YAML velero.bucket)
 VELERO_REGION=$(yq r $PARAMS_YAML velero.region)
+IAAS=$(yq r $PARAMS_YAML iaas)
 
 if [ "$IAAS" = "aws" ];
 then
