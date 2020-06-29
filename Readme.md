@@ -25,8 +25,8 @@ Incorporates the following Tanzu SaaS products:
 Leverages the following external services:
 
 - **AWS S3** as an object store for Velero backups
+- **AWS Route 53** as DNS provider
 - **Okta** as an OIDC provider
-- **GCP Cloud DNS / Router 53** as DNS provider
 - **Let's Encrypt** as Certificate Authority
 
 ## Goals and Audience

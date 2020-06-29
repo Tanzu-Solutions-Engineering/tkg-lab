@@ -16,7 +16,7 @@ tkg delete cluster $(yq r $PARAMS_YAML workload-cluster.name) --yes
 tkg delete cluster $(yq r $PARAMS_YAML shared-services-cluster.name) --yes
 
 #Wait for cert to be ready
-while tkg get cluster | grep Deleting ; [ $? -eq 0 ]; do
+while tkg get cluster | grep deleting ; [ $? -eq 0 ]; do
 	echo "Waiting for clusters to be deleted"
 	sleep 5s
 done   

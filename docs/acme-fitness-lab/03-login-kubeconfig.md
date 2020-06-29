@@ -9,6 +9,7 @@
 
 ```bash
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -n acme-fitness
+open https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
 ```
 
 >Note: If you get "No resources found in acme-fitness namespace." then you successfully logged in.  Meaning you have permission to get resources in this namespace.
