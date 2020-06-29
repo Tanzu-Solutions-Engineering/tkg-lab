@@ -1,4 +1,4 @@
-# Step by Setup
+# Step by Step Setup
 
 The following labs guide you through the steps to create the three clusters considered the baseline setup.
 
