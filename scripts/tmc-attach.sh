@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source $DIR/set-env.sh
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
 
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster name args"
