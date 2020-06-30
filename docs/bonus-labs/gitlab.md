@@ -21,7 +21,7 @@ Once these are in place and correct, run the following to export the following i
 
 ```bash
 export TMC_CLUSTER_GROUP=$(yq r params.yaml tmc.cluster-group)
-export GITLAB_NAMESPACE=$(yq r params.yaml concourse.namespace)
+export GITLAB_NAMESPACE=$(yq r params.yaml gitlab.namespace)
 export GITLAB_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq r params.yaml gitlab.tmc-workspace)
 export CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
 export IAAS=$(yq r params.yaml iaas)
