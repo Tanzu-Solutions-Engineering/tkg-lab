@@ -58,3 +58,6 @@ velero:
 harbor:
   harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
   notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
+argocd:
+  server-fqdn: argocd.dorn.tkg-aws-e2-lab.winterfell.live
+  password: REDACTED
