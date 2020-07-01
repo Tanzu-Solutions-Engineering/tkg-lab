@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-source ./scripts/set-env.sh
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
 
 if [ ! $# -eq 2 ]; then
   echo "Must supply cluster name and worker replicas as args"
@@ -37,4 +38,4 @@ tkg get credentials $CLUSTER_NAME
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-./scripts/set-default-storage-class.sh
+$TKG_LAB_SCRIPTS/set-default-storage-class.sh

@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-source ./scripts/set-env.sh
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
 
 CLUSTER_NAME=$(yq r $PARAMS_YAML management-cluster.name)
 DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
@@ -17,16 +18,16 @@ yq read tkg-extensions/authentication/dex/aws/oidc/02-service.yaml > generated/$
 yq write -d0 generated/$CLUSTER_NAME/dex/02-service.yaml -i "spec.type" "ClusterIP"
 
 # 02b-ingress.yaml
-yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/02b-ingress.yaml > generated/$CLUSTER_NAME/dex/02b-ingress.yaml
+yq read $TKG_LAB_SCRIPTS/../tkg-extensions-mods-examples/authentication/dex/aws/oidc/02b-ingress.yaml > generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 yq write -d0 generated/$CLUSTER_NAME/dex/02b-ingress.yaml -i "spec.virtualhost.fqdn" $DEX_CN
 
 # 03-certs.yaml
-yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/03-certs.yaml > generated/$CLUSTER_NAME/dex/03-certs.yaml
+yq read $TKG_LAB_SCRIPTS/../tkg-extensions-mods-examples/authentication/dex/aws/oidc/03-certs.yaml > generated/$CLUSTER_NAME/dex/03-certs.yaml
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.commonName" $DEX_CN
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.dnsNames[0]" $DEX_CN
 
 # 04-cm.yaml
-yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/04-cm.yaml > generated/$CLUSTER_NAME/dex/04-cm.yaml
+yq read $TKG_LAB_SCRIPTS/../tkg-extensions-mods-examples/authentication/dex/aws/oidc/04-cm.yaml > generated/$CLUSTER_NAME/dex/04-cm.yaml
 
 if [ `uname -s` = 'Darwin' ]; 
 then
