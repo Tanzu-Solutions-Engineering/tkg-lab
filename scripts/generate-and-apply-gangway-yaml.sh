@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 if [ ! $# -eq 2 ]; then
   echo "Must supply cluster name and gangway-fqdn as args"
   exit 1
@@ -10,7 +12,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 GANGWAY_CN=$2
 
-DEX_CN=$(yq r params.yaml management-cluster.dex-fqdn)
+DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
 
 mkdir -p generated/$CLUSTER_NAME/gangway/
 

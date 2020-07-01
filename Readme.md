@@ -25,8 +25,8 @@ Incorporates the following Tanzu SaaS products:
 Leverages the following external services:
 
 - **AWS S3** as an object store for Velero backups
+- **AWS Route 53** as DNS provider
 - **Okta** as an OIDC provider
-- **GCP Cloud DNS / Router 53** as DNS provider
 - **Let's Encrypt** as Certificate Authority
 
 ## Goals and Audience
@@ -87,10 +87,11 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - kubectl
 - tmc
 - tkg
-- clusterawsadm
+- clusterawsadm (AWS Only)
 - velero
 - helm 3
-- [yq](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- [yq version 3.3+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- kind (helpful, but not required)
 
 ## Foundational Lab Setup Guides
 
@@ -98,7 +99,8 @@ There are are few options to setup the foundation lab setup of three clusters: m
 
 1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  Best really learning how each cluster is setup and the extensions and integration configured for the lab.  The guidance includes options for AWS and vSphere.
 2. [One Step Scripted Deployment for AWS](docs/baseline-lab-setup/one-step-aws.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
-
+3. [Helm Install Step by Step Guide](./helm-install/README.md) - If you want to go down the path of using helm charts for all cluster extensions, Please follow below url and come back to complete lab. Helm install gives you Management Cluster, Shared Services Clusters and Workload clusters with all extensions for both AWS and vSphere. 
+   
 ## Acme Fitness Lab
 
 This lab will go through our simulated experience of receiving a request from an app team for cloud resources and following the steps for both the platform team receiving the request and the app team accessing and deploying their app once the request has been fulfilled.
@@ -110,7 +112,7 @@ This lab will go through our simulated experience of receiving a request from an
 
 ### Switch to the App Team Perspective
 
-#### 3. [Log-in to workload cluster and setup kubeconfig](docs/acme-fitness-lab/03-login-kubeconfg.md)
+#### 3. [Log-in to workload cluster and setup kubeconfig](docs/acme-fitness-lab/03-login-kubeconfig.md)
 #### 4. [Get, update, and deploy Acme-fitness app](docs/acme-fitness-lab/04-deploy-app.md)
 
 ## Bonus Labs
@@ -119,5 +121,7 @@ The following labs additional labs can be run on the base lab configuration.
 
 #### [Deploy Harbor Image Registry to Shared Services Cluster](docs/bonus-labs/harbor.md)
 #### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/deploy_gitlab.md)
+#### [Deploy Concourse to Shared Services Cluster](docs/bonus-labs/concourse.md)
+#### [Wavefront Tracing with Acme-Fitness App](docs/bonus-labs/jaeger_tracing.md)
 #### [Apply Image Registry Policy with TMC](docs/bonus-labs/tmc_image_policy.md)
 #### [Restore Backup with Velero](docs/bonus-labs/velero_restore.md)

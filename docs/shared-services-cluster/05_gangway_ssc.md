@@ -17,8 +17,8 @@ Prepare the YAML manifests for the related gangway K8S objects.  Manifests will 
 
 ```bash
 ./scripts/generate-and-apply-gangway-yaml.sh \
-   $(yq r params.yaml shared-services-cluster.name) \
-   $(yq r params.yaml shared-services-cluster.gangway-fqdn)
+   $(yq r $PARAMS_YAML shared-services-cluster.name) \
+   $(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
 ```
 
 This script will check at the end that the Gangway certificate is valid, which depends on the Let's Encrypt / Acme challenge to be resolved, that can take a couple of minutes.
@@ -33,11 +33,13 @@ kubectl get po -n tanzu-system-auth
 
 ## Inject Gangway as a client for Dex
 
+Dex maintains a list of clients that are allowed to access it.  Just like Okta does.  We need to update the Dex configuration with the client information generated for this clusters gangway.  After the Dex config map is updated, it needs to be restated.  The following script will switch context to your management cluster and then perform the above mentioned steps.
+
 ```bash
 ./scripts/inject-dex-client.sh \
-   $(yq r params.yaml management-cluster.name) \
-   $(yq r params.yaml shared-services-cluster.name) \
-   $(yq r params.yaml shared-services-cluster.gangway-fqdn)
+   $(yq r $PARAMS_YAML management-cluster.name) \
+   $(yq r $PARAMS_YAML shared-services-cluster.name) \
+   $(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
 ```
 
 ## Validation Step
@@ -50,6 +52,8 @@ kubectl get po -n tanzu-system-auth
 6. Attempt to access the cluster with the new config
 
 ```bash
+open https://$(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
+
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 ```
 

@@ -3,10 +3,22 @@
 You'll need a Wavefront API_KEY to integrate thee cluster with Wavefront.
 If you have access to Pivotal Okta then use it to get into wavefront, and then retrieve your API_KEY.
 
+The scripts to prepare the YAML to deploy TO depend on a parameters to be set.  Ensure the following are set in `params.yaml`:
+
+```yaml
+wavefront:
+  # Your API Key
+  api-key: 4b7cfb61-1ad1-4b38-a271-6493aecbc309
+  # References to your wavefront instance
+  url: https://surf.wavefront.com
+  # Prefix to add to all your clusters in wavefront
+  cluster-name-prefix: dpfeffer
+```
+
 Assuming you have helm3 installed, run this script:
 
 ```bash
-./scripts/deploy-wavefront.sh $(yq r params.yaml management-cluster.name)
+./scripts/deploy-wavefront.sh $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
 ## Validation Step

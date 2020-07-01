@@ -1,15 +1,17 @@
-#!/bin/bash -ex
+#!/bin/bash -e
+
+source ./scripts/set-env.sh
 
 if [ ! $# -eq 1 ]; then
   echo "Must supply ingress-fqdn as arg"
   exit 1
 fi
 ingress_fqdn=$1
-AWS_HOSTED_ZONE=$(yq r params.yaml aws.hosted-zone-id)
+AWS_HOSTED_ZONE=$(yq r $PARAMS_YAML aws.hosted-zone-id)
 
-IAAS=$(yq r params.yaml iaas)
+IAAS=$(yq r $PARAMS_YAML iaas)
 
-if [ $IAAS = 'aws' ];
+if [ "$IAAS" = "aws" ];
 then
   hostname=`kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
   record_type="CNAME"
@@ -17,6 +19,7 @@ else
   hostname=`kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
   record_type="A"
 fi
+echo "hostname $hostname"
 
 # Grab a fresh template
 cp dns/tkg-aws-lab-record-sets-aws.json.template dns/tkg-aws-lab-record-sets-aws.json

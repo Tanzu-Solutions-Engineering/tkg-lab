@@ -1,8 +1,17 @@
-# Step by Setup Setup
+# Step by Step Setup
 
 The following labs guide you through the steps to create the three clusters considered the baseline setup.
 
->Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `REDACTED-params.yaml` file is included at the root of this repo.  It is recommended you copy this file and rename it to `params.yaml`, and then start making your adjustments.  `params.yaml` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
+>Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `REDACTED-params.yaml` file is included at the root of this repo, named REDACTED-params.yaml.  It is recommended you copy this file and rename it to params.yaml and place it in the `local-config/` directory, and then start making your adjustments.  `local-config/` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
+
+## Setup Environment Variable for params.yaml
+
+Set the PARAMS_YAML environment variable to the path of your `params.yaml` file.  If you followed the recommendation, the value would be `local-config/param.yaml`, however you may choose otherwise.  This may be the case if you are using multiple `params.yaml` files in the case of AWS and vSphere deployments.
+
+```bash
+# Update the the path from the default if you have a different params.yaml file name or location.
+export PARAMS_YAML=local-config/params.yaml
+```
 
 ## Management Cluster
 ### 1. [Install Management Cluster](../mgmt-cluster/01_install_tkg_mgmt.md)

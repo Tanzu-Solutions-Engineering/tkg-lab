@@ -52,6 +52,7 @@ wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
   cluster-name-prefix: dpfeffer
+  jaeger-app-name-prefix: dpfeffer-acme-fitness
 velero:
   bucket: pa-dpfeffer-mgmt-velero
   region: us-east-2
@@ -61,3 +62,7 @@ harbor:
 argocd:
   server-fqdn: argocd.dorn.tkg-aws-e2-lab.winterfell.live
   password: REDACTED
+concourse:
+  namespace: concourse
+  fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
+  tmc-workspace: concourse-workspace

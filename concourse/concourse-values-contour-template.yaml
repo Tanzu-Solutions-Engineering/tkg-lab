@@ -1,0 +1,33 @@
+---
+concourse:
+  web:
+    externalUrl: https://CONCOURSE_URL
+web:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "contour"
+      cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
+    hosts:
+      - CONCOURSE_URL
+    tls:
+    - hosts:
+      - CONCOURSE_URL
+      secretName: concourse-cert
+  # Toleration needed for tainted node
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "concourse"
+    effect: "NoSchedule"
+  nodeSelector:
+    type: "concourse"
+# Toleration needed for tainted node
+worker:
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "concourse"
+    effect: "NoSchedule"
+  nodeSelector:
+    type: "concourse"

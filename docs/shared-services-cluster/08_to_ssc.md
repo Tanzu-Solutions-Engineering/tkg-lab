@@ -16,7 +16,7 @@ NOTE: If you have access to Pivotal Okta, then use it to get into wavefront, and
 Assuming you have helm3 installed, run this script:
 
 ```bash
-./scripts/deploy-wavefront.sh $(yq r params.yaml shared-services-cluster.name)
+./scripts/deploy-wavefront.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
 ## Validation Step

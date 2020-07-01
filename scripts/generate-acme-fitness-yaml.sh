@@ -1,12 +1,14 @@
 #!/bin/bash -e
 
+source ./scripts/set-env.sh
+
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster_name as args"
   exit 1
 fi
 
 CLUSTER_NAME=$1
-ACME_FITNESS_CN=$(yq r params.yaml acme-fitness.fqdn)
+ACME_FITNESS_CN=$(yq r $PARAMS_YAML acme-fitness.fqdn)
 
 mkdir -p generated/$CLUSTER_NAME/acme-fitness/
 cp acme-fitness/template/acme-fitness-frontend-ingress.yaml generated/$CLUSTER_NAME/acme-fitness/
