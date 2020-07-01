@@ -50,7 +50,6 @@ $ argocd --help
 Login with the cli
 ```bash
 $ argocd login $(yq r $PARAMS_YAML argocd.server-fqdn) \
-  --insecure \`
   --username admin \
   --password $(yq r $PARAMS_YAML argocd.password)
 ```
