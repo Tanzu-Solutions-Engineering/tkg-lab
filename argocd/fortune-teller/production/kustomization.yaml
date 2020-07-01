@@ -1,0 +1,6 @@
+resources:
+- ./../base
+namePrefix: prod-
+patches:
+- service.yaml
+- deployment.yaml
