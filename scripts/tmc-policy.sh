@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
-TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source $TKG_LAB_SCRIPTS/set-env.sh
+source ./scripts/set-env.sh
 
 if [ ! $# -eq 3 ]; then
   echo "Must supply cluster name, role, and groups as args"
