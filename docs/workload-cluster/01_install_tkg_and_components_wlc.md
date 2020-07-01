@@ -18,6 +18,10 @@ workload-cluster:
   name: highgarden
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
   gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
+  # The following lines are only needed on vSphere - ensure the range you use is open.
+  metallb-start-ip: 192.168.1.181
+  metallb-end-ip: 192.168.1.185
+
 ```
 
 Now you can execute the following script to perform all of those tasks:
