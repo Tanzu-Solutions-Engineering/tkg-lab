@@ -41,7 +41,7 @@ kubectl get storageclass
 1. Complete [Prepare to Deploy the Management Cluster to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere.html) which prepares an SSH key and the OS image templates to be used for all clusters.
 
 First thing you need to do is to download the OVAs from https://www.vmware.com/go/get-tkg. You need to get:
-- VMware Tanzu Kubernetes Grid 1.1.0 Kubernetes v1.18.3 OVA (Photon OS)
+- VMware Tanzu Kubernetes Grid 1.1.0 Kubernetes v1.18.2 OVA (Photon OS)
 - VMware Tanzu Kubernetes Grid 1.1 Load Balancer OVA
 
 Then you can follow the manual steps in the documentation or use the following script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at `keys/tkg_rsa` and `keys/tkg_rsa.pub`.
