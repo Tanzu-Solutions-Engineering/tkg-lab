@@ -63,3 +63,6 @@ concourse:
   namespace: concourse
   fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
   tmc-workspace: concourse-workspace
+argocd:
+  server-fqdn: argocd.dorn.tkg-aws-e2-lab.winterfell.live
+  password: REDACTED
