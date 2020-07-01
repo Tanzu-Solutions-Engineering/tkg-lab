@@ -119,7 +119,6 @@ Deploy the Development version of the fortune Application. This version shares t
 ```bash
 $ argocd app create fortune-app-dev \
   --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git \
-  --revision argocd-integration-exercise \
   --path argocd/fortune-teller/dev \
   --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq r $PARAMS_YAML shared-services-cluster.name)')].cluster.server}"` \
   --dest-namespace development \
@@ -134,8 +133,7 @@ Deploy the Production version of the fortune Application. This version shares th
 ```bash
 $ argocd app create fortune-app-prod \
   --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git \
-  --revision argocd-integration-exercise \
-  --path argocd/production \
+  --path argocd/fortune-service/production \
   --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq r $PARAMS_YAML shared-services-cluster.name)')].cluster.server}"` \
   --dest-namespace production \
   --sync-policy automated
