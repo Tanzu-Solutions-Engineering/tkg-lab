@@ -14,7 +14,7 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 ./scripts/01-prep-aws-objects.sh
 ```
 
-2. Complete [Deploy the Management Cluster to Amazon EC2 with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-aws-cli.html). It is a good idea to read the instructions on this page, however, you can use our script below to execute the required steps.  Your only manual action is to prepare the `.tkg/config.yaml` file.  For this you use the `REDACTED-config.yaml` located at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs.  You can use this script to complete the deployment.
+2. Follow steps from [Deploy the Management Cluster to Amazon EC2 with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-aws-cli.html) up to the `tkg init` command. Then you can use our script below to execute the required steps to create the management cluster.  Your only manual action is to prepare the `.tkg/config.yaml` file.  For this you can also use the `REDACTED-config.yaml` located at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs. Run this script to complete the deployment.
 
 ```bash
 ./scripts/02-deploy-aws-mgmt-cluster.sh
@@ -52,8 +52,7 @@ You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc
 ./scripts/01-prep-vsphere-objects.sh
 ```
 
-2. Complete [Deploy the Management Cluster to vSphere with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere-cli.html).
-You can use the `REDACTED-config.yaml` locate at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs. If you run the script in the previous step you'll see the `~/.tkg/config.yaml` has been already pre-populated with some variables. Make sure to add the rest as per the docs and/or the the `REDACTED-config.yaml` for vSphere. Also, you can use this script to complete the deployment.
+2. Follow steps from [Deploy the Management Cluster to vSphere with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere-cli.html) up to the `tkg init` command. Then you can use our script below to execute the required steps to create the management cluster.  Your only manual action is to prepare the `.tkg/config.yaml` file.  For this you can also use the `REDACTED-config.yaml` located at the root of this repo as a reference of what a given config.yaml ended up looking like after the tasks described in the docs. Run this script to complete the deployment.
 
 ```bash
 ./scripts/02-deploy-vsphere-mgmt-cluster.sh
