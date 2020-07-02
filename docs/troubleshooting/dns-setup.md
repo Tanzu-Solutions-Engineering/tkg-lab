@@ -22,8 +22,13 @@ This is what it looks liek to have 2 Hosted Zones in AWS Route53.  Each zone wil
 
 ![HostedZone](HostedZones.png)
 
-Here is what the initial top-level domain delegation would look like.  THis is from Google Domains, but the same strategy will work for other providers, such as GoDaddy.  The trick is to create a Hosted Zone first (where you want to manage all entries for the lab) and then paste the NS entries created into your domain management's DNS area.  This dlegates all lookups to the new Hosted Zone.
+Here is what the initial top-level domain delegation would look like.  This is from Google Domains, but the same strategy will work for other providers, such as GoDaddy.  The trick is to create a Hosted Zone first (where you want to manage all entries for the lab) and then paste the NS entries created into your domain management's DNS area.  This dlegates all lookups to the new Hosted Zone.
 
 ![DomainDNS](DomainDNS.png)
 
+Once this linkage is set up, you can add entries to each hosted zone manually or via script.  The lab will update Route53 automatically, using you AWS Access/Secret key and the Hosted Zone ID that you set into the params file.  Once the labs are completed, this is what the Hosted Zone will look like.  There are 2 examples here, one for AWS and one for vSphere.  This is because of the way K8s LoadBalancers are managed.  On AWS, an EC2 Load Balancer is created for each cluster's API endpoint -and- for each Service type LoadBalancer created in the cluster.  On vSphere, there is no native LoadBalancer, so typically MetalLB is in use.  For the lab, we simply set the IP range for MetalLb inside ech cluster, and then point the DNS entry directly to the created LoadBalancer's IP address.
 
+### Hosted Zone for AWS-deployed Lab
+![AWSZoneDetails](HostedZone1Details.png)  
+### Hosted Zone for vSphere-deployed Lab
+![vSphereZoneDetails](HostedZone2Details.png)  
