@@ -32,3 +32,58 @@ Once this linkage is set up, you can add entries to each hosted zone manually or
 ![AWSZoneDetails](HostedZone1Details.png)  
 ### Hosted Zone for vSphere-deployed Lab
 ![vSphereZoneDetails](HostedZone2Details.png)  
+
+## About the Ingress Controller
+
+As part of configuring your params.yaml file, note that we ask do define several FQDNs in advance - these do not need to be manually created in the Hosted Zone as Record Sets, nor are they specifically created by scripts.  Rather, we use a wildcard (seen above), such that any name that falls within that wildcard will be resolved.  In a Kubernetes cluster that utilizes an Ingress Controller (which the lab does - Contour), all traffic goes there and then is directed to the correct service/pods via Ingress Rules. These will be created as necessary.
+
+## About MetalLB
+
+As mentioned above, if deploying to vSphere, MetalLB will be used to create IP addreses for the Load Balancers that get created.  You must have a range defined in the params.yaml for each cluster.  This should be outside of your DHCP range, or at least in a spot where it is unlikely to reach.  For example, if your lab uses 192.168.1.0/24 and you have DHCP set up as .50 - .150, then use ranges after that for Metal LB.  The resulting params file would have something like the following (which corresponds to the screen shot above):
+
+```yaml
+...
+management-cluster:
+  worker-replicas: 2
+  name: tkg-mgmt
+  ingress-fqdn: '*.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com'
+  dex-fqdn: dex.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com
+  metallb-start-ip: 192.168.1.170
+  metallb-end-ip: 192.168.1.175
+shared-services-cluster:
+  worker-replicas: 2
+  name: tkg-shared
+  ingress-fqdn: '*.tkg-shared.tkg-vsphere-lab.arg-pivotal.com'
+  gangway-fqdn: gangway.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
+  elasticsearch-fqdn: elasticsearch.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
+  kibana-fqdn: logs.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
+  metallb-start-ip: 192.168.1.176
+  metallb-end-ip: 192.168.1.180
+workload-cluster:
+  worker-replicas: 2
+  name: tkg-wlc
+  ingress-fqdn: '*.tkg-wlc.tkg-vsphere-lab.arg-pivotal.com'
+  gangway-fqdn: gangway.tkg-wlc.tkg-vsphere-lab.arg-pivotal.com
+  metallb-start-ip: 192.168.1.181
+  metallb-end-ip: 192.168.1.185
+...
+``` 
+
+A resulting nslookup call will show the IP that was created for the LoadBalancer and populated into the Hosted Zone by the script:
+
+```bash
+# Within Shared Cluster
+andrew@ubuntu-jump:~/tkg/tkg-lab$ k get svc envoy -n tanzu-system-ingress
+NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
+envoy   LoadBalancer   100.65.251.92   192.168.1.176   80:30256/TCP,443:30425/TCP   7d18h
+
+# NSLOOKUP for anything in shared cluster:
+andrew@ubuntu-jump:~/tkg/tkg-lab$ nslookup logs.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
+Server:		8.8.8.8
+Address:	8.8.8.8#53
+
+Non-authoritative answer:
+Name:	logs.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
+Address: 192.168.1.176
+
+```
