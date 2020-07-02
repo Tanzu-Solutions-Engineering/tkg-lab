@@ -29,7 +29,7 @@ export PARAMS_YAML=local-config/params.yaml
 ### 3. [Set policy on Shared Services Cluster and Namespace](../shared-services-cluster/03_policy_ssc.md)
 ### 4. [Install Contour Ingress Controller](../shared-services-cluster/04_contour_ssc.md)
 ### 5. [Install Gangway](../shared-services-cluster/05_gangway_ssc.md)
-### 6. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_scc.md)
+### 6. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_ssc.md)
 ### 7. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
 ### 8. [Install Tanzu Observability](../shared-services-cluster/08_to_ssc.md)
 ### 9. [Install Velero and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
