@@ -4,7 +4,8 @@ TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 source $TKG_LAB_SCRIPTS/set-env.sh
 
 function echo_found() {
-  echo -e "found, skipping"
+  message=${1:-"skipping"}
+  echo -e "\033[1;32mfound\033[0m, $message"
 }
 
 function echo_notfound() {
@@ -50,7 +51,14 @@ yq write ~/.tkg/config.yaml -i "VSPHERE_DATASTORE" $GOVC_DATASTORE
 
 # Create SSH key
 mkdir -p keys/
-ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
+tkg_key_file="./keys/tkg_rsa"
+echo -n "Checking for existing SSH key at $tkg_key_file: "
+if [ -f "$tkg_key_file" ]; then
+  echo_found "skipping generation"
+else 
+  echo_notfound "generating"
+  ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
+fi
 
 # Upload TKG k8s OVA
 ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.18.2 $LOCAL_OVA_FOLDER/photon-3-kube-v1.18.2-vmware.1.ova
