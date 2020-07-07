@@ -8,7 +8,7 @@ The scripts to prepare the YAML to deploy TO depend on a parameters to be set.  
 ```yaml
 wavefront:
   # Your API Key
-  api-key: 4b7cfb61-1ad1-4b38-a271-6493aecbc309
+  api-key: foo-bar-foo
   # References to your wavefront instance
   url: https://surf.wavefront.com
   # Prefix to add to all your clusters in wavefront
