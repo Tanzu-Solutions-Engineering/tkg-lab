@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-source ./scripts/set-env.sh
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
 
 # Here we are looking to get the encoded credentials of a lower privileged access key that was created by our boostrap.  If you have created too many keys, then you 
 # may face an issue where you can no longer create keys.  So here are some commands that are helpful to diagnose and delete old keys
