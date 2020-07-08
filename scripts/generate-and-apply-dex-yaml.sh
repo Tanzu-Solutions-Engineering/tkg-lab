@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-source ./scripts/set-env.sh
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
 
 CLUSTER_NAME=$(yq r $PARAMS_YAML management-cluster.name)
 DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
