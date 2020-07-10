@@ -4,7 +4,7 @@ We can use any DNS provider that is publicly available.  This is required becaus
 
 Throughout these labs we will follow the steps to set this up with AWS Route 53, but a similar approach can be followed with Google Cloud DNS and other publicly available DNS providers. We also follow a command line / script driven approach but all the AWS Route 53 configuration steps can be done via browser.
 
-If you decide to use Google Cloud DNS, please check [these Google Cloud DNS instructions](/docs/misc/google_cloud_dns.md) to understand the different steps you have to follow, and avoid the specific Route53 steps throughout the labs.
+If you decide to use Google Cloud DNS, please check [these Google Cloud DNS instructions](/docs/misc/goog_cloud_dns.md) to understand the different steps you have to follow, and avoid the specific Route53 steps throughout the labs.
 
 
 # Pre-requisites for Route 53

@@ -50,7 +50,7 @@ It is assumed that if you IaaS is AWS, then you will use the `http` challenge ty
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
->Note: This script assumes AWS Route 53 configuration. If you decide to use Google Cloud DNS, please check [these Google Cloud DNS instructions](/docs/misc/google_cloud_dns.md).
+>Note: This script assumes AWS Route 53 configuration. If you decide to use Google Cloud DNS, please check [these Google Cloud DNS instructions](/docs/misc/goog_cloud_dns.md).
 
 ## Verify Cluster Issuer
 
