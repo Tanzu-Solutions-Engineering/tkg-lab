@@ -6,7 +6,7 @@ The following labs guide you through the steps to create the three clusters cons
 
 ## Setup Environment Variable for params.yaml
 
-Set the PARAMS_YAML environment variable to the path of your `params.yaml` file.  If you followed the recommendation, the value would be `local-config/param.yaml`, however you may choose otherwise.  This may be the case if you are using multiple `params.yaml` files in the case of AWS and vSphere deployments.
+Set the PARAMS_YAML environment variable to the path of your `params.yaml` file.  If you followed the recommendation, the value would be `local-config/params.yaml`, however you may choose otherwise.  This may be the case if you are using multiple `params.yaml` files in the case of AWS and vSphere deployments.
 
 ```bash
 # Update the the path from the default if you have a different params.yaml file name or location.
