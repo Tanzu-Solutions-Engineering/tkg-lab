@@ -23,7 +23,7 @@ Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be
 ./harbor/00-generate_yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
-### Create Create Harbor namespace and certs
+### Create Harbor namespace and certs
 Create the Harbor namespace and certificate.  Wait for the certificate to be ready.
 ```bash
 kubectl apply -f generated/$CLUSTER_NAME/harbor/01-namespace.yaml
@@ -46,7 +46,7 @@ kubectl get po -n harbor
 ```bash
 kubectl get cert,ing -n harbor
 ```
-2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
+3. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
 ```bash
 open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
 ```
