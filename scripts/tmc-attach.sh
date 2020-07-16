@@ -18,6 +18,20 @@ TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
 
 mkdir -p generated/$CLUSTER_NAME
 
+if tmc system context current | grep -q IDToken; then
+  echo "Currently logged into TMC."
+else
+  echo "Please login to tmc before you continue."
+  exit 1
+fi
+
+if tmc clustergroup list | grep -q $TMC_CLUSTER_GROUP; then
+  echo "Cluster group $TMC_CLUSTER_GROUP found."
+else
+  echo "Cluster group $TMC_CLUSTER_GROUP not found.  Automattically creating it."
+  tmc clustergroup create -n $TMC_CLUSTER_GROUP
+fi
+
 tmc cluster attach \
   --name $VMWARE_ID-$CLUSTER_NAME-$IAAS \
   --labels origin=$VMWARE_ID \
