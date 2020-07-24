@@ -66,4 +66,4 @@ open https://$(yq r $PARAMS_YAML kubeapps.fqdn)
 
 ### Users
 
-TBD
+Coming Soon....
