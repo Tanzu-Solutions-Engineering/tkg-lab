@@ -1,0 +1,34 @@
+
+useHelm3: true
+allowNamespaceDiscovery: true
+ingress:
+  enabled: true
+  certManager: true
+  hostname: 
+  tls: true
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/proxy-body-size: "0"
+    kubernetes.io/ingress.class: "contour"
+    cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
+    kubernetes.io/tls-acme: "true"
+
+# Auth Proxy for OIDC support
+# ref: https://github.com/kubeapps/kubeapps/blob/master/docs/user/using-an-OIDC-provider.md
+authProxy:
+   enabled: true
+   provider: oidc
+   clientID: svcs
+   clientSecret: FOO_SECRET
+   cookieSecret: FOO_SECRET_FOO_FOO
+   #oauthLoginURI: /oauth2/start
+   #oauthLogoutURI: /oauth2/sign_out
+   additionalFlags:
+   
+   
+   # - -oidc-issuer-url=$DEX_FQDN
+   # - -scope=openid email groups
+
+
+
+
