@@ -5,7 +5,7 @@ The following section should be added to or exist in your local params.yaml file
 
 ```bash
 kubeapps:
-  fqdn: kubeapps.<shared-cluster domain name>
+  server-fqdn: kubeapps.<shared-cluster domain name>
 ```
 
 ### Change to Shared Services Cluster
