@@ -17,7 +17,7 @@ function ensure_upload_template() {
   template_inventory_folder=$1
   template_name=$2
   template_ova_path=$3
-  if [ "$template_inventory_folder" = "" ]; then 
+  if [ "$template_inventory_folder" = "" ]; then
     template_path=$template_name
   else
     template_path="$template_inventory_folder/$template_name"
@@ -55,14 +55,14 @@ tkg_key_file="./keys/tkg_rsa"
 echo -n "Checking for existing SSH key at $tkg_key_file: "
 if [ -f "$tkg_key_file" ]; then
   echo_found "skipping generation"
-else 
+else
   echo_notfound "generating"
   ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
 fi
 
 # Upload TKG k8s OVA
-govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.18.2-vmware.1.ova
-govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.18.2
+govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.18.3-vmware.1.ova
+govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.18.3
 
 # Upload TKG HA Proxy OVA
 govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-haproxy-v1.2.4-vmware.1.ova
