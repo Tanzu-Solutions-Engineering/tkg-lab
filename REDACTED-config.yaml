@@ -6,7 +6,6 @@ VSPHERE_DATASTORE: /Datacenter/datastore/datastore2
 VSPHERE_NETWORK: TKG-VLAN14-PG
 VSPHERE_RESOURCE_POOL: /Datacenter/host/Cluster/Resources/tkg
 VSPHERE_FOLDER: /Datacenter/vm/tkg
-VSPHERE_TEMPLATE: /Datacenter/vm/tkg/photon-3-kube-v1.18.2
 VSPHERE_HAPROXY_TEMPLATE: /Datacenter/vm/tkg/photon-3-haproxy-v1.2.4
 VSPHERE_SSH_AUTHORIZED_KEY: REDACTED
 SERVICE_CIDR: 100.64.0.0/13
