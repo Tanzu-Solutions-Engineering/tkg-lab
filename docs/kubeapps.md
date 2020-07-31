@@ -19,7 +19,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 ### Prepare Manifests
 Prepare the YAML manifests for the related kubeapps K8S objects.  Manifest will be output into `kubeapps/generated/` in case you want to inspect.
 ```bash
-./kubeapps/00-generate_yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./kubeapps/00-generate_yaml.sh
 ```
 
 ### Create Kubeapps namespace
@@ -49,7 +49,7 @@ kubectl get po -n kubeapps
 ```bash
 kubectl get cert,ing -n kubeapps
 ```
-1. Open a browser and navigate to https://<$KUBEAPPS_FQDN>.  
+3. Open a browser and navigate to https://<$KUBEAPPS_FQDN>.  
 ```bash
 open https://$(yq r $PARAMS_YAML kubeapps.server-fqdn)
 ```
