@@ -119,7 +119,6 @@ This lab will go through our simulated experience of receiving a request from an
 
 The following labs additional labs can be run on the base lab configuration.
 
-#### [Deploy Kubeapps to Shared Services Cluster](docs/bonus-labs/kubeapps.md)
 #### [Deploy Harbor Image Registry to Shared Services Cluster](docs/bonus-labs/harbor.md)
 #### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/deploy_gitlab.md)
 #### [Deploy Concourse to Shared Services Cluster](docs/bonus-labs/concourse.md)

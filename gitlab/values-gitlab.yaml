@@ -1,7 +1,7 @@
 certmanager:
   install: false
 certmanager-issuer:
-  email: 
+  email: CERT_MANAGER_EMAIL
 gitlab:
   gitlab-shell:
     minReplicas: 1
@@ -18,8 +18,8 @@ gitlab-runner:
   install: false
 global:
   hosts:
-    domain: 
-    #externalIP: EXTERNAL_LB_IP
+    domain: GITLAB_BASE_FQDN
+    externalIP: EXTERNAL_LB_IP
   ingress:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-contour-cluster-issuer
