@@ -17,7 +17,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 ```
 
 ### Prepare Manifests
-Prepare the YAML manifests for the related kubeapps K8S objects.  Manifest will be output into `kubeapps/generated/` in case you want to inspect.
+Prepare the YAML manifests for the related kubeapps K8S objects.  Manifest will be output into `generated/$CLUSTER_NAME/kubeapps/` in case you want to inspect.
 ```bash
 ./kubeapps/00-generate_yaml.sh
 ```
@@ -37,7 +37,7 @@ Modify Dex Configuration
 ### Add helm repo and install kubeapps
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
 ```
 
 ## Validation Step
@@ -53,23 +53,4 @@ kubectl get cert,ing -n kubeapps
 ```bash
 open https://$(yq r $PARAMS_YAML kubeapps.server-fqdn)
 ```
-
-## Okta Integration
-
-### Admin 
-
-1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
-
-2. Choose Directory (top menu) > Click Add Group > Enter: kubeapps-operator > Click Add Group.
-
-3. Click on the kubeapps-operator group > Click Manage People > Click the Names of anyone you want with too have Admin status in Kubeapps > Click Save
-
-4. Add kubeapps-operator to ClusterRoleBinding for cluster.admin (This isn't a best practice, but is easiest for a demo).
-   Run:
-```bash
-./scripts/tmc-policy.sh $(yq r $PARAMS_YAML shared-services-cluster.name) cluster.admin kubeapps-operator
-```
-
-### Users
-
-TBD
+4. Login as `alana`, who is an admin on the cluster.  You should be taken to the kubeapps home page
