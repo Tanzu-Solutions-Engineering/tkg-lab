@@ -21,5 +21,6 @@ if [ $exists -eq 0 ]; then
     kubectl get po -n tanzu-system-auth
     #switch back
     kubectl config use-context $SVCS_CLUSTER_NAME-admin@$SVCS_CLUSTER_NAME
+
 fi
 
