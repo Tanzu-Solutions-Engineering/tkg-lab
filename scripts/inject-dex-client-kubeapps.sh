@@ -20,6 +20,6 @@ if [ $exists -eq 0 ]; then
     kubectl set env deployment dex --env="LAST_RESTART=$(date)" --namespace tanzu-system-auth
     kubectl get po -n tanzu-system-auth
     #switch back
-    kubectl config use-context $WORKLOAD_CLUSTER_NAME-admin@$WORKLOAD_CLUSTER_NAME
+    kubectl config use-context $SVCS_CLUSTER_NAME-admin@$SVCS_CLUSTER_NAME
 fi
 
