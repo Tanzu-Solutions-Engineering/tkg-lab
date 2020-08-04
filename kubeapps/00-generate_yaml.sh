@@ -12,5 +12,12 @@ yq read kubeapps/01-namespace.yaml > generated/$CLUSTER_NAME/kubeapps/01-namespa
 # kubeapps-values.yaml
 yq read kubeapps/kubeapps-values.yaml > generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
 yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "ingress.hostname" "$KUBEAPPS_FQDN"
+<<<<<<< HEAD
 yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.additionalFlags"[+]  " -oidc-issuer-url=https://$DEX_FQDN" 
 yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.additionalFlags"[+]  " -scope=openid email groups"
+=======
+yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.clientID" "$CLUSTER_NAME"
+yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.additionalFlags"[+]  " --oidc-issuer-url=https://$DEX_FQDN" 
+yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.additionalFlags"[+]  " --scope=openid email groups"
+
+>>>>>>> 20c931d9fbf362e75217a1c4c64a860bc22514f7
