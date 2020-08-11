@@ -146,7 +146,7 @@ Deploy the Production version of the fortune Application. This version shares th
 ```bash
 $ argocd app create fortune-app-prod \
   --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git \
-  --path argocd/fortune-service/production \
+  --path argocd/fortune-teller/production \
   --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq r $PARAMS_YAML workload-cluster.name)')].cluster.server}"` \
   --dest-namespace fortune-app-production \
   --sync-policy automated
