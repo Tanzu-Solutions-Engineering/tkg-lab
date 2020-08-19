@@ -44,6 +44,6 @@ velero backup get | grep $(yq r $PARAMS_YAML shared-services-cluster.name)
 
 ## Go to Next Step
 
-At this point the shared services cluster is complete.  
+At this point the shared services cluster is complete.  Go back and complete the management cluster setup tasks.
 
-[Create Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)
+[Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)

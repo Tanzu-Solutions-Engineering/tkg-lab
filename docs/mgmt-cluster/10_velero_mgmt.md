@@ -21,4 +21,6 @@ velero backup get | grep $(yq r $PARAMS_YAML management-cluster.name)
 
 ## Go to Next Step
 
+Now management cluster steps are complete, on to the workload cluster.
+
 [Create new Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)

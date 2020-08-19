@@ -1,0 +1,7 @@
+#@ load("@ytt:overlay", "overlay")
+#@overlay/match by=overlay.subset({"kind":"AWSCluster"})
+---
+spec:
+  #@overlay/match missing_ok=True
+  bastion:
+    enabled: false

@@ -33,7 +33,7 @@ kubectl create secret generic certbot-gcp-service-account \
 
 > NOTE: You will execute this step on **every** Contour lab.
 
-While in the Contour lab, when you reach the step to run the `scripts/update-dns-records-route53.sh` script, don't run it and instead create the DNS record in Cloud DNS manually.
+While in the Contour lab, when you reach the step to run the `scripts/generate-and-apply-external-dns-yaml.sh` script, don't run it and instead create the DNS record in Cloud DNS manually.
 
 Create an A record with the value of the `ingress-fqdn` from the cluster you are configuring at this moment as specified in your `params.yaml` configuration file. The A record should point to the LoadBalancer IP or hostname of your Envoy service. If you are using MetalLB, this IP is the `metallb-start-ip` from the cluster you are configuring at this moment.
 

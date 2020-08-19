@@ -12,11 +12,12 @@ shared-services-cluster.worker-replicas: 2
 iaas: aws
 ```
 
-We need to copy the `oidc` script for the revelant iaas into our `.tkg` configuration directory so that TKG is aware of the customized plan.  Then we setup
-some specific environment variables that will be used in the plan: OIDC_ISSUER_URL, OIDC_USERNAME_CLAIM, OIDC_GROUPS_CLAIM, DEX_CA.  The oidc configuration
+We need to copy the `oidc` script for the relevant iaas into our `.tkg` configuration directory so that TKG is aware of the customized plan.  Then we setup some specific environment variables that will be used in the plan: OIDC_ISSUER_URL, OIDC_USERNAME_CLAIM, OIDC_GROUPS_CLAIM, DEX_CA.  The oidc configuration
 requires these.  
 
 Then we ask the management cluster to create the new workload cluster and once complete set the default storage class based upon the iaas.
+
+>Special Note for AWS Deployments: The default behavior is for each cluster (management and workload clusters) to be provisioned in their own VPC.  However, in order to conserve VPC's, we will deploy the workload clusters in the VPC and subnets as the management cluster.  This process is described in the [TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-tanzu-k8s-clusters-create.html#aws-vpc) and done automatically via the script below.
 
 All of the steps above can be accomplished by running the following script:
 
