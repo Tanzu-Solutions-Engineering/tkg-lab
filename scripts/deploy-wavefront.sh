@@ -19,8 +19,10 @@ WAVEFRONT_PREFIX=$(yq r $PARAMS_YAML wavefront.cluster-name-prefix)
 kubectl create namespace wavefront
 helm repo add wavefront https://wavefronthq.github.io/helm/
 helm repo update
-helm upgrade --install wavefront wavefront/wavefront -f wavefront/wf.yml \
+helm upgrade --install wavefront wavefront/wavefront \
   --set wavefront.url=$WAVEFRONT_URL \
   --set wavefront.token=$WAVEFRONT_API_KEY \
   --set clusterName=$WAVEFRONT_PREFIX-$CLUSTER_NAME-$IAAS \
+  --set events.enabled=true \
+  --set kubeStateMetrics.enabled=true \
   --namespace wavefront
