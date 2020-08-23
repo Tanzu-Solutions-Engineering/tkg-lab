@@ -38,7 +38,7 @@ TMC allows you to directly integrate with Tanzu Observability for clusters under
 **Validation**
 1. You have a new namespace created: `tanzu-observability-saas`
 ```bash
-kubectl get all -n ttanzu-observability-saas
+kubectl get all -n tanzu-observability-saas
 ```
 2. Test it out.  Choose Actions->Tanzu Observability by Wavefront->Open Tanzu Observability by Wavefront.  A new browser tab will open directly on the Kubernetes Cluster Dashboard.  Your cluster will be named as named $CLUSTER_NAME.global.tmc
 
