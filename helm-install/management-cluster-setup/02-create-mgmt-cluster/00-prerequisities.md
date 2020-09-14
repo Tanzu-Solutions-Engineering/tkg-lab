@@ -1,6 +1,6 @@
 Make sure you are connected to VMware VPN.
 
- - ###### Configure OIDC - [Setup](/management-cluster-setup/01-oidc-setup/oid_setup.md)
+ - ###### Configure OIDC - [Setup](../management-cluster-setup/01-oidc-setup/oid_setup.md)
 
     Once you have the `Client ID` and `Client Secret`, encode them to BASE64 in your terminal and save those values
 
