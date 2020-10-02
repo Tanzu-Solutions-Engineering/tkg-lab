@@ -13,14 +13,14 @@ Run the script passing the range as parameters. Example:
 
 ## Deploy Contour
 
-Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use the script to update the contour configmap to enable `leaderelection` and apply yamls.
+Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use this script to apply yamls.
 ```bash
 ./scripts/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
 ## Verify Contour
 
-Once it is deployed, wait until you can see all pods `Running` and the the Load Balancer up.  
+Once it is deployed, you can see all pods `Running` and the the Load Balancer up.  
 
 ```bash
 kubectl get pod,svc -n tanzu-system-ingress
@@ -34,12 +34,25 @@ The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elas
 aws elb describe-load-balancers
 ```
 
-## Setup Route 53 DNS for Contour Ingress
+## Setup Route 53 DNS for Wildcard Domain Contour Ingress
 
-Need to get the load balancer external IP for the envoy service and update AWS Route 53.  Execute the script below to do it automatically.
+We will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates using the [helm chart from Bitnami catalog](https://bitnami.com/stack/external-dns/helm)  Then by applying an annotation containing the wildcard domain for the ingress to the `envoy` service, `external-dns` will observe the change and make the desired updates within Route53.  
+
+As we are leveraging Route53, we require access to AWS.  See [external-dns docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) for minimum access required for the AWS account you are using.  If necessary, set the policy an assign to the user for the access key.  So regardless of using vSphere or AWS as your TKG IaaS, ensure the following are set in `params.yaml`:
+
+```yaml
+aws:
+  region: your-region
+  access-key-id: your-access-key-id
+  secret-access-key: your-secret-access-key
+```
+
+Execute the script below to deploy `external-dns` and to apply the annotation.
 
 ```bash
-./scripts/update-dns-records-route53.sh $(yq r $PARAMS_YAML management-cluster.ingress-fqdn)
+./scripts/generate-and-apply-external-dns-yaml.sh \
+  $(yq r $PARAMS_YAML management-cluster.name) \
+  $(yq r $PARAMS_YAML management-cluster.ingress-fqdn)
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests

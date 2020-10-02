@@ -25,7 +25,9 @@ then
 fi
 $TKG_LAB_SCRIPTS/deploy-cert-manager.sh
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML workload-cluster.name)
-$TKG_LAB_SCRIPTS/update-dns-records-route53.sh $(yq r $PARAMS_YAML workload-cluster.ingress-fqdn)
+$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
+  $(yq r $PARAMS_YAML workload-cluster.name) \
+  $(yq r $PARAMS_YAML workload-cluster.ingress-fqdn)
 $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML workload-cluster.name)
 # Workload Step 5
 $TKG_LAB_SCRIPTS/generate-and-apply-gangway-yaml.sh \

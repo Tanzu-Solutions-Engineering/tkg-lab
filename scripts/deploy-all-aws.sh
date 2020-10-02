@@ -14,7 +14,9 @@ $TKG_LAB_SCRIPTS/create-hosted-zone.sh
 $TKG_LAB_SCRIPTS/retrieve-lets-encrypt-ca-cert.sh
 # Management Step 6
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
-$TKG_LAB_SCRIPTS/update-dns-records-route53.sh $(yq r $PARAMS_YAML management-cluster.ingress-fqdn)
+$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
+  $(yq r $PARAMS_YAML management-cluster.name) \
+  $(yq r $PARAMS_YAML management-cluster.ingress-fqdn)
 $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
 # Management Step 7
 $TKG_LAB_SCRIPTS/generate-and-apply-dex-yaml.sh
@@ -35,7 +37,9 @@ $TKG_LAB_SCRIPTS/tmc-policy.sh \
 # Shared Services Step 4
 $TKG_LAB_SCRIPTS/deploy-cert-manager.sh
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
-$TKG_LAB_SCRIPTS/update-dns-records-route53.sh $(yq r $PARAMS_YAML shared-services-cluster.ingress-fqdn)
+$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
+  $(yq r $PARAMS_YAML shared-services-cluster.name) \
+  $(yq r $PARAMS_YAML shared-services-cluster.ingress-fqdn)
 $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 # Shared Services Step 5
 $TKG_LAB_SCRIPTS/generate-and-apply-gangway-yaml.sh \
