@@ -3,38 +3,17 @@
 ### Set environment variables
 The following section should be added to or exist in your local params.yaml file:
 
-```bash
+```yaml
 harbor:
   harbor-cn: harbor.<shared-cluster domain name>
   notary-cn: notary.<shared-cluster domain name>
 ```
 
-### Change to Shared Services Cluster
-Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  We need to ensure we are in the correct context before proceeding.
+## Prepare Manifests and Deploy Harbor
+Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.    Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
 
 ```bash
-CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-```
-
-### Prepare Manifests
-Prepare the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
-```bash
-./harbor/00-generate_yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
-```
-
-### Create Harbor namespace and certs
-Create the Harbor namespace and certificate.  Wait for the certificate to be ready.
-```bash
-kubectl apply -f generated/$CLUSTER_NAME/harbor/01-namespace.yaml
-kubectl apply -f generated/$CLUSTER_NAME/harbor/02-certs.yaml  
-watch kubectl get certificate -n harbor
-```
-
-### Add helm repo and install harbor
-```bash
-helm repo add harbor https://helm.goharbor.io
-helm upgrade --install harbor harbor/harbor -f generated/$CLUSTER_NAME/harbor/harbor-values.yaml --namespace harbor
+./harbor/generate-and-apply-harbor-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
 ## Validation Step
@@ -66,7 +45,13 @@ open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
   - Logout redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/logout`
   - Grant type allowed: `Authorization Code`
 
-3. Capture `Client ID` and `Client Secret` for use later
+3. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file
+
+```yaml
+okta:
+  harbor-app-client-id: MY_CLIENT_ID
+  harbor-app-client-secret: MY_CLIENT_SECRET
+```
 
 4. On the top left, Choose the arrow next to Developer Console and choose `Classic UI`
 
@@ -86,8 +71,8 @@ open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
   - Auth Mode: `OIDC`
   - OIDC Provider Name: `Okta`
   - OIDC Endpoint: `https://<okta.auth-server-fqdn from $PARAMS_YAML>/oauth2/default`
-  - OIDC Client ID: Value copied from Okta console
-  - OIDC Client Secret: Value copied from Okta console
+  - OIDC Client ID: <okta.harbor-app-client-id from $PARAMS_YAML>
+  - OIDC Client Secret: <okta.harbor-app-client-secret from $PARAMS_YAML>
   - Group Claim Name: `groups`
   - OIDC Scope: `openid,profile,email,groups,offline_access`
   - Verify Certificate: `checked`
