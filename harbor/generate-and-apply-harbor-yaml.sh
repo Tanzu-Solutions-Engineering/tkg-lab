@@ -44,6 +44,7 @@ kapp deploy -a harbor \
   -f generated/$CLUSTER_NAME/harbor/helm-manifest.yaml  \
   -y
 
+echo "Okta OIDC Configurtion Values..."
 echo "Auth Mode: OIDC"
 echo "OIDC Provider Name: Okta"
 echo "OIDC Endpoint: https://$(yq r $PARAMS_YAML okta.auth-server-fqdn)/oauth2/default"
