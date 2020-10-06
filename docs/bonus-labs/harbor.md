@@ -10,7 +10,7 @@ harbor:
 ```
 
 ## Prepare Manifests and Deploy Harbor
-Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.    Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
+Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
 
 ```bash
 ./harbor/generate-and-apply-harbor-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)

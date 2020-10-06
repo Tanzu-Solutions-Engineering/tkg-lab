@@ -27,7 +27,7 @@ Follow the URL provided in the helm install command and filter the cluster list 
 
 ## Optional Manual Configuration through Tanzu Mission Control (TMC)
 
-TMC allows you to directly integrate with Tanzu Observability for clusters under management.  This is a new feature for TMC and is only available through the UI.  CLI integration is targeted for Q3 2020.  As such, the following is an option, but not the default as we can not script it.
+TMC allows you to directly integrate with Tanzu Observability for clusters under management.  This is a new feature for TMC and is only available through the UI.  CLI integration is targeted for Q4 2020.  As such, the following is an option, but not the default as we can not script it.
 
 1. Log-in to TMC
 2. Select your management cluster from the cluster list: `echo $(yq r $PARAMS_YAML management-cluster.name)`

@@ -20,16 +20,16 @@ concourse:
 Once these are in place and correct, run the following to export the following into your shell:
 
 ```bash
-export TMC_CLUSTER_GROUP=$(yq r params.yaml tmc.cluster-group)
-export CONCOURSE_NAMESPACE=$(yq r params.yaml concourse.namespace)
-export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq r params.yaml concourse.tmc-workspace)
-export CLUSTER_NAME=$(yq r params.yaml shared-services-cluster.name)
-export IAAS=$(yq r params.yaml iaas)
-export VMWARE_ID=$(yq r params.yaml vmware-id)
+export TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
+export CONCOURSE_NAMESPACE=$(yq r $PARAMS_YAML concourse.namespace)
+export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq r $PARAMS_YAML concourse.tmc-workspace)
+export CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
+export IAAS=$(yq r $PARAMS_YAML iaas)
+export VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
 ```
 
 ## Scale Shared Cluster and Taint Nodes
-Rather than creating a new cluster, which we normally would recommend for Concourse, to save on resources we can create a couple of worker nodes in our shared cluster and taint them.  What this does is enable us to use these new nodes exclusively for Concourse.  The Concourse web and worker pods will be given a toleration for the taint, and use node selectors to ensure that they are "pinned" to the new cluster cworker nodes.  To do this, we will:
+Rather than creating a new cluster, which we normally would recommend for Concourse, to save on resources we can create a couple of worker nodes in our shared cluster and taint them.  What this does is enable us to use these new nodes exclusively for Concourse.  The Concourse web and worker pods will be given a toleration for the taint, and use node selectors to ensure that they are "pinned" to the new cluster worker nodes.  To do this, we will:
 - Scale the Shared Services cluster
 - Label the new nodes 
 - Taint the labelled nodes to prevent any other workload from running there
@@ -61,7 +61,7 @@ tmc workspace create -n $CONCOURSE_TMC_WORKSPACE -d "Workspace for Concourse"
 tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE
 ```
 
-Create the Concourse namespace and generate the deployment file.  This file (generated/tkg-shared/concourse/concourse-values-contour.yaml) will contain oeverrides to the default chart values.
+Create the Concourse namespace and generate the deployment file.  This file (generated/tkg-shared/concourse/concourse-values-contour.yaml) will contain overrides to the default chart values.
 
 ```bash
 ./scripts/generate-concourse.sh
