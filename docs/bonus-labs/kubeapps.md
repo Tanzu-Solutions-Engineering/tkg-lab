@@ -5,39 +5,22 @@ The following section should be added to or exist in your local params.yaml file
 
 ```bash
 kubeapps:
-  server-fqdn: kubeapps.<shared-cluster domain name>
+  server-fqdn: kubeapps.<workload-cluster domain name>
 ```
 
-### Change to Shared Services Cluster
-Kubeapps should be installed in the shared services cluster, as it is going to be available to all users.  We need to ensure we are in the correct context before proceeding.
-
+## Prepare Manifests and Deploy Kubeapps
+Kubeapps should be installed in the workload cluster, as it is going to be available to all users. Prepare and deploy the YAML manifests for the related kubeapps K8S objects.  Manifest will be output into `generated/$CLUSTER_NAME/kubeapps/` in case you want to inspect.
 ```bash
-CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-```
-
-### Prepare Manifests
-Prepare the YAML manifests for the related kubeapps K8S objects.  Manifest will be output into `generated/$CLUSTER_NAME/kubeapps/` in case you want to inspect.
-```bash
-./kubeapps/00-generate_yaml.sh
-```
-
-### Create Kubeapps namespace
-Create the kubeapps namespace.
-```bash
-kubectl apply -f generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
+./kubeapps/generate-and-apply-kubeapps-yaml.sh $(yq r $PARAMS_YAML workload-cluster.name)
 ```
 
 ### Modify Dex Configuration
 Modify Dex Configuration
 ```bash
-./scripts/inject-dex-client-kubeapps.sh
-```
-
-### Add helm repo and install kubeapps
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+./scripts/inject-dex-client-kubeapps.sh \
+   $(yq r $PARAMS_YAML management-cluster.name) \
+   $(yq r $PARAMS_YAML workload-cluster.name) \
+   $(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
 ```
 
 ## Validation Step
