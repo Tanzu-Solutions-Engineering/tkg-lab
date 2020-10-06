@@ -6,7 +6,6 @@ metadata:
   labels:
     app: acmefit
 spec:
-  storageClassName: aws-sc
   accessModes:
     - ReadWriteOnce
   resources:

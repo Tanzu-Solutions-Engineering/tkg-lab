@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment","metadata":{"name":"catalog-mongo"}})
+---
+spec:
+  template:
+    spec:
+      volumes:
+      #@overlay/match by="name"
+      - name: mongodata
+        #@overlay/remove
+        emptyDir: {}
+        #@overlay/match missing_ok=True
+        persistentVolumeClaim:
+          claimName: mongodata
