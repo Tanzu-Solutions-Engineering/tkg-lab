@@ -48,6 +48,8 @@ okta:
   auth-server-fqdn: dev-677945.okta.com
   dex-app-client-id: REDACTED
   dex-app-client-secret: REDACTED
+  harbor-app-client-id: REDACTED # if deploying harbor and using OIDC integration
+  harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
 wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
