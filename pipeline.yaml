@@ -1,0 +1,14 @@
+jobs:
+- name: hello-world
+  plan:
+  - task: say-hello
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: alpine}
+      params:
+        HELLO: ((hello))
+      run:
+        path: /bin/sh
+        args: ["-c", "echo $HELLO"]

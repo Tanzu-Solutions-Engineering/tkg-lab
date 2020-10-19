@@ -8,6 +8,7 @@ web:
     annotations:
       kubernetes.io/ingress.class: "contour"
       cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
+      projectcontour.io/websocket-routes: "/"
     hosts:
       - CONCOURSE_URL
     tls:
