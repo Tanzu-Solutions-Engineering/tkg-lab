@@ -38,12 +38,13 @@ Rather than creating a new cluster, which we normally would recommend for Concou
 First, create a pair of new worker nodes in the tkg cluster:
 
 ```bash
-NEW_NODE_COUNT=$(($(yq r params.yaml shared-services-cluster.worker-replicas) + 2))
+NEW_NODE_COUNT=$(($(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) + 2))
 tkg scale cluster $CLUSTER_NAME -w $NEW_NODE_COUNT
 ```
-After a few minutes, check to see which new nodes were created.  These will be the nodes that are the most recent in the AGE output of "kubectl get nodes".  Label these nodes uisng a space to separate the list of nodes in the command:
+After a few minutes, check to see which new nodes were created.  These will be the nodes that are the most recent in the AGE output of "kubectl get nodes".  Label these nodes using a space to separate the list of nodes in the command:
 
 ```bash
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 kubectl get nodes
 kubectl label nodes ip-10-0-0-57.us-east-2.compute.internal ip-10-0-0-105.us-east-2.compute.internal type=concourse
 ```
@@ -61,7 +62,7 @@ tmc workspace create -n $CONCOURSE_TMC_WORKSPACE -d "Workspace for Concourse"
 tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE
 ```
 
-Create the Concourse namespace and generate the deployment file.  This file (generated/tkg-shared/concourse/concourse-values-contour.yaml) will contain overrides to the default chart values.
+Create the Concourse namespace and generate the deployment file.  This file (generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml) will contain overrides to the default chart values.
 
 ```bash
 ./scripts/generate-concourse.sh
@@ -73,7 +74,7 @@ Add the repository to helm and use the generated deployment file to deploy the c
 ```bash
 helm repo add concourse https://concourse-charts.storage.googleapis.com/
 helm repo update
-helm upgrade --install concourse concourse/concourse --values generated/tkg-shared/concourse/concourse-values-contour.yaml -n $CONCOURSE_NAMESPACE
+helm upgrade --install concourse concourse/concourse --values generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml -n $CONCOURSE_NAMESPACE
 ```
 
 ## Manage the Concourse team namespace with TMC
