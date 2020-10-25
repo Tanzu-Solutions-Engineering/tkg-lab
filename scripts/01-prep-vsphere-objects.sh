@@ -61,9 +61,5 @@ else
 fi
 
 # Upload TKG k8s OVA
-govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.18.3-vmware.1.ova
-govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.18.3
-
-# Upload TKG HA Proxy OVA
-govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-haproxy-v1.2.4-vmware.1.ova
-govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-haproxy-v1.2.4
+govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.19.1-vmware.2.ova
+govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.19.1
