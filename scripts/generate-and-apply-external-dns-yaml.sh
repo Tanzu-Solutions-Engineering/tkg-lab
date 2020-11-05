@@ -24,7 +24,7 @@ yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" AWS_RE
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-helm upgrade --install external-dns bitnami/external-dns -n tanzu-system-ingress -f generated/dorn/external-dns/values.yaml
+helm upgrade --install external-dns bitnami/external-dns -n tanzu-system-ingress -f generated/$CLUSTER_NAME/external-dns/values.yaml
 
 #Wait for pod to be ready
 while kubectl get po -l app.kubernetes.io/name=external-dns -n tanzu-system-ingress | grep Running ; [ $? -ne 0 ]; do
