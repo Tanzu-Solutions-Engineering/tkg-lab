@@ -6,4 +6,4 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 export MANAGEMENT_CLUSTER_NAME=$(yq r $PARAMS_YAML management-cluster.name)
 export CONTROLPLANE_ENDPOINT_IP=$(yq r $PARAMS_YAML management-cluster.controlplane-endpoint-ip)
 
-tkg init --infrastructure=vsphere --name=$MANAGEMENT_CLUSTER_NAME --vsphere-controlplane-endpoint-ip=$CONTROLPLANE_ENDPOINT_IP --ceip-participation=false --plan=dev -v 6
+tkg init --infrastructure=vsphere --name=$MANAGEMENT_CLUSTER_NAME --vsphere-controlplane-endpoint-ip=$CONTROLPLANE_ENDPOINT_IP --ceip-participation=false --plan=dev -v 6 --deploy-tkg-on-vSphere7
