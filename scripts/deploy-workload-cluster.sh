@@ -68,5 +68,3 @@ tkg get credentials $CLUSTER_NAME
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
-
-$TKG_LAB_SCRIPTS/set-default-storage-class.sh

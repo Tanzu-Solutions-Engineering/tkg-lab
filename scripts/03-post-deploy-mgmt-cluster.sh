@@ -10,6 +10,4 @@ tkg scale cluster $MANAGEMENT_CLUSTER_NAME --namespace tkg-system -w $MANAGEMENT
 
 kubectl config use-context $MANAGEMENT_CLUSTER_NAME-admin@$MANAGEMENT_CLUSTER_NAME
 
-$TKG_LAB_SCRIPTS/set-default-storage-class.sh
-
 kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
