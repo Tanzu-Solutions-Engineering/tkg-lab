@@ -38,8 +38,9 @@ kubectl get storageclass
 
 1. Complete [Deploy Management Clusters to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-vsphere.html) which prepares an SSH key and the OS image templates to be used for all clusters.
 
-First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.2.0 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to at least one of the k8s versions available:
-- Photon v3 Kubernetes v1.19.1 OVA (our scripts will only use this verison)
+First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.2.0 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.19.1 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
+
+- Photon v3 Kubernetes v1.19.1 OVA (our scripts will only use this version)
 - Photon v3 Kubernetes v1.18.8 OVA
 - Photon v3 Kubernetes v1.17.11 OVA
 
@@ -71,7 +72,7 @@ Follow these steps in vCenter:
   - Choose category and tag created previously
   - Confirm your storage Datastore is compatible
 
-Then run the following command to scale to 2 worker nodes and apply a default storage class that uses the CNS provisioner to the cluster.
+Then run the following command to scale to 2 worker nodes that uses the CNS provisioner to the cluster.
 
 ```bash
 ./scripts/03-post-deploy-mgmt-cluster.sh
@@ -82,7 +83,6 @@ Then run the following command to scale to 2 worker nodes and apply a default st
 ```bash
 tkg get management-clusters
 kubectl get pods -A
-kubectl get sc
 ```
 
 ## Go to Next Step
