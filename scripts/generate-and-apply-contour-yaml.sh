@@ -1,12 +1,7 @@
 #!/bin/bash -e
 
-function add-three-dashes() {
-  line=$1
-  file=$2
-  sed -i '' '${line}i\
-  ---\
-  ' $file
-}
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
 
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster_name as args"

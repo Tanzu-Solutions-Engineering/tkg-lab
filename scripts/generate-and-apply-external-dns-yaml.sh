@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $TKG_LAB_SCRIPTS/set-env.sh
+
 if [ ! $# -eq 2 ]; then
   echo "Must supply cluster_name and ingress-fqdn as args"
   exit 1
@@ -19,7 +22,7 @@ mkdir -p generated/$CLUSTER_NAME/external-dns
 # values.yaml
 yq read external-dns/values-template.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
 yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.secretKey" $AWS_SECRET_KEY
-yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.accessKey" $AWS_ACCESS_KEY  
+yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.accessKey" $AWS_ACCESS_KEY
 yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" AWS_REGION
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
