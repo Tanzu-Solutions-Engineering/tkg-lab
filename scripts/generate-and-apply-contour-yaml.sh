@@ -1,5 +1,13 @@
 #!/bin/bash -e
 
+function add-three-dashes() {
+  line=$1
+  file=$2
+  sed -i '' '${line}i\
+  ---\
+  ' $file
+}
+
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster_name as args"
   exit 1
@@ -18,7 +26,7 @@ cd tkg-extensions/extensions
 # Install the TMC Extensions Manager - Commented out since we already install it when attaching the cluster to TMC
 # kubectl apply -f tmc-extension-manager.yaml
 # Install the kapp Controller
-##kubectl apply -f kapp-controller.yaml
+kubectl apply -f kapp-controller.yaml
 
 # Wait for kapp-controller pods to be Running
 while kubectl get pods -n vmware-system-tmc | grep kapp-controller | grep Running ; [ $? -ne 0 ]; do
@@ -27,7 +35,7 @@ while kubectl get pods -n vmware-system-tmc | grep kapp-controller | grep Runnin
 done
 
 # Create a namespace and RBAC config for the Contour service
-##kubectl apply -f ingress/contour/namespace-role.yaml
+kubectl apply -f ingress/contour/namespace-role.yaml
 
 # Prepare Contour custom configuration
 if [ "$IAAS" = "aws" ];
@@ -39,11 +47,16 @@ else
   yq read ingress/contour/vsphere/contour-data-values.yaml.example > ../../generated/$CLUSTER_NAME/contour/contour-data-values.yaml
   yq write -d0 ../../generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i envoy.service.type LoadBalancer
 fi
+# sed command to be revised for linux
+sed -i '' '3i\
+---\
+' ../../generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+
 # Create secret with custom configuration
-##kubectl create secret generic contour-data-values --from-file=values.yaml=../../generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress
+kubectl create secret generic contour-data-values --from-file=values.yaml=../../generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress
 
 # Deploy Contour Extension
-##kubectl apply -f ingress/contour/contour-extension.yaml
+kubectl apply -f ingress/contour/contour-extension.yaml
 
 # Wait until reconcile succeeds
 while kubectl get app contour -n tanzu-system-ingress | grep contour | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
