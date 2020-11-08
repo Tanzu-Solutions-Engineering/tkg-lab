@@ -75,9 +75,9 @@ while kubectl get app dex -n tanzu-system-auth | grep dex | grep "paused" ; [ $?
 done   
 
 kubectl apply -f generated/$CLUSTER_NAME/dex/03-certs.yaml
-kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml.yaml
+kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 
-while kubectl get certificates -n tanzu-system-auth dex-cert | grep True ; [ $? -ne 0 ]; do
+while kubectl get certificates -n tanzu-system-auth dex-cert-valid | grep True ; [ $? -ne 0 ]; do
 	echo Dex certificate is not yet ready
 	sleep 5s
 done   
