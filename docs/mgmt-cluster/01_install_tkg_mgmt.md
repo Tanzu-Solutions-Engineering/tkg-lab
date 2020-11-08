@@ -20,18 +20,17 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 
 >Note: This step takes about 12 minutes.  You have an opportunity here to skip ahead to [Step 3: Configure DNS and Prep Certificate Signing](03_dns_certs_mgmt.md), [Step 4: Configure Okta](04_okta_mgmt.md), and [Step 5: Retrieve TKG Extensions](05_extensions_mgmt.md) to complete steps in parallel.  Then you can come back and finish off this step.
 
-3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's deploy a default storage class.  The following script will perform these actions.
+3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster. The following script will perform these actions.
 
 ```bash
 ./scripts/03-post-deploy-mgmt-cluster.sh
 ```
 
-4. Validation Step. Check management cluster is provisioned, pods are running and storage class is configured;
+4. Validation Step. Check management cluster is provisioned, pods are running:
 
 ```bash
 tkg get management-clusters
 kubectl get pods -A
-kubectl get storageclass
 ```
 
 ## Install TKG Management Cluster on vSphere
@@ -60,25 +59,13 @@ You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc
 
 >Note: This step takes about 12 minutes.  You have an opportunity here to skip ahead to [Step 3: Configure DNS and Prep Certificate Signing](03_dns_certs_mgmt.md), [Step 4: Configure Okta](04_okta_mgmt.md), and [Step 5: Retrieve TKG Extensions](05_extensions_mgmt.md) to complete steps in parallel.  Then you can come back and finish off this step.
 
-3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster.  Also, in order to be nice to our users, let's configure a CSI Storage Policy deploy a default storage class.
-
-Follow these steps in vCenter:
-- Tags & Custom Attributes -> Categories -> New -> k8s-storage (Datastore, Datastore Cluster)
-- Tags & Custom Attributes -> Tags -> New -> k8s-storage (choose k8s-storage category)
-- Storage -> Select datastore -> Tags -> Assign Tag (k8s-storage)
-- Policies & Profiles > VM Storage Profiles > Create VM Storage Policy
-  - Name: “k8s Storage Policy”
-  - Enable tag placement
-  - Choose category and tag created previously
-  - Confirm your storage Datastore is compatible
-
-Then run the following command to scale to 2 worker nodes that uses the CNS provisioner to the cluster.
+3. At this point the management cluster is deployed.  We will be adding a few additional components such that we would benefit from two worker nodes in the cluster. The following script will perform these actions:s
 
 ```bash
 ./scripts/03-post-deploy-mgmt-cluster.sh
 ```
 
-4. Validation Step. Check management cluster is provisioned, pods are running and the sc is configured;
+4. Validation Step. Check management cluster is provisioned, pods are running:
 
 ```bash
 tkg get management-clusters
