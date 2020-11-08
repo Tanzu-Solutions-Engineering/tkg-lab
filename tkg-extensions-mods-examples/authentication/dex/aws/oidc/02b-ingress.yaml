@@ -11,9 +11,4 @@ spec:
   tcpproxy:
     services:
     - name: dexsvc
-      port: 443
-  routes:
-  - match: /
-    services:
-    - name: kuard
-      port: 80
+      port: 5556
