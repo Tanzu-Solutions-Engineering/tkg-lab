@@ -23,26 +23,34 @@ yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.commonName" $DEX
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.dnsNames[0]" $DEX_CN
 
 # Prepare Contour custom configuration
-if [ "$IAAS" = "aws" ];
-then
-  # aws
-  yq read tkg-extensions/extensions/authentication/dex/aws/oidc/dex-data-values.yaml.example > generated/$CLUSTER_NAME/dex/dex-data-values.yaml
-else
-  # vsphere
-  yq read tkg-extensions/extensions/authentication/dex/vsphere/oidc/dex-data-values.yaml.example > generated/$CLUSTER_NAME/dex/dex-data-values.yaml
-  yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i "dns.vsphere.ipAddresses[0]" $(yq r $PARAMS_YAML management-cluster.controlplane-endpoint-ip)
-fi
+yq read tkg-extensions/extensions/authentication/dex/aws/oidc/dex-data-values.yaml.example > generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+# Remove templated static client
+yq delete -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i "dex.config.staticClients[0]"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dns.aws.DEX_SVC_LB_HOSTNAME $DEX_CN
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.CLIENT_ID $OKTA_DEX_APP_CLIENT_ID
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.CLIENT_SECRET $OKTA_DEX_APP_CLIENT_SECRET
-yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.issuer https://$OKTA_AUTH_SERVER_CN
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.issuer "https://$OKTA_AUTH_SERVER_CN/oauth2/default"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.scopes[+] "profile"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.scopes[+] "email"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.scopes[+] "groups"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.insecureEnableGroups "true"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.signingKeys "360m"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.idTokens "180m"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.service.type "NodePort"
 
 # Add in the document seperator that yq removes
 if [ `uname -s` = 'Darwin' ]; 
 then
+  # Add the #overlay/replace the line above scopes:
+  sed -i '' -e 's/      scopes:/      #@overlay\/replace\
+      scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
   sed -i '' '3i\
   ---\
   ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 else
+  # Add the #overlay/replace the line above scopes:
+  sed -i -e 's/      scopes:/      #@overlay\/replace\
+      scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
   sed -i -e '3i\
   ---\
   ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
@@ -61,8 +69,7 @@ done
 
 # TODO: Need to consider the post deployment steps for AWS!!!!  
 
-# The following bit will pause the app reconciliation, delete the selfsigned cert/secret and create lets encrypt
-# signed cert/secret and then restate the dex pod
+# The following bit will pause the app reconciliation, then reference the valid let's ecrypt cert, which retarts dex
 
 # Add paused = true to stop reconciliation
 sed -i '' -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/dex/dex-extension.yaml

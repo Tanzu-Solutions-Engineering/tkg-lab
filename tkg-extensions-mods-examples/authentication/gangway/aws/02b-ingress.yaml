@@ -12,8 +12,3 @@ spec:
     services:
     - name: gangwaysvc
       port: 443
-  routes:
-  - match: /
-    services:
-    - name: kuard
-      port: 80

@@ -44,7 +44,6 @@ $TKG_LAB_SCRIPTS/tmc-policy.sh \
         $(yq r $PARAMS_YAML shared-services-cluster.name) \
         $(yq r $PARAMS_YAML shared-services-cluster.metallb-start-ip) \
         $(yq r $PARAMS_YAML shared-services-cluster.metallb-end-ip)
-```
 $TKG_LAB_SCRIPTS/deploy-cert-manager.sh
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 $TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \

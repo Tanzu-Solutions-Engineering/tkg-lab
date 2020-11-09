@@ -1,0 +1,8 @@
+dex:
+  config:
+    staticClients:
+    - id: <WORKLOAD_CLUSTER_NAME>
+      redirectURIs:
+      - 'https://<WORKLOAD_CLUSTER_IP>:30166/callback'
+      name: <WORKLOAD_CLUSTER_NAME>
+      secret: <CLIENT_SECRET>

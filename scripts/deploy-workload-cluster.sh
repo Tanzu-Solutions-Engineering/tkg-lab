@@ -11,7 +11,7 @@ then
   fi
 else
   if [ ! $# -eq 3 ]; then
-    echo "Must supply cluster name and worker replicas an control plane ip as args"
+    echo "Must supply cluster name and worker replicas and control plane ip as args"
     exit 1
   fi
   VSPHERE_CONTROLPLANE_ENDPOINT_IP=$3
