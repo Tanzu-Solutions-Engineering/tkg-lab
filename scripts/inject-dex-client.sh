@@ -13,11 +13,11 @@ cat generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml | grep "id: $WORKLOAD_
 exists=$?
 if [ $exists -eq 1 ]; then
 
-    cp tkg-extensions-mods-examples/authentication/dex/aws/oidc/static-client.yaml generated/$MGMT_CLUSTER_NAME/dex/$CLUSTER_NAME-static-client.yaml
-    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].id" $WORKLOAD_CLUSTER_NAME
-    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].redirectURIs[0]" "https://$GANGWAY_CN/callback"
-    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].name" $WORKLOAD_CLUSTER_NAME
-    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].secret" "FOO_SECRET"
+    cp tkg-extensions-mods-examples/authentication/dex/aws/oidc/static-client.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml
+    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].id" $WORKLOAD_CLUSTER_NAME
+    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].redirectURIs[0]" "https://$GANGWAY_CN/callback"
+    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].name" $WORKLOAD_CLUSTER_NAME
+    yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].secret" "FOO_SECRET"
 
     yq merge -a -i generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml
 
