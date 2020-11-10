@@ -58,6 +58,7 @@ if [ -f "$tkg_key_file" ]; then
 else
   echo_notfound "generating"
   ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
+  yq write ~/.tkg/config.yaml -i "VSPHERE_SSH_AUTHORIZED_KEY" "$(cat ./keys/tkg_rsa.pub)"
 fi
 
 # Upload TKG k8s OVA
