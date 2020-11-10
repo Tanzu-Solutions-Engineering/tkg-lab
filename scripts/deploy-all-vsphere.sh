@@ -40,7 +40,7 @@ $TKG_LAB_SCRIPTS/tmc-policy.sh \
   cluster.admin \
   platform-team
 # Shared Services Step 4
-./scripts/deploy-metallb.sh \
+$TKG_LAB_SCRIPTS/deploy-metallb.sh \
         $(yq r $PARAMS_YAML shared-services-cluster.name) \
         $(yq r $PARAMS_YAML shared-services-cluster.metallb-start-ip) \
         $(yq r $PARAMS_YAML shared-services-cluster.metallb-end-ip)
