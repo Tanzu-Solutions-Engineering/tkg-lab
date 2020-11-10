@@ -34,15 +34,19 @@ yq write generated/$CLUSTER_NAME/harbor/harbor-values.yaml -i "expose.ingress.ho
 yq write generated/$CLUSTER_NAME/harbor/harbor-values.yaml -i "externalURL" https://$HARBOR_CN
 
 helm repo add harbor https://helm.goharbor.io
-helm template harbor harbor/harbor -f generated/$CLUSTER_NAME/harbor/harbor-values.yaml --namespace harbor > generated/$CLUSTER_NAME/harbor/helm-manifest.yaml
+# generate the helm manifest and make sure the core pod trusts let's encrypt
+helm template harbor harbor/harbor -f generated/$CLUSTER_NAME/harbor/harbor-values.yaml --namespace harbor | 
+  ytt -f - -f overlay/trust-certificate --ignore-unknown-comments \
+    --data-value certificate="$(cat keys/letsencrypt-ca.pem)" \
+    --data-value ca=letsencrypt > generated/$CLUSTER_NAME/harbor/helm-manifest.yaml
 
 kapp deploy -a harbor \
   -n tanzu-kapp \
   --into-ns harbor \
   -f generated/$CLUSTER_NAME/harbor/01-namespace.yaml \
   -f generated/$CLUSTER_NAME/harbor/02-certs.yaml \
-  -f generated/$CLUSTER_NAME/harbor/helm-manifest.yaml  \
-  -y
+  -f generated/$CLUSTER_NAME/harbor/helm-manifest.yaml \
+  -y 
 
 echo "Okta OIDC Configurtion Values..."
 echo "Auth Mode: OIDC"

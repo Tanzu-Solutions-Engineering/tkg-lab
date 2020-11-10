@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: #@ "{}-ca-cert".format(data.values.ca)
+  #@ if data.values.namespace:
+  namespace: #@ data.values.namespace
+  #@ end
+data:
+  ca.crt: #@ data.values.certificate
+  
