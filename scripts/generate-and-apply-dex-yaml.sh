@@ -56,10 +56,11 @@ else
   ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 fi
 
-cp tkg-extensions/extensions/authentication/dex/dex-extension.yaml  generated/$CLUSTER_NAME/dex/dex-extension.yaml
+cp tkg-extensions/extensions/authentication/dex/dex-extension.yaml generated/$CLUSTER_NAME/dex/dex-extension.yaml
 
 kubectl apply -f tkg-extensions/extensions/authentication/dex/namespace-role.yaml
-kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth
+# Using the following "apply" syntax to allow for script to be rurun
+kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
 kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
 
 while kubectl get app dex -n tanzu-system-auth | grep dex | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do

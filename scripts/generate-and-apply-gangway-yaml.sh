@@ -63,7 +63,8 @@ cp tkg-extensions/extensions/authentication/gangway/gangway-extension.yaml  gene
 # Apply Gangway
 
 kubectl apply -f tkg-extensions/extensions/authentication/gangway/namespace-role.yaml
-kubectl create secret generic gangway-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -n tanzu-system-auth
+# Using the following "apply" syntax to allow for script to be rerun
+kubectl create secret generic gangway-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
 kubectl apply -f generated/$CLUSTER_NAME/gangway/gangway-extension.yaml
 
 while kubectl get app gangway -n tanzu-system-auth | grep gangway | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
