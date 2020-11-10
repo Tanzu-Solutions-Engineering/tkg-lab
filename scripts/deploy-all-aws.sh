@@ -56,12 +56,14 @@ $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML share
 # Shared Services Step 8
 $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 # Shared Services Step 9
-$TKG_LAB_SCRIPTS/velero.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+$TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML shared-services-cluster.name) \
+ $(yq r $PARAMS_YAML shared-services-cluster.backup-location)
 
 # Management Step 9
 $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
 # Management Step 10
-$TKG_LAB_SCRIPTS/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
+$TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML management-cluster.name) \
+  $(yq r $PARAMS_YAML management-cluster.backup-location)
 
 # Workload Step 1
 $TKG_LAB_SCRIPTS/deploy-all-workload-cluster-components.sh

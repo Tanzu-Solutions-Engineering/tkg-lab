@@ -42,4 +42,5 @@ $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML workl
 # Workload Step 7
 $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML workload-cluster.name)
 # Workload Step 8
-$TKG_LAB_SCRIPTS/velero.sh $(yq r $PARAMS_YAML workload-cluster.name)
+$TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML workload-cluster.name) \
+  $(yq r $PARAMS_YAML workload-cluster.backup-location)
