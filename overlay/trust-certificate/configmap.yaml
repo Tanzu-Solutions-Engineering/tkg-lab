@@ -1,0 +1,9 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: #@ "{}-ca-cert".format(data.values.ca)
+data:
+  ca.crt: #@ data.values.certificate
+  

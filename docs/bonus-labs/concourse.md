@@ -54,27 +54,18 @@ Now add the taint to the same nodes.  This will prevent other workloads from bei
 ```bash
 kubectl taint nodes -l type=concourse type=concourse:PreferNoSchedule --overwrite
 ``` 
-## Create Concourse namespace and prepare deployment file
+## Create Concourse Namespace
 In order to deploy the Helm chart for Concourse to a dedicated namespace, we need to create it first.  To do this, we can use Tanzu Mission Control, as it is already running on our shared services cluster.  This will create a "managed namespace", where we can assert additional control over what is deployed.  
 
 ```bash
 tmc workspace create -n $CONCOURSE_TMC_WORKSPACE -d "Workspace for Concourse"
 tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE
 ```
-
-Create the Concourse namespace and generate the deployment file.  This file (generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml) will contain overrides to the default chart values.
-
-```bash
-./scripts/generate-concourse.sh
-```
-
-## Add helm repo and install Concourse
-Add the repository to helm and use the generated deployment file to deploy the chart.
+## Prepare Manifests and Deploy Concourse
+ Prepare and deploy the YAML manifests for the related Concourse K8S objects.  Manifest will be output into `concourse/generated/` in case you want to inspect.
 
 ```bash
-helm repo add concourse https://concourse-charts.storage.googleapis.com/
-helm repo update
-helm upgrade --install concourse concourse/concourse --values generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml -n $CONCOURSE_NAMESPACE
+./scripts/generate-and-apply-concourse-yaml.sh
 ```
 
 ## Manage the Concourse team namespace with TMC

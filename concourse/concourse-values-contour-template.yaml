@@ -2,6 +2,19 @@
 concourse:
   web:
     externalUrl: https://CONCOURSE_URL
+    auth:
+      oidc:
+        displayName: Okta
+        enabled: true
+        groupsKey: groups
+        issuer: https://OKTA_AUTH_SERVER_CN/oauth2/default
+        scope: openid,profile,email,groups,offline_access
+        skipSslValidation: false
+secrets:
+  oidcClientId: OKTA_CONCOURSE_APP_CLIENT_ID
+  oidcClientSecret: OKTA_CONCOURSE_APP_CLIENT_SECRET
+  oidcCaCert: OKTA_AUTH_SERVER_CA_CERT
+
 web:
   ingress:
     enabled: true
