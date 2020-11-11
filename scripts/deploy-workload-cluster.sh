@@ -3,6 +3,7 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
+IAAS=$(yq r $PARAMS_YAML iaas)
 if [ "$IAAS" = "aws" ];
 then
   if [ ! $# -eq 2 ]; then
@@ -20,7 +21,6 @@ fi
 CLUSTER_NAME=$1
 WORKER_REPLICAS=$2
 
-IAAS=$(yq r $PARAMS_YAML iaas)
 DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
 
 export OIDC_ISSUER_URL=https://$DEX_CN
