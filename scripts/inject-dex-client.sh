@@ -19,7 +19,7 @@ if [ $exists -eq 1 ]; then
     yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].name" $WORKLOAD_CLUSTER_NAME
     yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].secret" "FOO_SECRET"
 
-    yq merge -a -i generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml
+    yq merge -a -i generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -P
 
     # Add in the document seperator that yq removes
     if [ `uname -s` = 'Darwin' ]; 
