@@ -59,7 +59,7 @@ In order to deploy the Helm chart for Concourse to a dedicated namespace, we nee
 
 ```bash
 tmc workspace create -n $CONCOURSE_TMC_WORKSPACE -d "Workspace for Concourse"
-tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE
+tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE -m attached -p attached
 ```
 
 Create the Concourse namespace and generate the deployment file.  This file (generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml) will contain overrides to the default chart values.
@@ -81,7 +81,7 @@ helm upgrade --install concourse concourse/concourse --values generated/$CLUSTER
 Lastly, add the newly created namespace for the Concourse main team to TMC's managed workspace we created earlier.
 
 ```bash
-tmc cluster namespace attach -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n concourse-main -k $CONCOURSE_TMC_WORKSPACE
+tmc cluster namespace attach -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n concourse-main -k $CONCOURSE_TMC_WORKSPACE -m attached -p attached
 ```
 ## Validation Step
 1. All Concourse pods are in a running state, on the tainted nodes:
