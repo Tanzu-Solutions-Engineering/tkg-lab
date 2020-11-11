@@ -72,4 +72,4 @@ concourse:
   fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
   tmc-workspace: concourse-workspace
 kubeapps:
-  server-fqdn: kubeapps.dorn.tkg-aws-e2-lab.winterfell.live
+  server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live
