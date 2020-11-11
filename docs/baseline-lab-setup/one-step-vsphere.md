@@ -1,4 +1,4 @@
-# One Step Foundation Deployment for AWS
+# One Step Foundation Deployment for vSphere
 
 This lab can be used to deploy all three clusters included in the foundational lab setup.  You will execute a single script that calls all the scripts included in the step-by-step guides.  
 
@@ -13,14 +13,14 @@ Set the PARAMS_YAML environment variable to the path of your `params.yaml` file.
 export PARAMS_YAML=local-config/params.yaml
 ```
 
-Ensure that your copy of `params.yaml` indicates `aws` as the IaaS.
+Ensure that your copy of `params.yaml` indicates `vsphere` as the IaaS.
 
 ## Execute the Deploy All Script
 
 Now you can execute the following script to perform all of those tasks:
 
 ```bash
-./scripts/deploy-all-aws.sh
+./scripts/deploy-all-vsphere.sh
 ```
 
 >Note: This process should take about 30 minutes to complete.
