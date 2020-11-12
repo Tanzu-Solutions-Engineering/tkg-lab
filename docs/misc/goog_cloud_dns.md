@@ -52,9 +52,9 @@ Check this screenshot for reference:
 
 While in the Contour lab, when you reach the step to run the `generate-and-apply-cluster-issuer-yaml.sh` script, do the following after you run it:
 - Edit the `generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml` file where `$CLUSTER_NAME` is the `name` of the cluster you are configuring.
-- Replace the entire `dns01` solver block with this one:
+- Replace the entire block under `dns01` solver block with this one:
 ```
-clouddns:
+cloudDNS:
   # The ID of the GCP project
   project: $PROJECT_NAME
   # This is the secret used to access the service account
