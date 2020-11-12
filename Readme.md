@@ -89,7 +89,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - tkg
 - velero
 - helm 3
-- [yq version 3.3+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- [yq version 3.4+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
 - kind (helpful, but not required)
 - ytt, kapp, imgpkg, kbld (bundled with tkg)
 

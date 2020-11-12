@@ -19,7 +19,9 @@ if [ $exists -eq 1 ]; then
     yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].name" $WORKLOAD_CLUSTER_NAME
     yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].secret" "FOO_SECRET"
 
-    yq merge -ai generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -P
+    # Please note that yq version 3.4 has a breaking change requiring you to explicity specify =append in the merge strategy. https://github.com/mikefarah/yq/releases/tag/3.4.0
+    # the following line will fail with yq version 3.3
+    yq merge -a=append i generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -P
 
     # Add in the document seperator that yq removes
     if [ `uname -s` = 'Darwin' ];
