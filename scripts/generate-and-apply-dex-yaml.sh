@@ -22,10 +22,11 @@ yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/03-certs.yaml >
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.commonName" $DEX_CN
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.dnsNames[0]" $DEX_CN
 
-# Prepare Contour custom configuration
+# Prepare Dex custom configuration
 yq read tkg-extensions/extensions/authentication/dex/aws/oidc/dex-data-values.yaml.example > generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 # Remove templated static client
 yq delete -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i "dex.config.staticClients[0]"
+# Set config options for OIDC, DNS ,tokens and service type
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dns.aws.DEX_SVC_LB_HOSTNAME $DEX_CN
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.CLIENT_ID $OKTA_DEX_APP_CLIENT_ID
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.CLIENT_SECRET $OKTA_DEX_APP_CLIENT_SECRET
@@ -39,7 +40,7 @@ yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expi
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.service.type "NodePort"
 
 # Add in the document seperator that yq removes
-if [ `uname -s` = 'Darwin' ]; 
+if [ `uname -s` = 'Darwin' ];
 then
   # Add the #overlay/replace the line above scopes:
   sed -i '' -e 's/      scopes:/      #@overlay\/replace\
@@ -59,16 +60,16 @@ fi
 cp tkg-extensions/extensions/authentication/dex/dex-extension.yaml generated/$CLUSTER_NAME/dex/dex-extension.yaml
 
 kubectl apply -f tkg-extensions/extensions/authentication/dex/namespace-role.yaml
-# Using the following "apply" syntax to allow for script to be rurun
+# Using the following "apply" syntax to allow for script to be run
 kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
 kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
 
 while kubectl get app dex -n tanzu-system-auth | grep dex | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Dex extension is not yet ready
 	sleep 5s
-done   
+done
 
-# TODO: Need to consider the post deployment steps for AWS!!!!  
+# TODO: Need to consider the post deployment steps for AWS!!!!
 
 # The following bit will pause the app reconciliation, then reference the valid let's ecrypt cert, which retarts dex
 
@@ -80,7 +81,7 @@ kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
 while kubectl get app dex -n tanzu-system-auth | grep dex | grep "paused" ; [ $? -ne 0 ]; do
 	echo Dex extension is not yet paused
 	sleep 5s
-done   
+done
 
 kubectl apply -f generated/$CLUSTER_NAME/dex/03-certs.yaml
 kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
@@ -88,7 +89,7 @@ kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 while kubectl get certificates -n tanzu-system-auth dex-cert-valid | grep True ; [ $? -ne 0 ]; do
 	echo Dex certificate is not yet ready
 	sleep 5s
-done   
+done
 
 kubectl patch deployment dex \
   -n tanzu-system-auth \
