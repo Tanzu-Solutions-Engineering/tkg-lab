@@ -19,10 +19,10 @@ if [ $exists -eq 1 ]; then
     yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].name" $WORKLOAD_CLUSTER_NAME
     yq write -d0 generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -i "dex.config.staticClients[0].secret" "FOO_SECRET"
 
-    yq merge -a append -i generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -P
+    yq merge -ai generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml -P
 
     # Add in the document seperator that yq removes
-    if [ `uname -s` = 'Darwin' ]; 
+    if [ `uname -s` = 'Darwin' ];
     then
       sed -i '' '3i\
       ---\
@@ -45,7 +45,7 @@ if [ $exists -eq 1 ]; then
     while kubectl get app dex -n tanzu-system-auth | grep dex | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
       echo Dex extension is not yet reconcilied
       sleep 5s
-    done   
+    done
 
     # Add paused = true to stop reconciliation
     sed -i '' -e 's/paused: false/paused: true/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
@@ -55,7 +55,7 @@ if [ $exists -eq 1 ]; then
     while kubectl get app dex -n tanzu-system-auth | grep dex | grep "paused" ; [ $? -ne 0 ]; do
       echo Dex extension is not yet paused
       sleep 5s
-    done   
+    done
 
     kubectl patch deployment dex \
       -n tanzu-system-auth \
@@ -65,4 +65,3 @@ if [ $exists -eq 1 ]; then
     #switch back
     kubectl config use-context $WORKLOAD_CLUSTER_NAME-admin@$WORKLOAD_CLUSTER_NAME
 fi
-
