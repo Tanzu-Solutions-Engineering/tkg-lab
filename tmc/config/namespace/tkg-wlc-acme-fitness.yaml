@@ -1,8 +1,9 @@
 fullName:
   clusterName: se-dpfeffer-wlc-1
-  location: global
+  managementClusterName: attached
   name: acme-fitness
-objectMeta:
+  provisionerName: attached
+meta:
   labels:
     origin: dpfeffer
 spec:

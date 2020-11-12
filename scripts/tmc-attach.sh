@@ -36,7 +36,7 @@ tmc cluster attach \
   --name $VMWARE_ID-$CLUSTER_NAME-$IAAS \
   --labels origin=$VMWARE_ID \
   --labels iaas=$IAAS \
-  --group $TMC_CLUSTER_GROUP \
+  --cluster-group $TMC_CLUSTER_GROUP \
   --output generated/$CLUSTER_NAME/tmc.yaml
 kubectl apply -f generated/$CLUSTER_NAME/tmc.yaml
 echo "$CLUSTER_NAME registered with TMC"

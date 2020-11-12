@@ -35,13 +35,13 @@ open http://$(yq r $PARAMS_YAML shared-services-cluster.kibana-fqdn)
 
 2. You should see the kibana welcome screen.
 
-3. Click the Discover icon at the top of the right menu bar.
+3. Click the Discover icon at the top of the left menu bar.
 
 4. You will see widget to create an index pattern. Enter logstash-* and click next step.
 
 5. Select @timestamp for the Time filter field name. and then click Create index pattern.
 
-6. Now click the Discover icon at the top of the right menu bar. You can start searching for logs.
+6. Now click the Discover icon at the top of the left menu bar. You can start searching for logs.
 
 ## Go to Next Step
 

@@ -8,7 +8,11 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 # Identify existing access keys: aws iam list-access-keys --user-name bootstrapper.cluster-api-provider-aws.sigs.k8s.io --output json
 # Delete access key: aws iam delete-access-key --access-key-id=KEY_FROM_ABOVE --user-name bootstrapper.cluster-api-provider-aws.sigs.k8s.io
 
-AWS_B64ENCODED_CREDENTIALS=$(yq r ~/.tkg/config.yaml AWS_B64ENCODED_CREDENTIALS)
+if [ "$TKG_CONFIG" = "" ]; then
+  TKG_CONFIG=~/.tkg/config.yaml
+fi
+
+AWS_B64ENCODED_CREDENTIALS=$(yq r $TKG_CONFIG AWS_B64ENCODED_CREDENTIALS)
 if [ -z "$AWS_B64ENCODED_CREDENTIALS" ];then
   echo "Encoded access key credentials not found in config.  Creating a new one and storing in the config."
   export AWS_REGION=$(yq r $PARAMS_YAML aws.region)
@@ -18,7 +22,7 @@ if [ -z "$AWS_B64ENCODED_CREDENTIALS" ];then
   export AWS_ACCESS_KEY_ID=$(echo $AWS_CREDENTIALS | jq .AccessKey.AccessKeyId -r)
   export AWS_SECRET_ACCESS_KEY=$(echo $AWS_CREDENTIALS | jq .AccessKey.SecretAccessKey -r)
   AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm alpha bootstrap encode-aws-credentials)
-  yq write ~/.tkg/config.yaml -i "AWS_B64ENCODED_CREDENTIALS" $AWS_B64ENCODED_CREDENTIALS
+  yq write $TKG_CONFIG -i "AWS_B64ENCODED_CREDENTIALS" $AWS_B64ENCODED_CREDENTIALS
 fi
 
 MANAGEMENT_CLUSTER_NAME=$(yq r $PARAMS_YAML management-cluster.name)
