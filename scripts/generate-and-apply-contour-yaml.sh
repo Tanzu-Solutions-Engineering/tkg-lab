@@ -35,6 +35,10 @@ if [ "$IAAS" = "aws" ];
 then
   # aws
   yq read tkg-extensions/extensions/ingress/contour/aws/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+elif [ "$IAAS" = "azure" ];
+then
+  # azure
+  yq read tkg-extensions/extensions/ingress/contour/azure/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 else
   # vsphere
   yq read tkg-extensions/extensions/ingress/contour/vsphere/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
