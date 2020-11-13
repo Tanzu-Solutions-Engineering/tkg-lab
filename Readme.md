@@ -11,11 +11,12 @@ OSS Signed and Supported Extensions:
 - **Dex** and **Gangway** for authentication
 - **Fluent-bit** for logging
 - **Cert-manager** for certificate management
+- **Harbor** for image registry
 
 TKG Plus for additional Open Source Support:
 
 - **Velero** for backup
-- **Harbor** for image registry
+
 
 Incorporates the following Tanzu SaaS products:
 

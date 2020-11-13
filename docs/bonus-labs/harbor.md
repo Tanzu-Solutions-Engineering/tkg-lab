@@ -34,7 +34,9 @@ Since this storage is external to the process, you will need to clean it up if y
 Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
 
 ```bash
-./harbor/generate-and-apply-harbor-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./harbor/generate-and-apply-harbor-yaml.sh \
+   $(yq r $PARAMS_YAML management-cluster.name) \
+   $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
 ## Validation Step
@@ -135,5 +137,3 @@ docker login https://$(yq r $PARAMS_YAML harbor.harbor-cn) -u alana
 3. Select `alana` user and click the `Set as Admin` button
 
 4. Next time `alana` logs in, she will have admin privileges.
-
-
