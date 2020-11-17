@@ -20,6 +20,7 @@ then
   sed -i '' -e "s/OKTA_CONCOURSE_APP_CLIENT_SECRET/$OKTA_CONCOURSE_APP_CLIENT_SECRET/g" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
 else
   sed -i -e "s/CONCOURSE_URL/$CONCOURSE_URL/g" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
+  sed -i -e "s/OKTA_AUTH_SERVER_CN/$OKTA_AUTH_SERVER_CN/g" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
   sed -i -e "s/$OKTA_AUTH_SERVER_CN/$OKTA_AUTH_SERVER_CN/g" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
   sed -i -e "s/OKTA_CONCOURSE_APP_CLIENT_ID/$OKTA_CONCOURSE_APP_CLIENT_ID/g" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
   sed -i -e "s/OKTA_CONCOURSE_APP_CLIENT_SECRET/$OKTA_CONCOURSE_APP_CLIENT_SECRET/g" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
