@@ -19,7 +19,7 @@ CONTROL_PLANE_MACHINE_TYPE
 NODE_MACHINE_TYPE 
 SSH_PUBLIC_KEY_FILE"
 
-# Read variabls from the params file and write to the tkg config
+# Read variables from the params file and write to the tkg config
 AZURE_CLIENT_SECRET=$(yq r $TKG_CONFIG AZURE_CLIENT_SECRET)
 if [ -z "$AZURE_CLIENT_SECRET" ]; then
   echo "Azure client secret NOT found in config, setting up $TKG_CONFIG with \
@@ -59,5 +59,3 @@ MANAGEMENT_CLUSTER_PLAN=$(yq r "$PARAMS_YAML" azure.plan)
 
 tkg init --infrastructure=azure --name="$MANAGEMENT_CLUSTER_NAME" \
   --plan="$MANAGEMENT_CLUSTER_PLAN" -v 6
-
-#tkg init --infrastructure=azure --name="$MANAGEMENT_CLUSTER_NAME" -v 6
