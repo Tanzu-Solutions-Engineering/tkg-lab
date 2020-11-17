@@ -33,6 +33,45 @@ tkg get management-clusters
 kubectl get pods -A
 ```
 
+## Install TKG Managment Cluster on Azure
+
+1. Complete [the initial general requirements](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#general-requirements) for deploying a TKG managment cluster to Azure. 
+
+2. Review the [documenation to register a TKG application](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#register-app) on Azure to understand the steps. It's not necessary to manually create the Azure application, instead the below script will automate the setps. It will use the current `az` CLI context to find your tenant and subscription ID, then it will create an application and a client secret. Those items will be written to the parameters file for use in the following steps.
+
+*NOTE: For the `app-name` you can either set it manually in the params file (`azure.app-name`) to a preferred name, or let the script set one.*
+
+```bash
+./scripts/01-prep-azure-objects.sh
+```
+
+3. Configure additional variables in `params.yaml` in the `azure` section. You will need to set:
+
+* `azure.location` - e.g. canadacentral
+* `azure.control-plane-machine-type` - e.g. Standard_D2s_v3
+* `azure.node-machine-type` - e.g. Standard_D2s_v3
+* `azure.ssh-public-key-file` - The location of your public key file, e.g. `/home/user/.ssh/id_rsa.pub`
+* `azure.plan` - `dev` or `prod`
+
+4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#license).
+
+```bash
+az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot19dot1-ubuntu-1804
+```
+
+5. Deploy the management cluster.
+
+```bash
+./scripts/02-deploy-azure-mgmt-cluster.sh
+```
+
+6. Validation Step. Check management cluster is provisioned, pods are running:
+
+```bash
+tkg get management-clusters
+kubectl get pods -A
+```
+
 ## Install TKG Management Cluster on vSphere
 
 1. Complete [Deploy Management Clusters to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-vsphere.html) which prepares an SSH key and the OS image templates to be used for all clusters.
