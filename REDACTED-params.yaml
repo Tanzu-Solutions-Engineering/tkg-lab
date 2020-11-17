@@ -26,7 +26,7 @@ management-cluster:
   name: dragonstone
   ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
   dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
-  backup-location: REDACTED 
+  backup-location: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
   metallb-start-ip: 192.168.7.200 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.209 # only required for vsphere iaas
 shared-services-cluster:
@@ -36,7 +36,7 @@ shared-services-cluster:
   gangway-fqdn: gangway.dorn.tkg-aws-e2-lab.winterfell.live
   elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
   kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
-  backup-location: REDACTED 
+  backup-location: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
   metallb-start-ip: 192.168.7.210 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.219 # only required for vsphere iaas
 workload-cluster:
@@ -44,7 +44,7 @@ workload-cluster:
   name: highgarden
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
   gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
-  backup-location: REDACTED 
+  backup-location: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
   metallb-start-ip: 192.168.7.220 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.229 # only required for vsphere iaas
 okta:
