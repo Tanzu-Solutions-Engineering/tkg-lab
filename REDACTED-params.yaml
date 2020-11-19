@@ -61,6 +61,8 @@ okta:
   dex-app-client-secret: REDACTED
   harbor-app-client-id: REDACTED # if deploying harbor and using OIDC integration
   harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-id: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
 wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
@@ -87,5 +89,6 @@ concourse:
   namespace: concourse
   fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
   tmc-workspace: concourse-workspace
+  admin-password: REDACTED
 kubeapps:
   server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live
