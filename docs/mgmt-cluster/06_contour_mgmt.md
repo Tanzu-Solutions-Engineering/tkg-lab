@@ -26,12 +26,20 @@ Once it is deployed, you can see all pods `Running` and the the Load Balancer up
 kubectl get pod,svc -n tanzu-system-ingress
 ```
 
-## Check out Cloud Load Balancer (AWS Only)
+## Check out Cloud Load Balancer 
 
-The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI:
+The EXTERNAL IP for AWS will be set to the name of the newly configured AWS Elastic Load Balancer, which will also be visible in the AWS UI and CLI.
+
+If using AWS:
 
 ```bash
 aws elb describe-load-balancers
+```
+
+If Azure:
+
+```bash
+az network lb list
 ```
 
 ## Setup Route 53 DNS for Wildcard Domain Contour Ingress
