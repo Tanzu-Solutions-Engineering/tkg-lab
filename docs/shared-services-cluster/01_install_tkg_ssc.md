@@ -17,14 +17,15 @@ requires these.
 
 Then we ask the management cluster to create the new workload cluster and once complete set the default storage class based upon the iaas.
 
->Special Note for AWS Deployments: The default behavior is for each cluster (management and workload clusters) to be provisioned in their own VPC.  However, in order to conserve VPC's, we will deploy the workload clusters in the VPC and subnets as the management cluster.  This process is described in the [TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-tanzu-k8s-clusters-create.html#aws-vpc) and done automatically via the script below.
+>Special Note for AWS Deployments: The default behavior is for each cluster (management and workload clusters) to be provisioned in their own VPC.  However, in order to conserve VPC's, we will deploy the workload clusters in the VPC and subnets as the management cluster.  This process is described in the [TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-tanzu-k8s-clusters-create.html#-deploy-a-cluster-that-shares-a-vpc-and-nat-gateways-with-the-management-cluster-amazon-ec2-15) and done automatically via the script below.
 
 All of the steps above can be accomplished by running the following script:
 
 ```bash
 ./scripts/deploy-workload-cluster.sh \
   $(yq r $PARAMS_YAML shared-services-cluster.name) \
-  $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas)
+  $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
+  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint-ip)
 ```
 
 >Note: Wait until your cluster has been created. It may take 12 minutes.

@@ -9,6 +9,27 @@ harbor:
   notary-cn: notary.<shared-cluster domain name>
 ```
 
+#### S3 Backing for Harbor
+The default settings for Harbor use PVCs behind the registry and chartmuseum pods for blob storage.  Persistent Volume performance can be slow in home labs, or environments with poor storage or networking performance.  You can opt in to using S3 compatible storage as the backing for Harbor, and this can dramatically increase the performance in these environments.
+
+To use S3 blob storage for images and helm charts managed by Harbor, you can use the following settings in your params.yaml file:
+
+```yaml
+harbor:
+  harbor-cn: harbor.<shared-cluster domain name>
+  notary-cn: notary.<shared-cluster domain name>
+  blob-storage:
+    type: s3 # Default is PVC, and can optionally be S3/MinIO
+    region: us-east-1
+    regionendpoint: http://freenas.home:9000 # Not needed for AWS S3
+    access-key-id: minio
+    secret-access-key: minio1234
+    bucket: harbor-storage
+    secure: false # set to true for HTTPS endpoints/AWS S3
+```
+
+Since this storage is external to the process, you will need to clean it up if you decide to tear down your environment.
+
 ## Prepare Manifests and Deploy Harbor
 Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
 

@@ -13,10 +13,6 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/dex/
 
-# 02-service.yaml
-yq read tkg-extensions/authentication/dex/aws/oidc/02-service.yaml > generated/$CLUSTER_NAME/dex/02-service.yaml
-yq write -d0 generated/$CLUSTER_NAME/dex/02-service.yaml -i "spec.type" "ClusterIP"
-
 # 02b-ingress.yaml
 yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/02b-ingress.yaml > generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 yq write -d0 generated/$CLUSTER_NAME/dex/02b-ingress.yaml -i "spec.virtualhost.fqdn" $DEX_CN
@@ -26,43 +22,76 @@ yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/03-certs.yaml >
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.commonName" $DEX_CN
 yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.dnsNames[0]" $DEX_CN
 
-# 04-cm.yaml
-yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/04-cm.yaml > generated/$CLUSTER_NAME/dex/04-cm.yaml
+# Prepare Dex custom configuration
+yq read tkg-extensions/extensions/authentication/dex/aws/oidc/dex-data-values.yaml.example > generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+# Remove templated static client
+yq delete -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i "dex.config.staticClients[0]"
+# Set config options for OIDC, DNS ,tokens and service type
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dns.aws.DEX_SVC_LB_HOSTNAME $DEX_CN
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.CLIENT_ID $OKTA_DEX_APP_CLIENT_ID
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.CLIENT_SECRET $OKTA_DEX_APP_CLIENT_SECRET
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.issuer "https://$OKTA_AUTH_SERVER_CN/oauth2/default"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.scopes[+] "profile"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.scopes[+] "email"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.scopes[+] "groups"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc.insecureEnableGroups "true"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.signingKeys "360m"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.idTokens "180m"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.service.type "NodePort"
 
-if [ `uname -s` = 'Darwin' ]; 
+# Add in the document seperator that yq removes
+if [ `uname -s` = 'Darwin' ];
 then
-  sed -i '' -e 's/$DEX_CN/'$DEX_CN'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i '' -e 's/$GANGWAY_CN/'$GANGWAY_CN'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i '' -e 's/$OKTA_AUTH_SERVER_CN/'$OKTA_AUTH_SERVER_CN'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i '' -e 's/$OKTA_DEX_APP_CLIENT_ID/'$OKTA_DEX_APP_CLIENT_ID'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i '' -e 's/$OKTA_DEX_APP_CLIENT_SECRET/'$OKTA_DEX_APP_CLIENT_SECRET'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
+  # Add the #overlay/replace the line above scopes:
+  sed -i '' -e 's/      scopes:/      #@overlay\/replace\
+      scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+  sed -i '' '3i\
+  ---\
+  ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 else
-  sed -i -e 's/$DEX_CN/'$DEX_CN'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i -e 's/$GANGWAY_CN/'$GANGWAY_CN'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i -e 's/$OKTA_AUTH_SERVER_CN/'$OKTA_AUTH_SERVER_CN'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i -e 's/$OKTA_DEX_APP_CLIENT_ID/'$OKTA_DEX_APP_CLIENT_ID'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
-  sed -i -e 's/$OKTA_DEX_APP_CLIENT_SECRET/'$OKTA_DEX_APP_CLIENT_SECRET'/g' generated/$CLUSTER_NAME/dex/04-cm.yaml
+  # Add the #overlay/replace the line above scopes:
+  sed -i -e 's/      scopes:/      #@overlay\/replace\
+      scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+  sed -i -e '3i\
+  ---\
+  ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 fi
 
+cp tkg-extensions/extensions/authentication/dex/dex-extension.yaml generated/$CLUSTER_NAME/dex/dex-extension.yaml
 
-kubectl apply -f tkg-extensions/authentication/dex/aws/oidc/01-namespace.yaml
-kubectl apply -f generated/$CLUSTER_NAME/dex/02-service.yaml
-kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
+kubectl apply -f tkg-extensions/extensions/authentication/dex/namespace-role.yaml
+# Using the following "apply" syntax to allow for script to be run
+kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
+kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
+
+while kubectl get app dex -n tanzu-system-auth | grep dex | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
+	echo Dex extension is not yet ready
+	sleep 5s
+done
+
+# TODO: Need to consider the post deployment steps for AWS!!!!
+
+# The following bit will pause the app reconciliation, then reference the valid let's ecrypt cert, which retarts dex
+
+# Add paused = true to stop reconciliation
+sed -i '' -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/dex/dex-extension.yaml
+kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
+
+# Wait until dex app is paused
+while kubectl get app dex -n tanzu-system-auth | grep dex | grep "paused" ; [ $? -ne 0 ]; do
+	echo Dex extension is not yet paused
+	sleep 5s
+done
+
 kubectl apply -f generated/$CLUSTER_NAME/dex/03-certs.yaml
-kubectl apply -f generated/$CLUSTER_NAME/dex/04-cm.yaml
-kubectl apply -f tkg-extensions/authentication/dex/aws/oidc/05-rbac.yaml
+kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 
-# Same environment variables set previously
-kubectl create secret generic oidc \
-   --from-literal=clientId=$OKTA_DEX_APP_CLIENT_ID \
-   --from-literal=clientSecret=$OKTA_DEX_APP_CLIENT_SECRET \
-   -n tanzu-system-auth
-
-
-#Wait for cert to be ready
-while kubectl get certificates -n tanzu-system-auth dex-cert | grep True ; [ $? -ne 0 ]; do
+while kubectl get certificates -n tanzu-system-auth dex-cert-valid | grep True ; [ $? -ne 0 ]; do
 	echo Dex certificate is not yet ready
 	sleep 5s
-done   
+done
 
-kubectl apply -f tkg-extensions/authentication/dex/aws/oidc/06-deployment.yaml
+kubectl patch deployment dex \
+  -n tanzu-system-auth \
+  --type json \
+  -p='[{"op": "replace", "path": "/spec/template/spec/volumes/1/secret/secretName", "value":"dex-cert-tls-valid"}]'

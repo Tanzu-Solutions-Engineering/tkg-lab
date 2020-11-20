@@ -1,7 +1,28 @@
 ---
 concourse:
   web:
-    externalUrl: https://CONCOURSE_URL
+    externalUrl: https://CONCOURSE_URL  # TO BE REPLACED
+    auth:
+      mainTeam:
+        localUser: "admin"
+        oidc:
+          group: platform-team
+      oidc:
+        displayName: Okta
+        enabled: true
+        groupsKey: groups
+        userNameKey: email
+        issuer: https://OKTA_AUTH_SERVER_CN/oauth2/default
+        scope: openid,profile,email,groups,offline_access
+        skipSslValidation: false
+
+secrets:
+  oidcClientId: OKTA_CONCOURSE_APP_CLIENT_ID # TO BE REPLACED
+  oidcClientSecret: OKTA_CONCOURSE_APP_CLIENT_SECRET # TO BE REPLACED
+  # CERT WILL BE REPLACED.  This did not work as expected throu testing, so we additionally use ytt to overlay the Let's Encrypt Cert as a mounted volume on the worker pods
+  oidcCaCert: OKTA_AUTH_SERVER_CA_CERT
+  localUsers: "admin:ADMIN_PASSWORD" # TO BE REPLACED
+
 web:
   ingress:
     enabled: true
@@ -10,10 +31,10 @@ web:
       cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
       projectcontour.io/websocket-routes: "/"
     hosts:
-      - CONCOURSE_URL
+      - CONCOURSE_URL # TO BE REPLACED
     tls:
     - hosts:
-      - CONCOURSE_URL
+      - CONCOURSE_URL # TO BE REPLACED
       secretName: concourse-cert
   # Toleration needed for tainted node
   tolerations:

@@ -1,6 +1,6 @@
 provider: aws
 aws:
   credentials:
-    secretKey: # Your AWS SECRET KEY
-    accessKey: # YOUR AWS ACCESS KEY
-  region: # Your AWS Region
+    secretKey:
+    accessKey:
+  region:

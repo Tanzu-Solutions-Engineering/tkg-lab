@@ -27,6 +27,7 @@ management-cluster:
   ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
   dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
   backup-location: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
+  controlplane-endpoint-ip: 192.168.7.180 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.200 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.209 # only required for vsphere iaas
 shared-services-cluster:
@@ -37,6 +38,7 @@ shared-services-cluster:
   elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
   kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
   backup-location: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
+  controlplane-endpoint-ip: 192.168.7.181 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.210 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.219 # only required for vsphere iaas
 workload-cluster:
@@ -45,6 +47,7 @@ workload-cluster:
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
   gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
   backup-location: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
+  controlplane-endpoint-ip: 192.168.7.182 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.220 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.229 # only required for vsphere iaas
 okta:
@@ -53,6 +56,8 @@ okta:
   dex-app-client-secret: REDACTED
   harbor-app-client-id: REDACTED # if deploying harbor and using OIDC integration
   harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-id: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
 wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
@@ -64,6 +69,14 @@ velero:
 harbor:
   harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
   notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
+#  blob-storage:
+#    type: s3 # Default is PVC, and can optionally be S3/MinIO
+#    regionendpoint: http://minio.server:9000 # Not required for AWS S3
+#    region: us-east-1
+#    access-key-id: REDACTED
+#    secret-access-key: REDACTED
+#    bucket: harbor-storage
+#    secure: false # set to true for HTTPS endpoints
 argocd:
   server-fqdn: argocd.dorn.tkg-aws-e2-lab.winterfell.live
   password: REDACTED
@@ -71,5 +84,6 @@ concourse:
   namespace: concourse
   fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
   tmc-workspace: concourse-workspace
+  admin-password: REDACTED
 kubeapps:
-  server-fqdn: kubeapps.dorn.tkg-aws-e2-lab.winterfell.live
+  server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live

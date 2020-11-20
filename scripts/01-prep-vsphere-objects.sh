@@ -42,11 +42,15 @@ export GOVC_INSECURE=$(yq r $PARAMS_YAML vsphere.insecure)
 export GOVC_DATASTORE=$(yq r $PARAMS_YAML vsphere.datastore)
 export TEMPLATE_FOLDER=$(yq r $PARAMS_YAML vsphere.template_folder)
 export LOCAL_OVA_FOLDER=$(yq r $PARAMS_YAML vsphere.local_ova_folder)
+
 # Write those vars into ~/.tkg/config.yaml
-yq write ~/.tkg/config.yaml -i "VSPHERE_SERVER" $GOVC_URL
-yq write ~/.tkg/config.yaml -i "VSPHERE_USERNAME" $GOVC_USERNAME
-yq write ~/.tkg/config.yaml -i "VSPHERE_PASSWORD" $GOVC_PASSWORD --style=double
-yq write ~/.tkg/config.yaml -i "VSPHERE_DATASTORE" $GOVC_DATASTORE
+if [ "$TKG_CONFIG" = "" ]; then
+  TKG_CONFIG=~/.tkg/config.yaml
+fi
+yq write $TKG_CONFIG -i "VSPHERE_SERVER" $GOVC_URL
+yq write $TKG_CONFIG -i "VSPHERE_USERNAME" $GOVC_USERNAME
+yq write $TKG_CONFIG -i "VSPHERE_PASSWORD" $GOVC_PASSWORD --style=double
+yq write $TKG_CONFIG -i "VSPHERE_DATASTORE" $GOVC_DATASTORE
 # The rest of the ~/.tkg/config.yaml need to be set manually
 
 # Create SSH key
@@ -58,12 +62,9 @@ if [ -f "$tkg_key_file" ]; then
 else
   echo_notfound "generating"
   ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
+  yq write $TKG_CONFIG -i "VSPHERE_SSH_AUTHORIZED_KEY" "$(cat ./keys/tkg_rsa.pub)"
 fi
 
 # Upload TKG k8s OVA
-govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.18.3-vmware.1.ova
-govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.18.3
-
-# Upload TKG HA Proxy OVA
-govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-haproxy-v1.2.4-vmware.1.ova
-govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-haproxy-v1.2.4
+govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.19.1-vmware.2.ova
+govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.19.1

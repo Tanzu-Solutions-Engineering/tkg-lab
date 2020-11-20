@@ -87,13 +87,11 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - kubectl
 - tmc
 - tkg
-- clusterawsadm (AWS Only)
 - velero
 - helm 3
-- [yq version 3.3+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- [yq version 3.4+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
 - kind (helpful, but not required)
-- [ytt](https://get-ytt.io/)
-- [kapp](https://get-kapp.io/)
+- ytt, kapp, imgpkg, kbld (bundled with tkg)
 
 ## Foundational Lab Setup Guides
 
@@ -101,8 +99,9 @@ There are are few options to setup the foundation lab setup of three clusters: m
 
 1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  Best really learning how each cluster is setup and the extensions and integration configured for the lab.  The guidance includes options for AWS and vSphere.
 2. [One Step Scripted Deployment for AWS](docs/baseline-lab-setup/one-step-aws.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
-3. [Helm Install Step by Step Guide](./helm-install/README.md) - If you want to go down the path of using helm charts for all cluster extensions, Please follow below url and come back to complete lab. Helm install gives you Management Cluster, Shared Services Clusters and Workload clusters with all extensions for both AWS and vSphere.
-   
+3. [One Step Scripted Deployment for vSphere](docs/baseline-lab-setup/one-step-vsphere.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
+4. [Helm Install Step by Step Guide](./helm-install/README.md) - If you want to go down the path of using helm charts for all cluster extensions, Please follow below url and come back to complete lab. Helm install gives you Management Cluster, Shared Services Clusters and Workload clusters with all extensions for both AWS and vSphere.
+
 ## Acme Fitness Lab
 
 This lab will go through our simulated experience of receiving a request from an app team for cloud resources and following the steps for both the platform team receiving the request and the app team accessing and deploying their app once the request has been fulfilled.
