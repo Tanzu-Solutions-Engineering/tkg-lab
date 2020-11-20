@@ -5,6 +5,7 @@ subdomain: tkg-aws-e2-lab.winterfell.live
 lets-encrypt-acme-email: dpfeffer@vmware.com
 tmc:
   cluster-group: se-dpfeffer-dev # scripts will create this cluster group if it doesn't already exist
+  data-protection-backup-location-name: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
 acme-fitness:
   tmc-workspace: dpfeffer-acme-fitness-dev
   fqdn: acme-fitness.highgarden.tkg-aws-e2-lab.winterfell.live
