@@ -37,32 +37,23 @@ if [ $exists -eq 1 ]; then
 
     kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
 
+    # Update the dex data values secret
     kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl replace -f-
 
-    # Add paused = false to stop reconciliation
-    sed -i '' -e 's/paused: true/paused: false/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
-    kubectl apply -f generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
-
-    # Wait until dex app is reconciliend
-    while kubectl get app dex -n tanzu-system-auth | grep dex | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-      echo Dex extension is not yet reconcilied
-      sleep 5s
-    done
-
-    # Add paused = true to stop reconciliation
-    sed -i '' -e 's/paused: false/paused: true/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
-    kubectl apply -f generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
-
-    # Wait until dex app is paused
-    while kubectl get app dex -n tanzu-system-auth | grep dex | grep "paused" ; [ $? -ne 0 ]; do
-      echo Dex extension is not yet paused
-      sleep 5s
-    done
-
-    kubectl patch deployment dex \
+    # Force reconciliation of the dex app
+    kubectl patch app dex \
       -n tanzu-system-auth \
       --type json \
-      -p='[{"op": "replace", "path": "/spec/template/spec/volumes/1/secret/secretName", "value":"dex-cert-tls-valid"}]'
+      -p='[{"op": "replace", "path": "/spec/paused", "value":true}]'
+    kubectl patch app dex \
+      -n tanzu-system-auth \
+      --type json \
+      -p='[{"op": "replace", "path": "/spec/paused", "value":false}]'
+
+    while [[ $(kubectl get app dex -n tanzu-system-auth -o yaml | yq r - status.friendlyDescription ) != "Reconcile succeeded" ]] ; do
+      echo Dex extension is not yet ready
+      sleep 5s
+    done
 
     #switch back
     kubectl config use-context $WORKLOAD_CLUSTER_NAME-admin@$WORKLOAD_CLUSTER_NAME
