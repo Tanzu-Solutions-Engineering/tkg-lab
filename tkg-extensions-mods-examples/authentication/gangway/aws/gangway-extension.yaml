@@ -1,0 +1,48 @@
+# gangway k14s objects managed by extension manager
+# Modified to include reference to overlay which will use the let's encrypt cluster issuer
+---
+apiVersion: clusters.tmc.cloud.vmware.com/v1alpha1
+kind: Extension
+metadata:
+  name: gangway
+  namespace: tanzu-system-auth
+  annotations:
+    tmc.cloud.vmware.com/managed: "false"
+spec:
+  description: gangway 
+  version: "v3.2.0_vmware.2"
+  name: gangway
+  namespace: tanzu-system-auth
+  deploymentStrategy:
+    type: KUBERNETES_NATIVE
+  objects: |
+    apiVersion: kappctrl.k14s.io/v1alpha1
+    kind: App
+    metadata:
+      name: gangway
+      annotations:
+        tmc.cloud.vmware.com/orphan-resource: "true"
+    spec:
+      syncPeriod: 5m
+      serviceAccountName: gangway-extension-sa
+      fetch:
+        - image:
+            url: registry.tkg.vmware.run/tkg-extensions-templates:v1.2.0_vmware.1
+        - inline:
+            pathsFrom:
+              - configMapRef:
+                  name: gangway-overlay
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - 0/tkg-extensions/common
+              - 0/tkg-extensions/authentication/gangway
+              - 1/gangway-overlay.yaml
+            inline:
+              pathsFrom:
+                - secretRef:
+                    name: gangway-data-values
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]
