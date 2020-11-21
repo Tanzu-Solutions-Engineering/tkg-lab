@@ -1,1 +1,0 @@
-{"Comment":"CREATE/DELETE/UPSERT a record ","Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"*.svc.tkg.lab.jkcloudmesh.com","Type":"A","TTL":300,"ResourceRecords":[{"Value":"10.197.119.151"}]}}]}
