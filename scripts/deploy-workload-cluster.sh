@@ -4,7 +4,7 @@ TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 source $TKG_LAB_SCRIPTS/set-env.sh
 
 IAAS=$(yq r $PARAMS_YAML iaas)
-if [ "$IAAS" = "aws" ];
+if [ "$IAAS" != "vsphere" ];
 then
   if [ ! $# -eq 2 ]; then
     echo "Must supply cluster name and worker replicas as args"
@@ -54,7 +54,12 @@ then
 
   # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
   aws ec2 create-tags --resources $AWS_PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER_NAME,Value=shared
-
+elif [ "$IAAS" == "azure" ];
+then
+  tkg create cluster $CLUSTER_NAME \
+    --enable-cluster-options oidc \
+    --plan dev \
+    -w $WORKER_REPLICAS -v 6  
 else
   tkg create cluster $CLUSTER_NAME \
     --enable-cluster-options oidc \
