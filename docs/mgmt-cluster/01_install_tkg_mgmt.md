@@ -46,7 +46,7 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot19dot1-ubuntu-1804
 ```
 
-4. Deploy the management cluster.
+5. Deploy the management cluster.
 
 ```bash
 ./scripts/02-deploy-azure-mgmt-cluster.sh
