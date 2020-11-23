@@ -35,7 +35,7 @@ Now you can execute the following script to perform all of those tasks:
 ./scripts/deploy-all-azure.sh
 ```
 
->Note: This process should take 25-30 minutes to complete.
+>Note: This process should take about 30 minutes to complete.
 
 ## Tear Down
 
