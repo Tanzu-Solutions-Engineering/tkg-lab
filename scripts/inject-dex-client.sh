@@ -30,9 +30,7 @@ if [ $exists -eq 1 ]; then
       ---\
       ' generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
     else
-      sed -i -e '3i\
-      ---\
-      ' generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
+      sed -i -e '3i\---\' generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
     fi
 
     kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
@@ -40,7 +38,7 @@ if [ $exists -eq 1 ]; then
     kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl replace -f-
 
     # Add paused = false to stop reconciliation
-    sed -i '' -e 's/paused: true/paused: false/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
+    sed -i -e 's/paused: true/paused: false/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
     kubectl apply -f generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
 
     # Wait until dex app is reconciliend
@@ -50,7 +48,7 @@ if [ $exists -eq 1 ]; then
     done
 
     # Add paused = true to stop reconciliation
-    sed -i '' -e 's/paused: false/paused: true/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
+    sed -i -e 's/paused: false/paused: true/g' generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
     kubectl apply -f generated/$MGMT_CLUSTER_NAME/dex/dex-extension.yaml
 
     # Wait until dex app is paused
