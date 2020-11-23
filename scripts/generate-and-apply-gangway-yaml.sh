@@ -53,9 +53,7 @@ then
   ---\
   ' generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
 else
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
 fi
 
 cp tkg-extensions/extensions/authentication/gangway/gangway-extension.yaml  generated/$CLUSTER_NAME/gangway/gangway-extension.yaml
@@ -80,7 +78,7 @@ yq write -d0 generated/$CLUSTER_NAME/gangway/05-certs.yaml -i "spec.dnsNames[0]"
 # The following bit will pause the app reconciliation, then reference the valid let's ecrypt cert, which restarts gangway
 
 # Add paused = true to stop reconciliation
-sed -i '' -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/gangway/gangway-extension.yaml
+sed -i -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/gangway/gangway-extension.yaml
 kubectl apply -f generated/$CLUSTER_NAME/gangway/gangway-extension.yaml
 
 # Wait until gangway app is paused

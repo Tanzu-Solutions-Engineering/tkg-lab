@@ -48,9 +48,7 @@ then
   ---\
   ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 else
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 fi
 
 # Create secret with custom configuration

@@ -52,9 +52,7 @@ else
   # Add the #overlay/replace the line above scopes:
   sed -i -e 's/      scopes:/      #@overlay\/replace\
       scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 fi
 
 cp tkg-extensions/extensions/authentication/dex/dex-extension.yaml generated/$CLUSTER_NAME/dex/dex-extension.yaml
@@ -74,7 +72,7 @@ done
 # The following bit will pause the app reconciliation, then reference the valid let's ecrypt cert, which retarts dex
 
 # Add paused = true to stop reconciliation
-sed -i '' -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/dex/dex-extension.yaml
+sed -i -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/dex/dex-extension.yaml
 kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
 
 # Wait until dex app is paused
