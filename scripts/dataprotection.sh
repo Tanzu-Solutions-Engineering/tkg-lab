@@ -3,15 +3,15 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
-if [ ! $# -eq 2 ]; then
-  echo "Must supply cluster name and backup location as arg"
+if [ ! $# -eq 1 ]; then
+  echo "Must supply cluster name"
   exit 1
 fi
 
 echo "Enabling TMC data protection (powered by Velero)..."
 
 CLUSTER_NAME=$1
-BACKUP_LOCATION=$2
+BACKUP_LOCATION=$(yq r $PARAMS_YAML tmc.data-protection-backup-location-name)
 
 IAAS=$(yq r $PARAMS_YAML iaas)
 VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
