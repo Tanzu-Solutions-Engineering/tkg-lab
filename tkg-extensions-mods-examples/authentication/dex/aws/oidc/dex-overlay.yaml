@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Certificate", "metadata": {"name":"dex-cert"}}),expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    tampered-by: tkg-lab
+spec:
+  issuerRef:
+    #@overlay/match missing_ok=True
+    kind: ClusterIssuer
+    name: letsencrypt-contour-cluster-issuer
+  commonName: #@ data.values.dns.aws.DEX_SVC_LB_HOSTNAME
+  #@overlay/replace
+  dnsNames:
+   - #@ data.values.dns.aws.DEX_SVC_LB_HOSTNAME

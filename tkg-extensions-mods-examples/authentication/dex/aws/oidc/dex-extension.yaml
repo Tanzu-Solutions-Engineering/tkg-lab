@@ -1,0 +1,49 @@
+# dex k14s objects managed by extension manager
+# Modified to include reference to overlay which will use the let's encrypt cluster issuer
+---
+apiVersion: clusters.tmc.cloud.vmware.com/v1alpha1
+kind: Extension
+metadata:
+  name: dex
+  namespace: tanzu-system-auth
+  annotations:
+    tmc.cloud.vmware.com/managed: "false"
+spec:
+  description: dex 
+  version: "v2.22.0_vmware.2"
+  name: dex
+  namespace: tanzu-system-auth
+  deploymentStrategy:
+    type: KUBERNETES_NATIVE
+  objects: |
+    apiVersion: kappctrl.k14s.io/v1alpha1
+    kind: App
+    metadata:
+      name: dex
+      annotations:
+        tmc.cloud.vmware.com/orphan-resource: "true"
+    spec:
+      syncPeriod: 5m
+      serviceAccountName: dex-extension-sa
+      fetch:
+        - image:
+            url: registry.tkg.vmware.run/tkg-extensions-templates:v1.2.0_vmware.1
+        - inline:
+            pathsFrom:
+              - configMapRef:
+                  name: dex-overlay
+
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - 0/tkg-extensions/common
+              - 0/tkg-extensions/authentication/dex
+              - 1/dex-overlay.yaml
+            inline:
+              pathsFrom:
+                - secretRef:
+                    name: dex-data-values
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]

@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Certificate", "metadata": {"name":"gangway-cert"}}),expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    tampered-by: tkg-lab
+spec:
+  issuerRef:
+    #@overlay/match missing_ok=True
+    kind: ClusterIssuer
+    name: letsencrypt-contour-cluster-issuer
+  #@overlay/replace
+  commonName: #@ data.values.dns.aws.GANGWAY_SVC_LB_HOSTNAME
+  #@overlay/replace
+  dnsNames:
+   - #@ data.values.dns.aws.GANGWAY_SVC_LB_HOSTNAME
