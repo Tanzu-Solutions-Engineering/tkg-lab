@@ -33,6 +33,7 @@ yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.signingKeys "360m"
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.idTokens "180m"
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.service.type "NodePort"
+yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i ca "letsencrypt"
 
 if [ `uname -s` = 'Darwin' ];
 then
@@ -57,10 +58,18 @@ kubectl apply -f tkg-extensions/extensions/authentication/dex/namespace-role.yam
 kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 
 # Using the following "apply" syntax to allow for re-run
-kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
+kubectl create secret generic dex-data-values -n tanzu-system-auth -o yaml --dry-run=client \
+  --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml | kubectl apply -f-
 
-# Add overlay to use let's encrypt cluster issuer
-kubectl create configmap dex-overlay --from-file=dex-overlay.yaml=tkg-extensions-mods-examples/authentication/dex/aws/oidc/dex-overlay.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
+# Put the Let's Encrypt CA certificate into a configmap to add to trusted certifcates
+ytt -f overlay/trust-certificate/configmap.yaml -f overlay/trust-certificate/values.yaml --ignore-unknown-comments \
+  --data-value certificate="$(cat keys/letsencrypt-ca.pem)" \
+  --data-value ca=letsencrypt | kubectl apply -f - -n tanzu-system-auth
+
+# Add overlay to use let's encrypt cluster issuer and trust Let's Encrypt
+kubectl create configmap dex-overlay -n tanzu-system-auth -o yaml --dry-run=client \
+  --from-file=dex-overlay.yaml=tkg-extensions-mods-examples/authentication/dex/aws/oidc/dex-overlay.yaml \
+  --from-file=trust-letsencrypt.yaml=overlay/trust-certificate/overlay.yaml | kubectl apply -f-
 
 # Use a modified version of the dex-extensions that use the above overlay
 kubectl apply -f tkg-extensions-mods-examples/authentication/dex/aws/oidc/dex-extension.yaml
