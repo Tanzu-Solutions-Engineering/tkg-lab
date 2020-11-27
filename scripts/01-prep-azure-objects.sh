@@ -51,10 +51,7 @@ yq write "$PARAMS_YAML" -i "azure.tenant-id" "$AZURE_TENANT_ID"
 echo "INFO: azure client id is $AZURE_CLIENT_ID"
 yq write "$PARAMS_YAML" -i azure.client-id "$AZURE_CLIENT_ID"
 
-echo "INFO: azure app name is $AZURE_APP_NAME"
-yq write "$PARAMS_YAML" -i "azure.app-name" "$AZURE_APP_NAME"
-
+echo "INFO: azure client secret written to $PARAMS_YAML at azure.client-secret"
 yq write "$PARAMS_YAML" -i "azure.client-secret" "$AZURE_CLIENT_SECRET"
-#echo "INFO: password is $AZURE_CLIENT_SECRET"
 
 # done
