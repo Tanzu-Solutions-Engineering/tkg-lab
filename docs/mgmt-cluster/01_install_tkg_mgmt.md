@@ -22,9 +22,9 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 
 ### On Azure
 
-1. Complete [the initial general requirements](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#general-requirements) for deploying a TKG managment cluster to Azure. 
+1. Complete [the initial general requirements](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#general-requirements) for deploying a TKG management cluster to Azure.
 
-2. Review the [documenation to register a TKG application](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#register-app) on Azure to understand the steps. It's not necessary to manually create the Azure application, instead the below script will automate the setps. It will use the current `az` CLI context to find your tenant and subscription ID, then it will create an application and a client secret. Those items will be written to the parameters file for use in the following steps.
+2. Review the [documentation to register a TKG application](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#register-app) on Azure to understand the steps. It's not necessary to manually create the Azure application, instead the below script will automate the steps. It will use the current `az` CLI context to find your tenant and subscription ID, then it will create an application and a client secret. Those items will be written to the parameters file for use in the following steps.
 
 *NOTE: For the `app-name` you can either set it manually in the params file (`azure.app-name`) to a preferred name, or let the script set one.*
 
@@ -35,7 +35,7 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 3. Configure additional variables in `params.yaml` in the `azure` section. You will need to set:
 
 * `azure.location` - e.g. canadacentral
-* `azure.control-plane-machine-type` - e.g. Standard_D2s_v3
+* `azure.control-plane-machine-type` - e.g. Standard_D2s_v3 cpu: 2, ram: 8GiB
 * `azure.node-machine-type` - e.g. Standard_D2s_v3
 * `azure.ssh-public-key-file` - The location of your public key file, e.g. `/home/user/.ssh/id_rsa.pub`
 * `azure.plan` - `dev` or `prod`
