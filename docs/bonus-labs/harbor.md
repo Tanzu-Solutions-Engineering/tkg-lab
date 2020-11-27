@@ -30,8 +30,8 @@ harbor:
 
 Since this storage is external to the process, you will need to clean it up if you decide to tear down your environment.
 
-## Prepare Manifests and Deploy Harbor
-Harbor Registry should be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `harbor/generated/` in case you want to inspect.
+## Prepare Manifests and Deploy Harbor Extension
+Harbor Registry will be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `generated/$SHAREDSVC_CLUSTER_NAME/harbor` in case you want to inspect.
 
 ```bash
 ./harbor/generate-and-apply-harbor-yaml.sh \
@@ -39,19 +39,20 @@ Harbor Registry should be installed in the shared services cluster, as it is goi
    $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
-## Validation Step
+The scripts will first create the Harbor certificates and check they are valid, which depends on the Let's Encrypt / Acme challenge to be resolved, that can take a couple of minutes.
+
+
+## Final validation Step
 1. All harbor pods are in a running state:
 ```bash
-kubectl get po -n harbor
+kubectl get po -n tanzu-system-registry
 ```
-2. Certificate is True and Ingress created:
-```bash
-kubectl get cert,ing -n harbor
-```
-3. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
+
+2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
 ```bash
 open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
 ```
+
 
 ## Add Integration with Okta
 
