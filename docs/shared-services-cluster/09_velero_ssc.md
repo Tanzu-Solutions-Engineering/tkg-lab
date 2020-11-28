@@ -41,6 +41,4 @@ velero backup get | grep daily
 
 ## Go to Next Step
 
-At this point the shared services cluster is complete.  Go back and complete the management cluster setup tasks.
-
-[Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
+[Install Harbor](../shared-services-cluster/10_harbor.md)

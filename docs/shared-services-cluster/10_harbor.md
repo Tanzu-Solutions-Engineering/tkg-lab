@@ -1,15 +1,15 @@
 # Install Harbor Image Registry
 
-### Set environment variables
+## Set environment variables
 The following section should be added to or exist in your local params.yaml file:
 
 ```yaml
 harbor:
   harbor-cn: harbor.<shared-cluster domain name>
-  notary-cn: notary.<shared-cluster domain name>
 ```
+> NOTE: TKG 1.2 Extensions force the Notary FQDN to be "notary."+harbor-cn
 
-#### S3 Backing for Harbor
+### S3 Backing for Harbor
 The default settings for Harbor use PVCs behind the registry and chartmuseum pods for blob storage.  Persistent Volume performance can be slow in home labs, or environments with poor storage or networking performance.  You can opt in to using S3 compatible storage as the backing for Harbor, and this can dramatically increase the performance in these environments.
 
 To use S3 blob storage for images and helm charts managed by Harbor, you can use the following settings in your params.yaml file:
@@ -17,7 +17,6 @@ To use S3 blob storage for images and helm charts managed by Harbor, you can use
 ```yaml
 harbor:
   harbor-cn: harbor.<shared-cluster domain name>
-  notary-cn: notary.<shared-cluster domain name>
   blob-storage:
     type: s3 # Default is PVC, and can optionally be S3/MinIO
     region: us-east-1
@@ -34,7 +33,7 @@ Since this storage is external to the process, you will need to clean it up if y
 Harbor Registry will be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `generated/$SHAREDSVC_CLUSTER_NAME/harbor` in case you want to inspect.
 
 ```bash
-./harbor/generate-and-apply-harbor-yaml.sh \
+./scripts/generate-and-apply-harbor-yaml.sh \
    $(yq r $PARAMS_YAML management-cluster.name) \
    $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
@@ -138,3 +137,10 @@ docker login https://$(yq r $PARAMS_YAML harbor.harbor-cn) -u alana
 3. Select `alana` user and click the `Set as Admin` button
 
 4. Next time `alana` logs in, she will have admin privileges.
+
+
+## Go to Next Step
+
+At this point the shared services cluster is complete.  Go back and complete the management cluster setup tasks.
+
+[Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
