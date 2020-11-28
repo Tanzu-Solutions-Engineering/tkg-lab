@@ -11,16 +11,16 @@ MGMT_CLUSTER_NAME=$1
 SHAREDSVC_CLUSTER_NAME=$2
 
 # Identifying Shared Services Cluster at TKG level
-#kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
-#kubectl label cluster.cluster.x-k8s.io/$SHAREDSVC_CLUSTER_NAME cluster-role.tkg.tanzu.vmware.com/tanzu-services="" --overwrite=true
-#tkg get cluster --include-management-cluster
+kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
+kubectl label cluster.cluster.x-k8s.io/$SHAREDSVC_CLUSTER_NAME cluster-role.tkg.tanzu.vmware.com/tanzu-services="" --overwrite=true
+tkg get cluster --include-management-cluster
 
 # Install Harbor in Shared Services Cluster
 kubectl config use-context $SHAREDSVC_CLUSTER_NAME-admin@$SHAREDSVC_CLUSTER_NAME
 
 echo "Beginning Harbor install..."
-
-# Since this is installed after Contour, then cert-manager, tmc-extension-manager and kapp-controller should be already deployed in the cluster
+# Since this is installed after Contour, then cert-manager, tmc-extension-manager and kapp-controller should be already deployed in the cluster,
+# so we don't need to install those.
 
 HARBOR_CN=$(yq r $PARAMS_YAML harbor.harbor-cn)
 # NOTARY_CN=$(yq r $PARAMS_YAML harbor.notary-cn) - TKG 1.2 Extensions force the Notary FQDN to be "notary."+HARBOR_CN
@@ -29,14 +29,14 @@ NOTARY_CN="notary."$HARBOR_CN
 mkdir -p generated/$SHAREDSVC_CLUSTER_NAME/harbor
 
 # Create a namespace for the Harbor service on the shared services cluster.
-#kubectl apply -f tkg-extensions/extensions/registry/harbor/namespace-role.yaml
+kubectl apply -f tkg-extensions/extensions/registry/harbor/namespace-role.yaml
 
 # Create certificate 02-certs.yaml
-#yq read tkg-extensions-mods-examples/registry/harbor/02-certs.yaml > generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
-#yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml -i "spec.commonName" $HARBOR_CN
-#yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml -i "spec.dnsNames[0]" $HARBOR_CN
-#yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml -i "spec.dnsNames[1]" $NOTARY_CN
-#kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+yq read tkg-extensions-mods-examples/registry/harbor/02-certs.yaml > generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml -i "spec.commonName" $HARBOR_CN
+yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml -i "spec.dnsNames[0]" $HARBOR_CN
+yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml -i "spec.dnsNames[1]" $NOTARY_CN
+kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-registry harbor-cert | grep True ; [ $? -ne 0 ]; do
 	echo Harbor certificate is not yet ready
@@ -97,7 +97,8 @@ while kubectl get app harbor -n tanzu-system-registry | grep harbor | grep "Reco
 done
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it
-# Since we have created a Certificate with a trusted CA, and have a FQDN that is routable from any cluster in the TKG region then we are good to go.
+# Since we have created a Certificate with a trusted CA, and have a FQDN that is routable from any cluster in the TKG region then we are good to go,
+# and we don't need the TKG Connectivity bits.
 # TODO: Install the Tanzu Registry Webhook and TKG Connectivity API for demonstration purposes
 
 
