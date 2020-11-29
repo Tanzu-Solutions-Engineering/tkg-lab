@@ -16,14 +16,14 @@ CLIENT_ID
 CLIENT_SECRET 
 LOCATION 
 CONTROL_PLANE_MACHINE_TYPE
-NODE_MACHINE_TYPE 
-SSH_PUBLIC_KEY_FILE"
+NODE_MACHINE_TYPE"
 
 # Read variables from the params file and write to the tkg config
 AZURE_CLIENT_SECRET=$(yq r $TKG_CONFIG AZURE_CLIENT_SECRET)
 if [ -z "$AZURE_CLIENT_SECRET" ]; then
   echo "Azure client secret NOT found in config, setting up $TKG_CONFIG with \
   Azure variables from params.yaml."
+
   for AZURE_VAR in $AZURE_VAR_LIST; do
     
     # Make lowercase and convert _ to - to find in params file
@@ -37,25 +37,12 @@ if [ -z "$AZURE_CLIENT_SECRET" ]; then
       exit 1
     fi
 
-    # Special case for the ssh public key which needs to be converted from a  
-    # file to a base64 string
-    if [ "$AZURE_VAR" == "SSH_PUBLIC_KEY_FILE" ]; then 
-      if [ -f "$entry" ]; then 
-        entry="$(base64 < "$entry" | tr -d '\r\n')"
-        AZURE_VAR="SSH_PUBLIC_KEY_B64"
-      else
-        echo "ERROR: $entry is not a file, exiting"
-        exit 1
-      fi
-    fi
-
     # Write the entry prefixing variables with "AZURE_"
     yq write $TKG_CONFIG -i "AZURE_$AZURE_VAR" "$entry"
   done
 fi
 
 MANAGEMENT_CLUSTER_NAME=$(yq r "$PARAMS_YAML" management-cluster.name)
-MANAGEMENT_CLUSTER_PLAN=$(yq r "$PARAMS_YAML" azure.plan)
 
 tkg init --infrastructure=azure --name="$MANAGEMENT_CLUSTER_NAME" \
-  --plan="$MANAGEMENT_CLUSTER_PLAN" -v 6
+  --plan=dev -v 6
