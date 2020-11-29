@@ -13,6 +13,7 @@ SHAREDSVC_CLUSTER_NAME=$2
 # Identifying Shared Services Cluster at TKG level
 kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
 kubectl label cluster.cluster.x-k8s.io/$SHAREDSVC_CLUSTER_NAME cluster-role.tkg.tanzu.vmware.com/tanzu-services="" --overwrite=true
+tkg set mc $MGMT_CLUSTER_NAME
 tkg get cluster --include-management-cluster
 
 # Install Harbor in Shared Services Cluster
