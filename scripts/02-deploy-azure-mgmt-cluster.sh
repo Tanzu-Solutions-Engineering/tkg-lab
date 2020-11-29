@@ -26,9 +26,11 @@ if [ -z "$AZURE_CLIENT_SECRET" ]; then
 
   for AZURE_VAR in $AZURE_VAR_LIST; do
     
+    echo "Processing $AZURE_VAR from list..."
+
     # Make lowercase and convert _ to - to find in params file
-    CONVERTED_AZURE_VAR=${AZURE_VAR,,}
-    CONVERTED_AZURE_VAR=${CONVERTED_AZURE_VAR//_/-}
+    CONVERTED_AZURE_VAR=`echo $AZURE_VAR | awk '{print tolower($0)}'`
+    CONVERTED_AZURE_VAR=`echo $CONVERTED_AZURE_VAR | awk '{gsub("_","-",$0); print $0}'`
     
     # Find the entry in the params file to write the TKG_CONFIG
     entry=$(yq r "$PARAMS_YAML" azure."$CONVERTED_AZURE_VAR")

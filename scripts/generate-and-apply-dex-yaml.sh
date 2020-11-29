@@ -17,11 +17,6 @@ mkdir -p generated/$CLUSTER_NAME/dex/
 yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/02b-ingress.yaml > generated/$CLUSTER_NAME/dex/02b-ingress.yaml
 yq write -d0 generated/$CLUSTER_NAME/dex/02b-ingress.yaml -i "spec.virtualhost.fqdn" $DEX_CN
 
-# 03-certs.yaml
-yq read tkg-extensions-mods-examples/authentication/dex/aws/oidc/03-certs.yaml > generated/$CLUSTER_NAME/dex/03-certs.yaml
-yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.commonName" $DEX_CN
-yq write -d0 generated/$CLUSTER_NAME/dex/03-certs.yaml -i "spec.dnsNames[0]" $DEX_CN
-
 # Prepare Dex custom configuration
 yq read tkg-extensions/extensions/authentication/dex/aws/oidc/dex-data-values.yaml.example > generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 # Remove templated static client
@@ -39,12 +34,12 @@ yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expi
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.idTokens "180m"
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.service.type "NodePort"
 
-# Add in the document seperator that yq removes
 if [ `uname -s` = 'Darwin' ];
 then
   # Add the #overlay/replace the line above scopes:
   sed -i '' -e 's/      scopes:/      #@overlay\/replace\
       scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+  # Add in the document seperator that yq removes
   sed -i '' '3i\
   ---\
   ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
@@ -52,44 +47,23 @@ else
   # Add the #overlay/replace the line above scopes:
   sed -i -e 's/      scopes:/      #@overlay\/replace\
       scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+  # Add in the document seperator that yq removes
   sed -i -e '3i\---\' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 fi
 
-cp tkg-extensions/extensions/authentication/dex/dex-extension.yaml generated/$CLUSTER_NAME/dex/dex-extension.yaml
-
 kubectl apply -f tkg-extensions/extensions/authentication/dex/namespace-role.yaml
-# Using the following "apply" syntax to allow for script to be run
+kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
+
+# Using the following "apply" syntax to allow for re-run
 kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
-kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
+
+# Add overlay to use let's encrypt cluster issuer
+kubectl create configmap dex-overlay --from-file=dex-overlay.yaml=tkg-extensions-mods-examples/authentication/dex/aws/oidc/dex-overlay.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl apply -f-
+
+# Use a modified version of the dex-extensions that use the above overlay
+kubectl apply -f tkg-extensions-mods-examples/authentication/dex/aws/oidc/dex-extension.yaml
 
 while kubectl get app dex -n tanzu-system-auth | grep dex | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Dex extension is not yet ready
 	sleep 5s
 done
-
-# TODO: Need to consider the post deployment steps for AWS!!!!
-
-# The following bit will pause the app reconciliation, then reference the valid let's ecrypt cert, which retarts dex
-
-# Add paused = true to stop reconciliation
-sed -i -e 's/syncPeriod: 5m/paused: true/g' generated/$CLUSTER_NAME/dex/dex-extension.yaml
-kubectl apply -f generated/$CLUSTER_NAME/dex/dex-extension.yaml
-
-# Wait until dex app is paused
-while kubectl get app dex -n tanzu-system-auth | grep dex | grep "paused" ; [ $? -ne 0 ]; do
-	echo Dex extension is not yet paused
-	sleep 5s
-done
-
-kubectl apply -f generated/$CLUSTER_NAME/dex/03-certs.yaml
-kubectl apply -f generated/$CLUSTER_NAME/dex/02b-ingress.yaml
-
-while kubectl get certificates -n tanzu-system-auth dex-cert-valid | grep True ; [ $? -ne 0 ]; do
-	echo Dex certificate is not yet ready
-	sleep 5s
-done
-
-kubectl patch deployment dex \
-  -n tanzu-system-auth \
-  --type json \
-  -p='[{"op": "replace", "path": "/spec/template/spec/volumes/1/secret/secretName", "value":"dex-cert-tls-valid"}]'

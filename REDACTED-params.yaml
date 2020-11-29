@@ -5,6 +5,7 @@ subdomain: tkg-aws-e2-lab.winterfell.live
 lets-encrypt-acme-email: dpfeffer@vmware.com
 tmc:
   cluster-group: se-dpfeffer-dev # scripts will create this cluster group if it doesn't already exist
+  data-protection-backup-location-name: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
 acme-fitness:
   tmc-workspace: dpfeffer-acme-fitness-dev
   fqdn: acme-fitness.highgarden.tkg-aws-e2-lab.winterfell.live
@@ -14,8 +15,8 @@ aws:
   secret-access-key: REDACTED
   hosted-zone-id: Z00636703RP40GVIAWHLA # clear this value out to start, and script will generate a new zone for you
 azure:
-    environment: "AzurePublicCloud" # NOTE: Always "AzurePublicCLoud"
-    location: # eg. canadacentral
+    environment: "AzurePublicCloud" # NOTE: Always "AzurePublicCloud"
+    location: # eg. canadacentral.  az account list-locations -o table
     control-plane-machine-type: # eg. Standard_D2s_v3 
     node-machine-type: # eg. Standard_D2s_v3 
     app-name: # set an app name or one will be set by the azure object script 
@@ -59,6 +60,8 @@ okta:
   dex-app-client-secret: REDACTED
   harbor-app-client-id: REDACTED # if deploying harbor and using OIDC integration
   harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-id: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
 wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
@@ -85,5 +88,6 @@ concourse:
   namespace: concourse
   fqdn: concourse.dorn.tkg-aws-e2-lab.winterfell.live
   tmc-workspace: concourse-workspace
+  admin-password: REDACTED
 kubeapps:
   server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live

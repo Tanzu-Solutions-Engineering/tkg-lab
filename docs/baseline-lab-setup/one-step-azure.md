@@ -21,7 +21,7 @@ Ensure the `az` CLI is installed and configured. The deploy all script will use 
 
 ## Accept the TKG Azure Base Image License
 
-To run management cluster VMs on Azure, [accept the license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html) for their base Kubernetes version and machine OS.
+To run management cluster VMs on Azure, [accept the license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#-accept-the-base-os-image-license-2) for their base Kubernetes version and machine OS.
 
 ```
 az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot19dot1-ubuntu-1804
@@ -35,7 +35,7 @@ Now you can execute the following script to perform all of those tasks:
 ./scripts/deploy-all-azure.sh
 ```
 
->Note: This process should take 25-30 minutes to complete.
+>Note: This process should take about 30 minutes to complete.
 
 ## Tear Down
 
