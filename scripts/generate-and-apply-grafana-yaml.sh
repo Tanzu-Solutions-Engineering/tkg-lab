@@ -9,7 +9,7 @@ if [ ! $# -eq 2 ]; then
 fi
 CLUSTER_NAME=$1
 GRAFANA_FQDN=$2
-GRAFANA_PASSWORD=$(yq r $PARAMS_YAML grafana.password)
+GRAFANA_PASSWORD=$(yq r $PARAMS_YAML grafana.admin-password)
 IAAS=$(yq r $PARAMS_YAML iaas)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
@@ -17,7 +17,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/monitoring/
 
-# Create certificate 02-certs.yaml
+# Create certificate
 yq read tkg-extensions-mods-examples/monitoring/grafana-cert.yaml > generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml
 yq write generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml -i "spec.dnsNames[0]" $GRAFANA_FQDN
 kubectl apply -f generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml

@@ -44,7 +44,7 @@ Dex maintains a list of clients that are allowed to access it.  Just like Okta d
 
 ## Validation Step
 
-1. (Using Incognito Window) Login to the workload cluster at the configured `shared-services-cluster.gangway-fqdn` using `https://`
+1. (Using Incognito Window) Login to the cluster at the configured `shared-services-cluster.gangway-fqdn` using `https://`
 2. Click Sign In
 3. Log into okta as alana user
 4. Give a secret password

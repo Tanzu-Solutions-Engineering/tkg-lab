@@ -45,7 +45,7 @@ workload-cluster:
   name: highgarden
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
   gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
-  prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live
+  prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live # Leave this blank if you choose not to expose prometheus
   grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
   controlplane-endpoint-ip: 192.168.7.182 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.220 # only required for vsphere iaas
@@ -88,4 +88,4 @@ concourse:
 kubeapps:
   server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live
 grafana:
-  password: REDACTED
+  admin-password: REDACTED
