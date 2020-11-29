@@ -37,8 +37,6 @@ Then Follow the next section that applies for your environment: AWS or vSphere. 
 * `azure.location` - e.g. canadacentral
 * `azure.control-plane-machine-type` - e.g. Standard_D2s_v3
 * `azure.node-machine-type` - e.g. Standard_D2s_v3
-* `azure.ssh-public-key-file` - The location of your public key file, e.g. `/home/user/.ssh/id_rsa.pub`
-* `azure.plan` - `dev` or `prod`
 
 4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#license).
 
