@@ -35,4 +35,37 @@ while kubectl get po -l app.kubernetes.io/name=external-dns -n tanzu-system-ingr
 	sleep 5s
 done
 
-kubectl annotate service envoy "external-dns.alpha.kubernetes.io/hostname=$INGRESS_FQDN." -n tanzu-system-ingress --overwrite
+# Now update the contour extension to include external dns annotation
+yq write -d0 generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i tkg_lab.ingress_fqdn "$INGRESS_FQDN."
+
+# Add in the document seperator that yq removes
+if [ `uname -s` = 'Darwin' ]; 
+then
+  sed -i '' '3i\
+  ---\
+  ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+else
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+fi
+
+# Update contour secret with custom configuration for ingress
+kubectl create secret generic contour-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress -o yaml --dry-run=client | kubectl apply -f-
+
+# Generate the modified contour extension
+ytt \
+  -f tkg-extensions/extensions/ingress/contour/contour-extension.yaml \
+  -f tkg-extensions-mods-examples/ingress/contour/contour-extension-overlay.yaml \
+  > generated/$CLUSTER_NAME/contour/contour-extension.yaml
+
+# Create configmap with the overlay
+kubectl create configmap contour-overlay -n tanzu-system-ingress -o yaml --dry-run=client \
+  --from-file=contour-overlay.yaml=tkg-extensions-mods-examples/ingress/contour/contour-overlay.yaml | kubectl apply -f-
+
+# Update Contour using modifified Extension
+kubectl apply -f generated/$CLUSTER_NAME/contour/contour-extension.yaml
+
+# Wait until reconcile succeeds
+while kubectl get app contour -n tanzu-system-ingress | grep contour | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
+  echo contour extension is not yet ready
+  sleep 5
+done

@@ -1,0 +1,27 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:data", "data")
+
+#@ def updates():
+spec:
+  fetch: 
+    #@overlay/append
+    - inline:
+        pathsFrom:
+          - configMapRef:
+              name: contour-overlay
+  template:
+    #@overlay/match by=overlay.all
+    - ytt:
+       #@overlay/replace
+       paths:
+         - 0/tkg-extensions/common
+         - 0/tkg-extensions/ingress/contour
+         - 1/contour-overlay.yaml
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "Extension"})
+---
+spec:
+  #@overlay/replace via=lambda a,_: yaml.encode(overlay.apply(yaml.decode(a), updates()))
+  objects:
