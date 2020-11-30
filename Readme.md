@@ -119,6 +119,7 @@ This lab will go through our simulated experience of receiving a request from an
 
 The following labs additional labs can be run on the base lab configuration.
 
+#### [Deploy Prometheus & Grafana for Monitoring](docs/bonus-labs/prometheus_grafana.md)
 #### [Deploy Kubeapps to Shared Services Cluster](docs/bonus-labs/kubeapps.md)
 #### [Deploy Harbor Image Registry to Shared Services Cluster](docs/bonus-labs/harbor.md)
 #### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/gitlab.md)
