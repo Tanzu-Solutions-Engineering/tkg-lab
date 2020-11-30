@@ -22,6 +22,7 @@ yq read tkg-extensions-mods-examples/authentication/gangway/aws/02b-ingress.yaml
 yq write -d0 generated/$CLUSTER_NAME/gangway/02b-ingress.yaml -i "spec.virtualhost.fqdn" $GANGWAY_CN
 
 # gangway-data values
+# intentionally using aws regardless of IaaS as vsphere and azure are treated the same and we want loadbalancer for vsphere.  This just simplifies the scripts
 cp tkg-extensions/extensions/authentication/gangway/aws/gangway-data-values.yaml.example generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
 if [ `uname -s` = 'Darwin' ]; 
 then
@@ -43,6 +44,7 @@ yq write -d0 generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -i "gangwa
 yq write -d0 generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -i "gangway.secret.sessionKey" $(openssl rand -base64 32)
 yq write -d0 generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -i "gangway.secret.clientSecret" "FOO_SECRET"
 yq write -d0 generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -i "gangway.service.type" "NodePort"
+# again, intentionally using aws config regardless of vsphere and azure
 yq write -d0 generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -i "dns.aws.GANGWAY_SVC_LB_HOSTNAME" $GANGWAY_CN
 yq write -d0 generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml -i "dex.ca" -- "$(< keys/letsencrypt-ca.pem)"
 
@@ -53,9 +55,7 @@ then
   ---\
   ' generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
 else
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/gangway/gangway-data-values.yaml
 fi
 
 # Apply Gangway

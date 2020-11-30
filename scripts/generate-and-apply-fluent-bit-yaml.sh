@@ -39,9 +39,7 @@ then
   ---\
   ' generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 else
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 fi
 
 kubectl apply -f tkg-extensions/extensions/logging/fluent-bit/namespace-role.yaml

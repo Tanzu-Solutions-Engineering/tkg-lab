@@ -30,9 +30,7 @@ if [ $exists -eq 1 ]; then
       ---\
       ' generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
     else
-      sed -i -e '3i\
-      ---\
-      ' generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
+      sed -i -e '3i\---\' generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
     fi
 
     kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME

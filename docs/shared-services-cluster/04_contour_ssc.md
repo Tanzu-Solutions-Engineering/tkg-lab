@@ -48,7 +48,7 @@ Execute the script below to deploy `external-dns` and to apply the annotation to
 
 ## Prepare and Apply Cluster Issuer Manifests
 
-Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect.
+Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `generated/$CLUSTER_NAME/contour/` in case you want to inspect.
 It is assumed that if you IaaS is AWS, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment..
 ```bash
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)

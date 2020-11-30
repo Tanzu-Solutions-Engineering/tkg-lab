@@ -17,7 +17,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 mkdir -p generated/$CLUSTER_NAME/contour/
 
 # Install the TMC Extensions Manager - Commented out since we already install it when attaching the cluster to TMC
-# kubectl apply -f tmc-extension-manager.yaml
+kubectl apply -f tkg-extensions/extensions/tmc-extension-manager.yaml
 # Install the kapp Controller
 kubectl apply -f tkg-extensions/extensions/kapp-controller.yaml
 
@@ -31,15 +31,9 @@ done
 kubectl apply -f tkg-extensions/extensions/ingress/contour/namespace-role.yaml
 
 # Prepare Contour custom configuration
-if [ "$IAAS" = "aws" ];
-then
-  # aws
-  yq read tkg-extensions/extensions/ingress/contour/aws/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-else
-  # vsphere
-  yq read tkg-extensions/extensions/ingress/contour/vsphere/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-  yq write -d0 generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i envoy.service.type LoadBalancer
-fi
+yq read tkg-extensions/extensions/ingress/contour/$IAAS/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+# Not necessary for azure and aws, but it doesn't hurt
+yq write -d0 generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i envoy.service.type LoadBalancer
 
 # Add in the document seperator that yq removes
 if [ `uname -s` = 'Darwin' ]; 
@@ -48,9 +42,7 @@ then
   ---\
   ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 else
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 fi
 
 # Create secret with custom configuration

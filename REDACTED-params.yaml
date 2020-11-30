@@ -14,6 +14,12 @@ aws:
   access-key-id: REDACTED
   secret-access-key: REDACTED
   hosted-zone-id: Z00636703RP40GVIAWHLA # clear this value out to start, and script will generate a new zone for you
+azure:
+    environment: "AzurePublicCloud" # NOTE: Always "AzurePublicCloud"
+    location: # eg. canadacentral.  az account list-locations -o table
+    control-plane-machine-type: # eg. Standard_D2s_v3 
+    node-machine-type: # eg. Standard_D2s_v3 
+    app-name: # set an app name or one will be set by the azure object script 
 vsphere:
   server: vcenter7.hyrulelab.com
   username: administrator@vsphere.local

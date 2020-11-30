@@ -23,7 +23,7 @@ mkdir -p generated/$CLUSTER_NAME/external-dns
 yq read external-dns/values-template.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
 yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.secretKey" $AWS_SECRET_KEY
 yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.accessKey" $AWS_ACCESS_KEY
-yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" AWS_REGION
+yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" $AWS_REGION
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
 

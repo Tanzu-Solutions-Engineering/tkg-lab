@@ -48,9 +48,7 @@ else
   sed -i -e 's/      scopes:/      #@overlay\/replace\
       scopes:/g' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
   # Add in the document seperator that yq removes
-  sed -i -e '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
+  sed -i -e '3i\---\' generated/$CLUSTER_NAME/dex/dex-data-values.yaml
 fi
 
 kubectl apply -f tkg-extensions/extensions/authentication/dex/namespace-role.yaml
