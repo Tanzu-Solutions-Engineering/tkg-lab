@@ -59,6 +59,7 @@ bash tkg-extensions/extensions/registry/harbor/generate-passwords.sh generated/$
 # Specify settings in harbor-data-values.yaml
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "hostname" $HARBOR_CN
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "harborAdminPassword" "Harbor12345"
+yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "clair.enabled" false
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[tls.crt]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/tls.crt)"
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[tls.key]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/tls.key)"
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[ca.crt]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/ca.crt)"
