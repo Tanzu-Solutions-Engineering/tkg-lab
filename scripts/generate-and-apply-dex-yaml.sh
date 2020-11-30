@@ -33,6 +33,7 @@ yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.oidc
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.signingKeys "360m"
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.config.expiry.idTokens "180m"
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i dex.service.type "NodePort"
+# this is needed for the overlay that's applied by the extension (don't be fooled by the `ytt` command below)
 yq write -d0 generated/$CLUSTER_NAME/dex/dex-data-values.yaml -i ca "letsencrypt"
 
 if [ `uname -s` = 'Darwin' ];
