@@ -40,6 +40,7 @@ spec:
               - 0/tkg-extensions/common
               - 0/tkg-extensions/authentication/dex
               - 1/dex-overlay.yaml
+              - 1/trust-letsencrypt.yaml
             inline:
               pathsFrom:
                 - secretRef:
