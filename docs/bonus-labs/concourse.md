@@ -39,7 +39,7 @@ export VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
 ## Scale Shared Cluster and Taint Nodes
 Rather than creating a new cluster, which we normally would recommend for Concourse, to save on resources we can create a couple of worker nodes in our shared cluster and taint them.  What this does is enable us to use these new nodes exclusively for Concourse.  The Concourse web and worker pods will be given a toleration for the taint, and use node selectors to ensure that they are "pinned" to the new cluster worker nodes.  To do this, we will:
 - Scale the Shared Services cluster
-- Label the new nodes 
+- Label the new nodes
 - Taint the labelled nodes to prevent any other workload from running there
 - Apply the toleration and node selector to the Concourse Helm chart
 
@@ -68,7 +68,7 @@ In order to deploy the Helm chart for Concourse to a dedicated namespace, we nee
 
 ```bash
 tmc workspace create -n $CONCOURSE_TMC_WORKSPACE -d "Workspace for Concourse"
-tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE -m attached -p attached
+tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE -j attached -p attached
 ```
 
 ## Prepare Okta for Concourse Client
@@ -109,7 +109,7 @@ okta:
 Lastly, add the newly created namespace for the Concourse main team to TMC's managed workspace we created earlier.
 
 ```bash
-tmc cluster namespace attach -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n concourse-main -k $CONCOURSE_TMC_WORKSPACE -m attached -p attached
+tmc cluster namespace attach -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n concourse-main -k $CONCOURSE_TMC_WORKSPACE --management-cluster-name attached --provisioner-name attached
 ```
 ## Validation Step
 1. All Concourse pods are in a running state, on the tainted nodes:
@@ -131,7 +131,7 @@ kubectl get cert,ing -n $CONCOURSE_NAMESPACE
 ```bash
 fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) login \
   -c https://$(yq r $PARAMS_YAML concourse.fqdn) \
-  -n main 
+  -n main
 ```
 
 >Note: You will be prompted to access the web url and authenticate.  If you are running fly from a console that does not have web app access, you can alternatively pass in the username and password into the login command for the admin user (not the OIDC users).
