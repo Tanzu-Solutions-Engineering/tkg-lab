@@ -63,6 +63,8 @@ yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[tls.crt]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/tls.crt)"
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[tls.key]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/tls.key)"
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[ca.crt]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/ca.crt)"
+# Enhance PVC to 30GB for TBS use cases. Comment this row if 10GB is enough for you
+yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.persistentVolumeClaim.registry.size" 30Gi
 # Check for Blob storage type
 HARBOR_BLOB_STORAGE_TYPE=$(yq r $PARAMS_YAML harbor.blob-storage.type)
 if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
