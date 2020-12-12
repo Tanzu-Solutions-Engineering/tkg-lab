@@ -8,7 +8,7 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 $TKG_LAB_SCRIPTS/02-deploy-vsphere-mgmt-cluster.sh
 $TKG_LAB_SCRIPTS/03-post-deploy-mgmt-cluster.sh
 # Management Step 2
-$TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML management-cluster.name)
+# TMC Attach NOOP
 # Management Step 3
 $TKG_LAB_SCRIPTS/create-hosted-zone.sh
 $TKG_LAB_SCRIPTS/retrieve-lets-encrypt-ca-cert.sh
@@ -70,7 +70,7 @@ $TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML shared-services-cluster.n
 # Management Step 9
 $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
 # Management Step 10
-$TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML management-cluster.name)
+$TKG_LAB_SCRIPTS/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
 
 # Workload Step 1
 $TKG_LAB_SCRIPTS/deploy-all-workload-cluster-components.sh

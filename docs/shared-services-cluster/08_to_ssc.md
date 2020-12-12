@@ -2,7 +2,7 @@
 
 You'll need a Wavefront *API Token* to integrate the cluster with Wavefront.  This can be gotten by logging into Wavefront -> Account -> API Access -> (Generate / Copy API Token) -> Insert into params.yaml.
 
-Also note the url for wavefront.  If you are not using surf.wavefrontcom, simply place what you are using into params.yaml:
+Also note the url for wavefront.  If you are not using surf.wavefront.com, simply place what you are using into params.yaml:
 
 ```yaml
 wavefront:
@@ -11,7 +11,7 @@ wavefront:
   cluster-name-prefix: <your VMWare ID>
 ```
 
-NOTE: If you have access to Pivotal Okta, then use it to get into wavefront, and then retrieve your API Token for surf.wavefont.com.
+NOTE: If you have access to Pivotal Okta, then use it to get into wavefront, and then retrieve your API Token for surf.wavefront.com.
 
 Assuming you have helm3 installed, run this script:
 
@@ -25,4 +25,4 @@ Follow the URL provided in the helm install command and filter the cluster list 
 
 ## Go to Next Step
 
-[Install Velero and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
+[Enable Data Protection and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
