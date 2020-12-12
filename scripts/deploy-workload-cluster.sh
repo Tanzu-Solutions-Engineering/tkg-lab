@@ -15,7 +15,7 @@ else
     echo "Must supply cluster name and worker replicas and control plane ip as args"
     exit 1
   fi
-  VSPHERE_CONTROLPLANE_ENDPOINT_IP=$3
+  VSPHERE_CONTROLPLANE_ENDPOINT=$3
 fi
 
 CLUSTER_NAME=$1
@@ -64,7 +64,7 @@ else
   tkg create cluster $CLUSTER_NAME \
     --enable-cluster-options oidc \
     --plan dev \
-    --vsphere-controlplane-endpoint-ip $VSPHERE_CONTROLPLANE_ENDPOINT_IP \
+    --vsphere-controlplane-endpoint $VSPHERE_CONTROLPLANE_ENDPOINT \
     -w $WORKER_REPLICAS -v 6
 fi
 

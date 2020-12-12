@@ -33,7 +33,7 @@ management-cluster:
   name: dragonstone
   ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
   dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
-  controlplane-endpoint-ip: 192.168.7.180 # only required for vsphere iaas
+  controlplane-endpoint: 192.168.7.180 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.200 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.209 # only required for vsphere iaas
 shared-services-cluster:
@@ -43,7 +43,7 @@ shared-services-cluster:
   gangway-fqdn: gangway.dorn.tkg-aws-e2-lab.winterfell.live
   elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
   kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
-  controlplane-endpoint-ip: 192.168.7.181 # only required for vsphere iaas
+  controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.210 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.219 # only required for vsphere iaas
 workload-cluster:
@@ -53,7 +53,7 @@ workload-cluster:
   gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
   prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live # Leave this blank if you choose not to expose prometheus
   grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
-  controlplane-endpoint-ip: 192.168.7.182 # only required for vsphere iaas
+  controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.220 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.229 # only required for vsphere iaas
 okta:
