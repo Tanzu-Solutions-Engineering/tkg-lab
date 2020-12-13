@@ -7,7 +7,7 @@ ingress:
   hostname: 
   tls: true
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
     ingress.kubernetes.io/proxy-body-size: "0"
     kubernetes.io/ingress.class: "contour"
     cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"

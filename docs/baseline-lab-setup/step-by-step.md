@@ -33,6 +33,7 @@ export PARAMS_YAML=local-config/params.yaml
 ### 7. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
 ### 8. [Install Tanzu Observability](../shared-services-cluster/08_to_ssc.md)
 ### 9. [Install Velero and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
+### 10. [Install Harbor](../shared-services-cluster/10_harbor.md)
 
 ## Finalize Management Cluster
 ### 1. [Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
