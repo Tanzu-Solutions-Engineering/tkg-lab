@@ -63,8 +63,10 @@ yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[tls.crt]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/tls.crt)"
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[tls.key]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/tls.key)"
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "tlsCertificate[ca.crt]" -- "$(< generated/$SHAREDSVC_CLUSTER_NAME/harbor/ca.crt)"
+yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "ca" "letsencrypt"
 # Enhance PVC to 30GB for TBS use cases. Comment this row if 10GB is enough for you
 yq write -d0 generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.persistentVolumeClaim.registry.size" 30Gi
+
 # Check for Blob storage type
 HARBOR_BLOB_STORAGE_TYPE=$(yq r $PARAMS_YAML harbor.blob-storage.type)
 if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
@@ -90,10 +92,22 @@ else
 fi
 
 # Create a Kubernetes secret named harbor-data-values with the values that you set in harbor-data-values.yaml.
-kubectl create secret generic harbor-data-values --from-file=values.yaml=generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -n tanzu-system-registry
+# Using the following "apply" syntax to allow for re-run
+kubectl create secret generic harbor-data-values -n tanzu-system-registry -o yaml --dry-run=client \
+  --from-file=values.yaml=generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml | kubectl apply -f -
 
+# Put the Let's Encrypt CA certificate into a configmap to add to trusted certifcates
+ytt -f overlay/trust-certificate/configmap.yaml -f overlay/trust-certificate/values.yaml --ignore-unknown-comments \
+  --data-value certificate="$(cat keys/letsencrypt-ca.pem)" \
+  --data-value ca=letsencrypt | kubectl apply -f - -n tanzu-system-registry
+
+# Add overlay to use let's encrypt cluster issuer and trust Let's Encrypt
+kubectl create configmap harbor-overlay -n tanzu-system-registry -o yaml --dry-run=client \
+  --from-file=overlay-s3-pvc-fix.yaml=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml \
+  --from-file=trust-letsencrypt.yaml=overlay/trust-certificate/overlay.yaml | kubectl apply -f-
+ 
 # Deploy the Harbor extension
-kubectl apply -f tkg-extensions/extensions/registry/harbor/harbor-extension.yaml
+kubectl apply -f tkg-extensions-mods-examples/registry/harbor/harbor-extension.yaml
 
 while kubectl get app harbor -n tanzu-system-registry | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Harbor extension is not yet ready
