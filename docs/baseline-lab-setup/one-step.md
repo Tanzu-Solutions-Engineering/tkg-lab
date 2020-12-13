@@ -1,4 +1,4 @@
-# One Step Foundation Deployment for vSphere
+# One Step Foundation Deployment
 
 This lab can be used to deploy all three clusters included in the foundational lab setup.  You will execute a single script that calls all the scripts included in the step-by-step guides.  
 
@@ -13,14 +13,24 @@ Set the PARAMS_YAML environment variable to the path of your `params.yaml` file.
 export PARAMS_YAML=local-config/params.yaml
 ```
 
-Ensure that your copy of `params.yaml` indicates `vsphere` as the IaaS.
+Ensure that your copy of `params.yaml` indicates your IaaS as `aws`, `azure` or `vsphere` appropriately.
+
+## Azure Only - Configure the Azure CLI and Accept the TKG Azure Base Image License
+
+Ensure the `az` CLI is installed and configured. The deploy all script will use `az` to deploy TKG.
+
+To run management cluster VMs on Azure, [accept the license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#-accept-the-base-os-image-license-2) for their base Kubernetes version and machine OS.
+
+```
+az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot19dot1-ubuntu-1804
+```
 
 ## Execute the Deploy All Script
 
 Now you can execute the following script to perform all of those tasks:
 
 ```bash
-./scripts/deploy-all-vsphere.sh
+./scripts/deploy-all.sh
 ```
 
 >Note: This process should take about 30 minutes to complete.
