@@ -1,13 +1,34 @@
-# Enable Data Protection and Setup Nightly Backup
+# Install Velero and Setup Nightly Backup
 
-**It is assumed you have already completed the Enable Data Protection... lab on the shared service cluster in [Enable Data Protection and Setup Nightly Backup](docs/shared-services-cluster/9_velero_ssc.md) lab**
+## Install Velero client
 
-## Enable Data Protection on Your Cluster
+Download and install the Velero cli from TKG 1.2.1 at https://www.vmware.com/go/get-tkg.
 
-Orchestrate commands for the `tmc` cli to enable data protection on the cluster and then setup a daily backup.
+## Setup AWS as a target for backups
+
+Follow [Velero Plugins for AWS Guide](https://github.com/vmware-tanzu/velero-plugin-for-aws#setup).  I chose **Option 1** for **Set Permissions for Velero Step**.
+
+Store your credentials-velero file in `keys/` directory.
+
+Go to AWS console S3 service and create a bucket for cluster backups.
+
+>Note: Do this step regardless if you are deploying TKG to vSphere or AWS.
+
+## Set configuration parameters
+
+The scripts to prepare the YAML to deploy velero depend on a parameters to be set.  Ensure the following are set in `params.yaml` based upon your environment:
+
+```yaml
+velero.bucket: my-bucket
+veloreo.region: us-east-2
+```
+
+## Prepare Manifests and Deploy Velero
+
+Prepare the YAML manifests for the related velero K8S objects and then run the following script to install velero and configure a nightly backup.
 
 ```bash
-./scripts/dataprotection.sh $(yq r $PARAMS_YAML management-cluster.name)
+./scripts/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
 ```
 
 ## Validation Step

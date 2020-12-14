@@ -25,7 +25,7 @@ All of the steps above can be accomplished by running the following script:
 ./scripts/deploy-workload-cluster.sh \
   $(yq r $PARAMS_YAML shared-services-cluster.name) \
   $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
-  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint-ip)
+  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint)
 ```
 
 >Note: Wait until your cluster has been created. It may take 12 minutes.

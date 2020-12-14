@@ -4,27 +4,9 @@
 
 The following scripts assume that you have an active `tmc` cli session.  In order to test this, execute `tmc system context current` command to retrieve current context.  If you don't have an active session, login using `tmc login` command.
 
-## Set configuration parameters
+## NOOP
 
-The scripts to attach the cluster to TMC depend on a parameters to be set.  The script will create the named cluster group if it does not already exist. Ensure the following are set in `params.yaml`:
-
-```yaml
-tmc.cluster-group: foo-cluster-group
-```
-
-## Attach Cluster to TMC
-
-We want to have all kubernetes cluster under TMC management.  As such, execute the following script to attach your cluster to TMC.
-
-> The script leverages values specified in your params.yaml file to use for the cluster name and cluster group
-
-```bash
-./scripts/tmc-attach.sh $(yq r $PARAMS_YAML management-cluster.name)
-```
-
-## Validation Step
-
-Go to the TMC UI and find your cluster.  It should take a few minutes to appear clean.
+The remainder of this step is intentionally blank.  In the near future, TMC will be adding the ability to register a TKG management cluster so that it can drive the lifecycle of its workload clusters.  We are super excited for that feature set, until that time management clusters can not be attached to TMC.
 
 ## Go to Next Step
 

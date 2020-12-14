@@ -32,12 +32,12 @@ export PARAMS_YAML=local-config/params.yaml
 ### 6. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_ssc.md)
 ### 7. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
 ### 8. [Install Tanzu Observability](../shared-services-cluster/08_to_ssc.md)
-### 9. [Install Velero and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
+### 9. [Enable Data Protection and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
 ### 10. [Install Harbor](../shared-services-cluster/10_harbor.md)
 
 ## Finalize Management Cluster
 ### 1. [Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
-### 2. [Install Velero and Setup Nightly Backup](../mgmt-cluster/10_velero_mgmt.md)
+### 2. [Enable Data Protection and Setup Nightly Backup](../mgmt-cluster/10_velero_mgmt.md)
 
 ## Setup Workload Cluster
 ### 1. [Create new Workload Cluster](../workload-cluster/01_install_tkg_and_components_wlc.md)
