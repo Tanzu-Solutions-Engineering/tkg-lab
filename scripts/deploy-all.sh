@@ -74,6 +74,10 @@ $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML share
 $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 # Shared Services Step 9
 $TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+# Shared Services Step 10
+$TKG_LAB_SCRIPTS/generate-and-apply-harbor-yaml.sh \
+   $(yq r $PARAMS_YAML management-cluster.name) \
+   $(yq r $PARAMS_YAML shared-services-cluster.name)
 
 # Management Step 9
 $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
