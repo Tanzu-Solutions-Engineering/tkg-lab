@@ -16,6 +16,8 @@ IAAS=$(yq r $PARAMS_YAML iaas)
 
 mkdir -p generated/$CLUSTER_NAME/monitoring/
 
+kubectl apply -f tkg-extensions/extensions/monitoring/prometheus/namespace-role.yaml
+
 # Create certificate
 yq read tkg-extensions-mods-examples/monitoring/prometheus-cert.yaml > generated/$CLUSTER_NAME/monitoring/prometheus-cert.yaml
 yq write generated/$CLUSTER_NAME/monitoring/prometheus-cert.yaml -i "spec.dnsNames[0]" $PROMETHEUS_FQDN
@@ -51,7 +53,6 @@ fi
 
 # Apply Monitoring
 
-kubectl apply -f tkg-extensions/extensions/monitoring/prometheus/namespace-role.yaml
 # Using the following "apply" syntax to allow for script to be rerun
 kubectl create secret generic prometheus-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml -n tanzu-system-monitoring -o yaml --dry-run=client | kubectl apply -f-
 kubectl apply -f tkg-extensions/extensions/monitoring/prometheus/prometheus-extension.yaml
