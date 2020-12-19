@@ -72,7 +72,7 @@ fi
 #
 
 echo "INFO: writing ssh key to config file"
-yq write $TKG_CONFIG -i "AZURE_SSH_PUBLIC_KEY_B64" "$(base64 < "$tkg_key_file" | tr -d '\r\n')"
+yq write $TKG_CONFIG -i "AZURE_SSH_PUBLIC_KEY_B64" "$(base64 < "$tkg_key_file".pub | tr -d '\r\n')"
 
 echo "INFO: azure app name is $AZURE_APP_NAME"
 yq write "$PARAMS_YAML" -i "azure.app-name" "$AZURE_APP_NAME"
