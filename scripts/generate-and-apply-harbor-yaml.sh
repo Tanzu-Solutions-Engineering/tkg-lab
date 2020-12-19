@@ -86,9 +86,7 @@ then
   ---\
   ' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 else
-  sed -i -e '3i\
-  ---\
-  ' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+  sed -i -e '3i\---\' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 fi
 
 # Create a Kubernetes secret named harbor-data-values with the values that you set in harbor-data-values.yaml.
