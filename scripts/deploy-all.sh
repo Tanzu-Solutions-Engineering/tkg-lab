@@ -6,6 +6,11 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 IAAS=$(yq r $PARAMS_YAML iaas)
 
 # Management Step 1
+# vSphere's prep script is not idempotent and can only be run once, so we assume it has already happened
+if [ "$IAAS" != "vsphere" ];
+then
+  $TKG_LAB_SCRIPTS/01-prep-$IAAS-objects.sh
+fi
 # Intentionally skiping 01-prep-$IAAS-objects.sh as this was likely done manually
 $TKG_LAB_SCRIPTS/02-deploy-$IAAS-mgmt-cluster.sh
 $TKG_LAB_SCRIPTS/03-post-deploy-mgmt-cluster.sh

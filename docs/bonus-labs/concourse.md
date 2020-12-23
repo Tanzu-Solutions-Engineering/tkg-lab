@@ -68,7 +68,7 @@ In order to deploy the Helm chart for Concourse to a dedicated namespace, we nee
 
 ```bash
 tmc workspace create -n $CONCOURSE_TMC_WORKSPACE -d "Workspace for Concourse"
-tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE -j attached -p attached
+tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAMESPACE -d "Concourse product installation" -k $CONCOURSE_TMC_WORKSPACE -m attached -p attached
 ```
 
 ## Prepare Okta for Concourse Client
