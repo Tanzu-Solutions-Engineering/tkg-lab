@@ -53,6 +53,16 @@ yq write $TKG_CONFIG -i "VSPHERE_PASSWORD" $GOVC_PASSWORD --style=double
 yq write $TKG_CONFIG -i "VSPHERE_DATASTORE" $GOVC_DATASTORE
 # The rest of the ~/.tkg/config.yaml need to be set manually
 
+# A bug in tkg 1.2.1 affects binding pv's to pods that are not run as root.  This impacts harbor and prometheus.
+# This can be resolved by modifying the cluster api provider manifests.  The following does this for you. The bug will be fixed in TKG 1.3
+if [ `uname -s` = 'Darwin' ];
+then
+  sed -i '' -e '400i\
+  \            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
+else
+  sed -i -e '400i\            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
+fi
+
 # Create SSH key
 mkdir -p keys/
 tkg_key_file="./keys/tkg_rsa"
@@ -68,13 +78,3 @@ fi
 # Upload TKG k8s OVA
 govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.19.3-vmware.1.ova
 govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.19.3
-
-# A bug in tkg 1.2.1 affects binding pv's to pods that are not run as root.  This impacts harbor and prometheus. 
-# This can be resolved by modifying the cluster api provider manifests.  The following does this for you. The bug will be fixed in TKG 1.3
-if [ `uname -s` = 'Darwin' ]; 
-then
-  sed -i '' -e '400i\
-  \            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
-else
-  sed -i -e '400i\            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
-fi
