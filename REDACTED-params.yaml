@@ -3,6 +3,8 @@ vmware-id: dpfeffer
 environment-name: tkg-aws-e2-lab # used for aws ssh key name
 subdomain: tkg-aws-e2-lab.winterfell.live
 lets-encrypt-acme-email: dpfeffer@vmware.com
+dns:
+  provider: aws-route53
 tmc:
   cluster-group: se-dpfeffer-dev # scripts will create this cluster group if it doesn't already exist
   data-protection-backup-location-name: REDACTED # used by TMC data protection, fill in the name of a TMC data protection credential
@@ -15,11 +17,11 @@ aws:
   secret-access-key: REDACTED
   hosted-zone-id: Z00636703RP40GVIAWHLA # clear this value out to start, and script will generate a new zone for you
 azure:
-    environment: "AzurePublicCloud" # NOTE: Always "AzurePublicCloud"
-    location: # eg. canadacentral.  az account list-locations -o table
-    control-plane-machine-type: # eg. Standard_D2s_v3 
-    node-machine-type: # eg. Standard_D2s_v3 
-    app-name: # set an app name or one will be set by the azure object script 
+  environment: "AzurePublicCloud" # NOTE: Always "AzurePublicCloud"
+  location: # eg. canadacentral.  az account list-locations -o table
+  control-plane-machine-type: # eg. Standard_D2s_v3
+  node-machine-type: # eg. Standard_D2s_v3
+  app-name: # set an app name or one will be set by the azure object script
 vsphere:
   server: vcenter7.hyrulelab.com
   username: administrator@vsphere.local
@@ -28,6 +30,8 @@ vsphere:
   datastore: datastore2
   template_folder: /Datacenter/vm/tkg
   local_ova_folder: /Users/jaguilar/Code/tkg/
+gcloud:
+  project: fe-jaguilar
 management-cluster:
   worker-replicas: 2
   name: dragonstone

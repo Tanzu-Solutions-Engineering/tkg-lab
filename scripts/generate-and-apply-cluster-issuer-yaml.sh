@@ -9,6 +9,7 @@ if [ ! $# -eq 1 ]; then
 fi
 
 CLUSTER_NAME=$1
+DNS_PROVIDER=$(yq r $PARAMS_YAML dns.provider)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
@@ -20,13 +21,24 @@ LETS_ENCRYPT_ACME_EMAIL=$(yq r $PARAMS_YAML lets-encrypt-acme-email)
 
 if [ "$IAAS" = "vsphere" ];
 then
-  yq read tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns.yaml > generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
-  kubectl create secret generic prod-route53-credentials-secret \
+  if [ "$DNS_PROVIDER" = "gcloud-dns" ];
+  then
+    # Using Google Cloud DNS
+    yq read tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns-gcloud.yaml > generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    kubectl create secret generic gcloud-dns-service-account \
+        --from-file=credentials.json=keys/gcloud-dns-credentials.json \
+        -n cert-manager
+    yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.cloudDNS.project" $(yq r $PARAMS_YAML gcloud.project)
+  else
+    # Using Route53
+    yq read tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns-aws.yaml > generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    kubectl create secret generic prod-route53-credentials-secret \
         --from-literal=secret-access-key=$(yq r $PARAMS_YAML aws.secret-access-key) \
         -n cert-manager -o yaml --dry-run=client | kubectl apply -f-
-  yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.accessKeyID" $(yq r $PARAMS_YAML aws.access-key-id)
-  yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.region" $(yq r $PARAMS_YAML aws.region)
-  yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.hostedZoneID" $(yq r $PARAMS_YAML aws.hosted-zone-id)
+    yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.accessKeyID" $(yq r $PARAMS_YAML aws.access-key-id)
+    yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.region" $(yq r $PARAMS_YAML aws.region)
+    yq write -d0 generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml -i "spec.acme.solvers[0].dns01.route53.hostedZoneID" $(yq r $PARAMS_YAML aws.hosted-zone-id)
+  fi
 else
   yq read tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-http.yaml > generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
 fi

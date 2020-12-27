@@ -34,9 +34,9 @@ Once it is deployed, you can see all pods `Running` and the the Load Balancer up
 kubectl get pod,svc -n tanzu-system-ingress
 ```
 
-## Setup Route 53 DNS for Wildcard Domain Contour Ingress
+## Setup DNS for Wildcard Domain Contour Ingress
 
-Just as we did for the management cluster, we will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates.
+Just as we did for the management cluster, we will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates. Same choice of DNS Provider will be used.
 
 Execute the script below to deploy `external-dns` and to apply the annotation to the envoy service.
 
@@ -53,8 +53,6 @@ It is assumed that if you IaaS is AWS, then you will use the `http` challenge ty
 ```bash
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
-
->Note: This script assumes AWS Route 53 configuration. If you decide to use Google Cloud DNS, please check [these Google Cloud DNS instructions](/docs/misc/goog_cloud_dns.md).
 
 ## Verify Cluster Issuer
 

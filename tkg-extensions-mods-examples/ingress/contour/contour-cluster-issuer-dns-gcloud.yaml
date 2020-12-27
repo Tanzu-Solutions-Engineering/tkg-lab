@@ -1,0 +1,20 @@
+apiVersion: cert-manager.io/v1beta1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-contour-cluster-issuer
+  namespace: tanzu-system-ingress
+spec:
+  acme:
+    email: "jaguilar@pivotal.io"
+    privateKeySecretRef:
+      name: acme-account-key
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudDNS:
+          # The ID of the GCP project
+          project: MY_PROJECT_NAME
+          # This is the secret used to access the service account
+          serviceAccountSecretRef:
+            name: gcloud-dns-service-account
+            key: credentials.json
