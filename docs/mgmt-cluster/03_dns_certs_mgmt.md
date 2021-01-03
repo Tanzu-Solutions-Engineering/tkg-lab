@@ -9,7 +9,7 @@ If you decide to use Google Cloud DNS, please check [these Google Cloud DNS inst
 
 # Pre-requisites for Route 53
 
-We need to have the CLI set up for proper access to perform these actions.  These commands should return either no zones or a list of existing zones, which will prove access to perform the commands we need to run as part of the lab.  If you cannot access the DNS zones properly, you can create the zone and associated entries at each step using the browser.
+We need to have the aws CLI set up for proper access to perform these actions.  These commands should return either no zones or a list of existing zones, which will prove access to perform the commands we need to run as part of the lab.  If you cannot access the DNS zones properly, you can create the zone and associated entries at each step using the browser.
 
 Using a valid access key, run:
 ```bash
@@ -17,18 +17,33 @@ aws configure
 aws route53 list-hosted-zones
 ```
 
+# Pre-requisites for Cloud DNS
 
-# Route 53 DNS Zone
+Google Cloud DNS is not the default approach, and to enable it instead of Route 53 you need to set this property on the `params.yml`:
+```
+dns:
+  provider: gcloud-dns
+```
 
-This will require an AWS Route53 Hosted Zone.  Later we will add record sets as necessary, but we cannot do this until the Contour Load Balancer and AWS ELB get created.  For now, run the following script that will create a new hosted zone and store its ID in the params.yaml file.  It leverages the following configuration you have already set: `subdomain`.
+We need to have the gcloud CLI set up for proper access (account, project, region, zone) to perform these actions.  These commands should return either no zones or a list of existing zones, which will prove access to perform the commands we need to run as part of the lab.  If you cannot access the DNS zones properly, you can create the zone and associated entries at each step using the browser.
+
+Run:
+```bash
+gcloud init
+gcloud dns managed-zones list
+```
+
+# Prepare DNS Zone
+
+This will make sure there is an AWS Route53 Hosted Zone (default), or a Google Cloud DNS managed-zone if chose that approach.  Later we will add record sets as necessary, but we cannot do this until the Contour Load Balancer gets created.  For now, run the following script that will create a new zone. It will also store its ID in the params.yaml file for Route 53.  It leverages the following configuration you have already set: `subdomain`, `environment-name`.
 
 ```bash
-./scripts/create-hosted-zone.sh
+./scripts/create-dns-zone.sh
 ```
 
 # Update DNS to Leverage Hosted Zones
 
-You will need the NS records from the hosted zone within your domain registration. This can be easily retrieved from your AWS Route 53 console. Ensure they are included where ever you have your domain registered.
+You will need the NS records from the hosted zone within your domain registration. This can be easily retrieved from your AWS Route 53 console, or Google Cloud DNS console if you chose that approach. Ensure they are included where ever you have your domain registered.
 
 # Retrieve the CA Cert from Let's Encrypt for use later
 

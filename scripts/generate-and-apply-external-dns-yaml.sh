@@ -10,20 +10,46 @@ fi
 
 CLUSTER_NAME=$1
 INGRESS_FQDN=$2
-
-AWS_SECRET_KEY=$(yq r $PARAMS_YAML aws.secret-access-key)
-AWS_ACCESS_KEY=$(yq r $PARAMS_YAML aws.access-key-id)
-AWS_REGION=$(yq r $PARAMS_YAML aws.region)
+DNS_PROVIDER=$(yq r $PARAMS_YAML dns.provider)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/external-dns
 
-# values.yaml
-yq read external-dns/values-template.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
-yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.secretKey" $AWS_SECRET_KEY
-yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.accessKey" $AWS_ACCESS_KEY
-yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" $AWS_REGION
+if [ "$DNS_PROVIDER" = "gcloud-dns" ];
+then
+  # Using Google Cloud DNS
+  GCLOUD_PROJECT=$(yq r $PARAMS_YAML gcloud.project)
+  # Create GCloud Service Account
+  GCP_SERVICE_ACCOUNT=`gcloud iam service-accounts list | grep external-dns`
+  if [ -z "$GCP_SERVICE_ACCOUNT" ]
+  then
+    gcloud iam service-accounts create external-dns \
+      --display-name "Service account for ExternalDNS on GCP"
+    gcloud projects add-iam-policy-binding $GCLOUD_PROJECT \
+      --role='roles/dns.admin' \
+      --member='serviceAccount:external-dns@'$GCLOUD_PROJECT'.iam.gserviceaccount.com'
+      gcloud iam service-accounts keys create keys/gcloud-dns-credentials.json \
+        --iam-account 'external-dns@'$GCLOUD_PROJECT'.iam.gserviceaccount.com'
+  fi
+  kubectl -n tanzu-system-ingress create secret \
+    generic gcloud-dns-credentials \
+    --from-file=credentials.json=keys/gcloud-dns-credentials.json
+  # values.yaml
+  yq read external-dns/values-template-gcloud.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
+  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "google.project" $GCLOUD_PROJECT
+  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "google.serviceAccountSecret" "gcloud-dns-credentials"
+else
+  # Default to AWS Route53
+  AWS_SECRET_KEY=$(yq r $PARAMS_YAML aws.secret-access-key)
+  AWS_ACCESS_KEY=$(yq r $PARAMS_YAML aws.access-key-id)
+  AWS_REGION=$(yq r $PARAMS_YAML aws.region)
+  # values.yaml
+  yq read external-dns/values-template-aws.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
+  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.secretKey" $AWS_SECRET_KEY
+  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.accessKey" $AWS_ACCESS_KEY
+  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" $AWS_REGION
+fi
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
@@ -39,7 +65,7 @@ done
 yq write -d0 generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i tkg_lab.ingress_fqdn "$INGRESS_FQDN."
 
 # Add in the document seperator that yq removes
-if [ `uname -s` = 'Darwin' ]; 
+if [ `uname -s` = 'Darwin' ];
 then
   sed -i '' '3i\
   ---\
