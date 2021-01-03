@@ -4,7 +4,7 @@ allowNamespaceDiscovery: true
 ingress:
   enabled: true
   certManager: true
-  hostname: 
+  hostname:
   tls: true
   annotations:
     ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -23,9 +23,8 @@ authProxy:
    #oauthLoginURI: /oauth2/start
    #oauthLogoutURI: /oauth2/sign_out
    additionalFlags:
-   
-   
-  
 
-
-
+apprepository:
+  initialRepos:
+    - name: tac-repo
+      url: https://charts.trials.tac.bitnami.com/demo
