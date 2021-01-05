@@ -11,7 +11,8 @@ if [ "$DNS_PROVIDER" = "gcloud-dns" ];
 then
   # Using Google Cloud DNS
   echo "Using Google Cloud DNS"
-  GCP_MANAGED_ZONE=`gcloud dns managed-zones list | grep $LAB_ENV_NAME`
+  GCP_MANAGED_ZONE=$(gcloud dns managed-zones list | { grep $LAB_ENV_NAME || true; } )
+  echo "GCP_MANAGED_ZONE=$GCP_MANAGED_ZONE"
   if [ -z "$GCP_MANAGED_ZONE" ]
   then
     # Create Google Cloud DNS Zone. This command will error out if zone already exists
