@@ -1,4 +1,6 @@
-# bin/bash -e
+#! /usr/bin/env bash
+
+set -e
 
 if [ ! $# -eq 3 ]; then
   echo "Must supply Mgmt and workload cluster name and Gangway CN as args"
@@ -8,9 +10,11 @@ MGMT_CLUSTER_NAME=$1
 WORKLOAD_CLUSTER_NAME=$2
 GANGWAY_CN=$3
 
+set +e
 #Only inject if it isn't already there
 cat generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml | grep "id: $WORKLOAD_CLUSTER_NAME"
 exists=$?
+set -e
 if [ $exists -eq 1 ]; then
 
     cp tkg-extensions-mods-examples/authentication/dex/aws/oidc/static-client.yaml generated/$MGMT_CLUSTER_NAME/dex/$WORKLOAD_CLUSTER_NAME-static-client.yaml
