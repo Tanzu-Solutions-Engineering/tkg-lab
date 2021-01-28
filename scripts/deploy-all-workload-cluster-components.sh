@@ -3,11 +3,20 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
+IAAS=$(yq r $PARAMS_YAML iaas)
 # Workload Step 1
-$TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
-  $(yq r $PARAMS_YAML workload-cluster.name) \
-  $(yq r $PARAMS_YAML workload-cluster.worker-replicas) \
-  $(yq r $PARAMS_YAML workload-cluster.controlplane-endpoint)
+if [ "$IAAS" = "vsphere" ];
+then
+  $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
+    $(yq r $PARAMS_YAML workload-cluster.name) \
+    $(yq r $PARAMS_YAML workload-cluster.worker-replicas) \
+    $(yq r $PARAMS_YAML workload-cluster.controlplane-endpoint)
+else
+  $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
+    $(yq r $PARAMS_YAML workload-cluster.name) \
+    $(yq r $PARAMS_YAML workload-cluster.worker-replicas)
+fi
+
 # Workload Step 2
 $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML workload-cluster.name)
 # Workload Step 3
@@ -16,7 +25,6 @@ $TKG_LAB_SCRIPTS/tmc-policy.sh \
   cluster.admin \
   platform-team
 # Workload Step 4
-IAAS=$(yq r $PARAMS_YAML iaas)
 if [ "$IAAS" = "vsphere" ];
 then
   $TKG_LAB_SCRIPTS/deploy-metallb.sh \
