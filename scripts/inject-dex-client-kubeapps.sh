@@ -1,4 +1,4 @@
-# bin/bash -e
+#! /bin/bash -e
 
 if [ ! $# -eq 3 ]; then
   echo "Must supply Mgmt and cluster and Gangway CN as args"
@@ -11,9 +11,11 @@ GANGWAY_CN=$3
 ## Adds additional path to the Shared Services DEX Entry for kubeapps OIDC
 KUBEAPPS="          - https://$(yq r $PARAMS_YAML kubeapps.server-fqdn)/oauth2/callback"
 
+set +e
 # Ensure that the cluster already has an entry in the Dex configuration, else exit
 cat generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml | grep "id: $CLUSTER_NAME"
 exists=$?
+set -e
 if [ $exists -eq 0 ]; then
 
     # Find the Gangway CN entry in the redirect list for the cluster and add the Kubeapps redirect URL below that
