@@ -6,13 +6,14 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 IAAS=$(yq r $PARAMS_YAML iaas)
 if [ "$IAAS" != "vsphere" ];
 then
-  if [ ! $# -eq 2 ]; then
-    echo "Must supply cluster name and worker replicas as args"
+  if [ ! $# -eq 2 ] && [ ! $# -eq 3 ]; then
+    echo "Expecting 2 or 3 args.  Must supply cluster name and worker replicas count and optionally kuberenetes version as args"
     exit 1
   fi
 else
-  if [ ! $# -eq 3 ]; then
-    echo "Must supply cluster name and worker replicas and control plane ip as args"
+  if [ ! $# -eq 3 ] && [ ! $# -eq 4 ]; then
+  echo "count: $#"
+    echo "Expecting 3 or 4 args.  Must supply cluster name and worker replicas count and optionally kuberenetes version as args"
     exit 1
   fi
   VSPHERE_CONTROLPLANE_ENDPOINT=$3
@@ -20,6 +21,12 @@ fi
 
 CLUSTER_NAME=$1
 WORKER_REPLICAS=$2
+KUBERNETES_VERSION=$4
+
+KUBERNETES_VERSION_FLAG_AND_VALUE=""
+if [ ! "$KUBERNETES_VERSION" = "" ]; then
+  KUBERNETES_VERSION_FLAG_AND_VALUE="--kubernetes-version $KUBERNETES_VERSION"
+fi
 
 DEX_CN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
 
@@ -44,6 +51,7 @@ then
   tkg config cluster $CLUSTER_NAME \
     --enable-cluster-options oidc \
     --plan=dev \
+    $KUBERNETES_VERSION_FLAG_AND_VALUE \
     -w $WORKER_REPLICAS \
     | ytt \
       --ignore-unknown-comments \
@@ -59,11 +67,13 @@ then
   tkg create cluster $CLUSTER_NAME \
     --enable-cluster-options oidc \
     --plan dev \
+    $KUBERNETES_VERSION_FLAG_AND_VALUE \
     -w $WORKER_REPLICAS -v 6  
 else
   tkg create cluster $CLUSTER_NAME \
     --enable-cluster-options oidc \
     --plan dev \
+    $KUBERNETES_VERSION_FLAG_AND_VALUE \
     --vsphere-controlplane-endpoint $VSPHERE_CONTROLPLANE_ENDPOINT \
     -w $WORKER_REPLICAS -v 6
 fi

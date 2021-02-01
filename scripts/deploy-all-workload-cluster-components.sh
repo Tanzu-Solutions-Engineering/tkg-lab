@@ -7,7 +7,8 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
   $(yq r $PARAMS_YAML workload-cluster.name) \
   $(yq r $PARAMS_YAML workload-cluster.worker-replicas) \
-  $(yq r $PARAMS_YAML workload-cluster.controlplane-endpoint)
+  $(yq r $PARAMS_YAML workload-cluster.controlplane-endpoint) \
+  $(yq r $PARAMS_YAML workload-cluster.kuberentes-version)
 # Workload Step 2
 $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML workload-cluster.name)
 # Workload Step 3

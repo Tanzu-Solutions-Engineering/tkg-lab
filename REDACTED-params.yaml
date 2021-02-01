@@ -50,6 +50,7 @@ shared-services-cluster:
   controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.210 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.219 # only required for vsphere iaas
+  kubernetes-version: v1.19.1+vmware.2 # Explicitly set to v1.19.1 because v1.19.3 has an issue with TBS
 workload-cluster:
   worker-replicas: 2
   name: highgarden
