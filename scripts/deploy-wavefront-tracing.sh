@@ -1,4 +1,4 @@
-# bin/bash
+#! /bin/bash
 
 if [ ! $# -eq 1 ]; then
   echo "Must supply cluster name as args"

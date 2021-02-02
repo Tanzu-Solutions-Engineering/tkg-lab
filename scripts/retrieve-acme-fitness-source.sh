@@ -1,4 +1,4 @@
-# bin/bash -e
+#! /bin/bash -e
 rm -rf acme_fitness_demo
 git clone https://github.com/vmwarecloudadvocacy/acme_fitness_demo.git
 cd acme_fitness_demo

@@ -1,4 +1,4 @@
-##!/bin/bash -e
+#! /bin/bash -e
 
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/../scripts/set-env.sh
@@ -103,7 +103,7 @@ ytt -f overlay/trust-certificate/configmap.yaml -f overlay/trust-certificate/val
 kubectl create configmap harbor-overlay -n tanzu-system-registry -o yaml --dry-run=client \
   --from-file=overlay-s3-pvc-fix.yaml=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml \
   --from-file=trust-letsencrypt.yaml=overlay/trust-certificate/overlay.yaml | kubectl apply -f-
- 
+
 # Deploy the Harbor extension
 kubectl apply -f tkg-extensions-mods-examples/registry/harbor/harbor-extension.yaml
 
