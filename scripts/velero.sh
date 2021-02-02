@@ -17,16 +17,8 @@ VELERO_BUCKET=$(yq r $PARAMS_YAML velero.bucket)
 VELERO_REGION=$(yq r $PARAMS_YAML velero.region)
 IAAS=$(yq r $PARAMS_YAML iaas)
 
-if [ "$IAAS" = "aws" ];
+if [ "$IAAS" = "vsphere" ];
 then
-  velero install \
-      --provider aws \
-      --plugins velero/velero-plugin-for-aws:v1.0.1 \
-      --bucket $VELERO_BUCKET \
-      --backup-location-config region=$VELERO_REGION \
-      --snapshot-location-config region=$VELERO_REGION \
-      --secret-file keys/credentials-velero
-else
 
   # Begin Hack
   # The following hack is required because the vSphere Plugin is looking for a secret with the name “vsphere-config-secret“. This secret contains 
@@ -64,6 +56,15 @@ EOF
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
   velero snapshot-location create vsl-vsphere --provider velero.io/vsphere
+
+else
+  velero install \
+      --provider aws \
+      --plugins velero/velero-plugin-for-aws:v1.0.1 \
+      --bucket $VELERO_BUCKET \
+      --backup-location-config region=$VELERO_REGION \
+      --snapshot-location-config region=$VELERO_REGION \
+      --secret-file keys/credentials-velero
 fi
 
 # Wait for it to be ready
@@ -73,12 +74,12 @@ while kubectl get po -n velero | grep Running ; [ $? -ne 0 ]; do
 done
 
 # Setup the backup schedule
-if [ "$IAAS" = "aws" ];
+if [ "$IAAS" = "vsphere" ];
 then
-  velero schedule create daily-$CLUSTER_NAME-cluster-backup \
-    --schedule "0 7 * * *" 
-else
   velero schedule create daily-$CLUSTER_NAME-cluster-backup \
     --schedule "0 7 * * *" \
     --volume-snapshot-locations vsl-vsphere
+else
+  velero schedule create daily-$CLUSTER_NAME-cluster-backup \
+    --schedule "0 7 * * *" 
 fi
