@@ -41,7 +41,8 @@ $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML management-cluster.name
 $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
   $(yq r $PARAMS_YAML shared-services-cluster.name) \
   $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
-  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint)
+  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint) \
+  $(yq r $PARAMS_YAML shared-services-cluster.kuberentes-version)
 # Shared Services Step 2
 $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 # Shared Services Step 3
