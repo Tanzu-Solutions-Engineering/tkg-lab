@@ -14,7 +14,6 @@ OSS Signed and Supported Extensions:
 - **Harbor** for image registry
 - **Velero** for backup, via Tanzu Mission Control
 
-
 Incorporates the following Tanzu SaaS products:
 
 - **Tanzu Mission Control** for multi-cluster management
@@ -26,16 +25,14 @@ Leverages the following external services:
 - **AWS Route 53** as DNS provider
 - **Okta** as an OIDC provider
 - **Let's Encrypt** as Certificate Authority
+
+Additional OSS components not supported by VMware
 - **External DNS** as Kubernetes native way to manage DNS records
+- **Elasticsearch and Kibana** for log aggregation and viewing
 
 ## Goals and Audience
 
 The following demo is for Tanzu field team members to see how various components of Tanzu and OSS ecosystem come together to build a modern application platform.  We will highlight two different roles of the platform team and the application team's dev ops role.  This could be delivered as a presentation and demo.  Or it could be extended to include having the audience actually deploy the full solution on their own using their cloud resources. The latter would be for SE’s and likely require a full day.
-
-Disclaimers
-
-- Arguably, we have products, like TAS or TKGI that deliver components of these features and more with tighter integration, automation, and enterprise readiness today.
-- Additionally, it is early days in our product integrations, automation, and enterprise readiness as these products have recently entered GA or are being integrated for the first time.
 
 What we do have is a combination of open source and proprietary components, with a bias towards providing VMware built/signed OSS components by default, with flexibility to swap components and flexible integrations.
 
@@ -87,7 +84,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - tkg
 - velero
 - helm 3
-- [yq version 3.4+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux)
+- [yq version 3.4+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).  **Do not use yq version 4.x**
 - kind (helpful, but not required)
 - ytt, kapp, imgpkg, kbld (bundled with tkg)
 
