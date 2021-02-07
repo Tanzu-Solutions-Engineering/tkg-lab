@@ -1,4 +1,5 @@
-keys/
+keys/*
+!keys/.gitkeep
 config.yaml
 .secrets
 tkg-extensions
@@ -8,4 +9,5 @@ sensitive/
 params.yaml
 generated/
 .DS_Store
-local-config/
+local-config/*
+!local-config/.gitkeep

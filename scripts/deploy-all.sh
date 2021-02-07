@@ -42,7 +42,7 @@ $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
   $(yq r $PARAMS_YAML shared-services-cluster.name) \
   $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
   $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint) \
-  $(yq r $PARAMS_YAML shared-services-cluster.kuberentes-version)
+  $(yq r $PARAMS_YAML shared-services-cluster.kubernetes-version)
 # Shared Services Step 2
 $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 # Shared Services Step 3
@@ -58,7 +58,7 @@ then
     $(yq r $PARAMS_YAML shared-services-cluster.metallb-start-ip) \
     $(yq r $PARAMS_YAML shared-services-cluster.metallb-end-ip)
 fi
-$TKG_LAB_SCRIPTS/deploy-cert-manager.sh
+$TKG_LAB_SCRIPTS/deploy-cert-manager.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 $TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
   $(yq r $PARAMS_YAML shared-services-cluster.name) \

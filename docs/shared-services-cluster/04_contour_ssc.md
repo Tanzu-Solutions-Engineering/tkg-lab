@@ -16,7 +16,7 @@ Run the script passing the range as parameters. Example:
 Our solution leverages cert manager to generate valid ssl certs.  Use this script to deploy cert manager into the cluster using TKG Extensions.
 
 ```bash
-./scripts/deploy-cert-manager.sh
+./scripts/deploy-cert-manager.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 ```
 
 ## Deploy Contour

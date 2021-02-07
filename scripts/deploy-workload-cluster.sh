@@ -10,6 +10,7 @@ then
     echo "Expecting 2 or 3 args.  Must supply cluster name and worker replicas count and optionally kuberenetes version as args"
     exit 1
   fi
+  KUBERNETES_VERSION=$3
 else
   if [ ! $# -eq 3 ] && [ ! $# -eq 4 ]; then
   echo "count: $#"
@@ -17,11 +18,11 @@ else
     exit 1
   fi
   VSPHERE_CONTROLPLANE_ENDPOINT=$3
+  KUBERNETES_VERSION=$4
 fi
 
 CLUSTER_NAME=$1
 WORKER_REPLICAS=$2
-KUBERNETES_VERSION=$4
 
 KUBERNETES_VERSION_FLAG_AND_VALUE=""
 if [ ! "$KUBERNETES_VERSION" = "" ]; then
