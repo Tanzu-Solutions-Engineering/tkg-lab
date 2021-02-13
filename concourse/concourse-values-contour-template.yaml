@@ -1,5 +1,4 @@
 ---
-imageTag: "6.7.2" # pinning to this version as 6.7.3/4 have a bug with OIDC integration.  Hopes to be fixed when 6.7.5 is released
 concourse:
   web:
     externalUrl: https://CONCOURSE_URL  # TO BE REPLACED
@@ -25,6 +24,11 @@ secrets:
   localUsers: "admin:ADMIN_PASSWORD" # TO BE REPLACED
 
 web:
+  env:
+    # Add this env variable for OIDC provider like okta who don't support email verified claim
+    # https://github.com/concourse/concourse/releases/tag/v6.7.5
+    - name: CONCOURSE_OIDC_SKIP_EMAIL_VERIFIED_VALIDATION
+      value: "true"
   ingress:
     enabled: true
     annotations:
