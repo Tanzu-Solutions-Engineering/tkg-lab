@@ -9,8 +9,8 @@ if [ ! $# -eq 2 ]; then
 fi
 
 CLUSTER_NAME=$1
-INGRESS_FQDN=$2
-DNS_PROVIDER=$(yq r $PARAMS_YAML dns.provider)
+export INGRESS_FQDN=$2
+DNS_PROVIDER=$(yq e .dns.provider $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
@@ -19,7 +19,7 @@ mkdir -p generated/$CLUSTER_NAME/external-dns
 if [ "$DNS_PROVIDER" = "gcloud-dns" ];
 then
   # Using Google Cloud DNS
-  GCLOUD_PROJECT=$(yq r $PARAMS_YAML gcloud.project)
+  export GCLOUD_PROJECT=$(yq e .gcloud.project $PARAMS_YAML)
   # Create GCloud Service Account
   GCP_SERVICE_ACCOUNT=`gcloud iam service-accounts list | grep external-dns`
   if [ -z "$GCP_SERVICE_ACCOUNT" ]
@@ -36,19 +36,19 @@ then
     generic gcloud-dns-credentials \
     --from-file=credentials.json=keys/gcloud-dns-credentials.json
   # values.yaml
-  yq read external-dns/values-template-gcloud.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
-  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "google.project" $GCLOUD_PROJECT
-  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "google.serviceAccountSecret" "gcloud-dns-credentials"
+  cp external-dns/values-template-gcloud.yaml generated/$CLUSTER_NAME/external-dns/values.yaml
+  yq e -i '.google.project = env(GCLOUD_PROJECT)' generated/$CLUSTER_NAME/external-dns/values.yaml
+  yq e -i '.google.serviceAccountSecret = "gcloud-dns-credentials"' generated/$CLUSTER_NAME/external-dns/values.yaml
 else
   # Default to AWS Route53
-  AWS_SECRET_KEY=$(yq r $PARAMS_YAML aws.secret-access-key)
-  AWS_ACCESS_KEY=$(yq r $PARAMS_YAML aws.access-key-id)
-  AWS_REGION=$(yq r $PARAMS_YAML aws.region)
+  export AWS_SECRET_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
+  export AWS_ACCESS_KEY=$(yq e .aws.access-key-id $PARAMS_YAML)
+  export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
   # values.yaml
-  yq read external-dns/values-template-aws.yaml > generated/$CLUSTER_NAME/external-dns/values.yaml
-  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.secretKey" $AWS_SECRET_KEY
-  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.credentials.accessKey" $AWS_ACCESS_KEY
-  yq write generated/$CLUSTER_NAME/external-dns/values.yaml -i "aws.region" $AWS_REGION
+  cp external-dns/values-template-aws.yaml generated/$CLUSTER_NAME/external-dns/values.yaml
+  yq e -i '.aws.credentials.secretKey = env(AWS_SECRET_KEY)' generated/$CLUSTER_NAME/external-dns/values.yaml 
+  yq e -i '.aws.credentials.accessKey = env(AWS_ACCESS_KEY)' generated/$CLUSTER_NAME/external-dns/values.yaml 
+  yq e -i '.aws.region = env(AWS_REGION)' generated/$CLUSTER_NAME/external-dns/values.yaml 
 fi
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -62,17 +62,10 @@ while kubectl get po -l app.kubernetes.io/name=external-dns -n tanzu-system-ingr
 done
 
 # Now update the contour extension to include external dns annotation
-yq write -d0 generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i tkg_lab.ingress_fqdn "$INGRESS_FQDN."
-
+yq e -i '.tkg_lab.ingress_fqdn = strenv(INGRESS_FQDN)' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+  
 # Add in the document seperator that yq removes
-if [ `uname -s` = 'Darwin' ];
-then
-  sed -i '' '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-else
-  sed -i -e '3i\---\' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-fi
+add_yaml_doc_seperator generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
 # Update contour secret with custom configuration for ingress
 kubectl create secret generic contour-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress -o yaml --dry-run=client | kubectl apply -f-

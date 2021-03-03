@@ -113,10 +113,6 @@ while kubectl get app harbor -n tanzu-system-registry | grep harbor | grep "Reco
 done
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it
-# Since we have created a Certificate with a trusted CA, and have a FQDN that is routable from any cluster in the TKG region then we are good to go,
-# and we don't need the TKG Connectivity bits.
-# TODO: Install the Tanzu Registry Webhook and TKG Connectivity API for demonstration purposes
-
 
 echo "Okta OIDC Configurtion Values..."
 echo "Auth Mode: OIDC"

@@ -10,7 +10,7 @@ fi
 
 CLUSTER_NAME=$1
 
-IAAS=$(yq r $PARAMS_YAML iaas)
+IAAS=$(yq e .iaas $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
@@ -18,35 +18,21 @@ mkdir -p generated/$CLUSTER_NAME/contour/
 
 # Install the TMC Extensions Manager - Commented out since we already install it when attaching the cluster to TMC
 kubectl apply -f tkg-extensions/extensions/tmc-extension-manager.yaml
-# Install the kapp Controller
-kubectl apply -f tkg-extensions/extensions/kapp-controller.yaml
-
-# Wait for kapp-controller pods to be Running
-while kubectl get pods -n vmware-system-tmc | grep kapp-controller | grep Running ; [ $? -ne 0 ]; do
-	echo kapp-controller is not yet ready
-	sleep 5s
-done
 
 # Create a namespace and RBAC config for the Contour service
 kubectl apply -f tkg-extensions/extensions/ingress/contour/namespace-role.yaml
 
 # Prepare Contour custom configuration
-yq read tkg-extensions/extensions/ingress/contour/$IAAS/contour-data-values.yaml.example > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+cp tkg-extensions/extensions/ingress/contour/$IAAS/contour-data-values.yaml.example generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+
 # Not necessary for azure and aws, but it doesn't hurt
-yq write -d0 generated/$CLUSTER_NAME/contour/contour-data-values.yaml -i envoy.service.type LoadBalancer
+yq e -i '.envoy.service.type = "LoadBalancer"' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
 # Add in the document seperator that yq removes
-if [ `uname -s` = 'Darwin' ]; 
-then
-  sed -i '' '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-else
-  sed -i -e '3i\---\' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-fi
+add_yaml_doc_seperator generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
 # Create secret with custom configuration
-kubectl create secret generic contour-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress
+kubectl create secret generic contour-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress -o yaml --dry-run=client | kubectl apply -f-
 
 # Deploy Contour Extension
 kubectl apply -f tkg-extensions/extensions/ingress/contour/contour-extension.yaml
