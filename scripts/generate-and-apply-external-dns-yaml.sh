@@ -39,27 +39,47 @@ then
   cp external-dns/values-template-gcloud.yaml generated/$CLUSTER_NAME/external-dns/values.yaml
   yq e -i '.google.project = env(GCLOUD_PROJECT)' generated/$CLUSTER_NAME/external-dns/values.yaml
   yq e -i '.google.serviceAccountSecret = "gcloud-dns-credentials"' generated/$CLUSTER_NAME/external-dns/values.yaml
+
+  helm repo add bitnami https://charts.bitnami.com/bitnami
+
+  helm upgrade --install external-dns bitnami/external-dns -n tanzu-system-ingress -f generated/$CLUSTER_NAME/external-dns/values.yaml
+
+  #Wait for pod to be ready
+  while kubectl get po -l app.kubernetes.io/name=external-dns -n tanzu-system-ingress | grep Running ; [ $? -ne 0 ]; do
+    echo external-dns is not yet ready
+    sleep 5s
+  done
+
 else
-  # Default to AWS Route53
-  export AWS_SECRET_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
-  export AWS_ACCESS_KEY=$(yq e .aws.access-key-id $PARAMS_YAML)
-  export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
-  # values.yaml
-  cp external-dns/values-template-aws.yaml generated/$CLUSTER_NAME/external-dns/values.yaml
-  yq e -i '.aws.credentials.secretKey = env(AWS_SECRET_KEY)' generated/$CLUSTER_NAME/external-dns/values.yaml 
-  yq e -i '.aws.credentials.accessKey = env(AWS_ACCESS_KEY)' generated/$CLUSTER_NAME/external-dns/values.yaml 
-  yq e -i '.aws.region = env(AWS_REGION)' generated/$CLUSTER_NAME/external-dns/values.yaml 
+  kubectl apply -f tkg-extensions/extensions/service-discovery/external-dns/namespace-role.yaml
+
+  cp tkg-extensions/extensions/service-discovery/external-dns/external-dns-data-values-aws-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
+  export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML) 
+  export HOSTED_ZONE_ID=--txt-owner-id=$(yq e .aws.hosted-zone-id $PARAMS_YAML) 
+  yq e -i '.externalDns.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.externalDns.deployment.args[9] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
+  add_yaml_doc_seperator generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
+  kubectl create secret generic route53-credentials \
+    --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
+    --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
+    -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
+
+  # Using the following "apply" syntax to allow for script to be rerun
+  kubectl create secret generic external-dns-data-values \
+    --from-file=values.yaml=generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
+    -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
+
+  kubectl apply -f tkg-extensions/extensions/service-discovery/external-dns/external-dns-extension.yaml
+
+  while kubectl get app external-dns -n tanzu-system-service-discovery | grep external-dns | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
+    echo External extension is not yet ready
+    sleep 5s
+  done   
+
 fi
-
-helm repo add bitnami https://charts.bitnami.com/bitnami
-
-helm upgrade --install external-dns bitnami/external-dns -n tanzu-system-ingress -f generated/$CLUSTER_NAME/external-dns/values.yaml
-
-#Wait for pod to be ready
-while kubectl get po -l app.kubernetes.io/name=external-dns -n tanzu-system-ingress | grep Running ; [ $? -ne 0 ]; do
-	echo external-dns is not yet ready
-	sleep 5s
-done
 
 # Now update the contour extension to include external dns annotation
 yq e -i '.tkg_lab.ingress_fqdn = strenv(INGRESS_FQDN)' generated/$CLUSTER_NAME/contour/contour-data-values.yaml

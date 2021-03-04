@@ -4,9 +4,15 @@ The TKG Extensions bundle is available for download from the [same location](htt
 
 Follow [the documentation](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-extensions-index.html) to unpack the bundle for instructions on how to install the in-cluster/shared services.
 ```bash
-gunzip ~/Downloads/tkg-extensions-manifests-v1.2.0-vmware.1.tar-2.gz
-tar -xzf ~/Downloads/tkg-extensions-manifests-v1.2.0-vmware.1.tar-2
-mv tkg-extensions-v1.2.0+vmware.1 tkg-extensions
+rm -rf tkg-extensions
+gunzip ~/Downloads/tkg-extensions-manifests-v1.3.0+vmware.1.tar.gz
+tar -xzf ~/Downloads/tkg-extensions-manifests-v1.3.0+vmware.1.tar
+mv tkg-extensions-v1.3.0+vmware.1 tkg-extensions
+# Optionally run this if your working with a pre-ga version of the extensions manifets
+# On Mac
+find ./ -type f -exec sed -i '' 's/projects.registry.vmware.com/projects-stg.registry.vmware.com/' {} \;
+# On Linux
+grep -rli 'projects.registry.vmware.com' * | xargs -i@ sed -i "s/projects-stg.registry.vmware.com/projects-stg.registry.vmware.com/g" @
 ```
 
 Also make sure to install the Carvel tools bundled in the TKG artifact.

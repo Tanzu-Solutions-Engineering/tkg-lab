@@ -12,8 +12,7 @@ shared-services-cluster.worker-replicas: 2
 iaas: aws
 ```
 
-We need to copy the `oidc` script for the relevant iaas into our `.tkg` configuration directory so that TKG is aware of the customized plan.  Then we setup some specific environment variables that will be used in the plan: OIDC_ISSUER_URL, OIDC_USERNAME_CLAIM, OIDC_GROUPS_CLAIM, DEX_CA.  The oidc configuration
-requires these.  
+We need to setup a cluster configuration file for our new workload cluster.  
 
 Then we ask the management cluster to create the new workload cluster and once complete set the default storage class based upon the iaas.
 
@@ -23,10 +22,10 @@ All of the steps above can be accomplished by running the following script:
 
 ```bash
 ./scripts/deploy-workload-cluster.sh \
-  $(yq r $PARAMS_YAML shared-services-cluster.name) \
-  $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
-  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint) \
-  $(yq r $PARAMS_YAML shared-services-cluster.kubernetes-version)
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.controlplane-endpoint $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.kubernetes-version $PARAMS_YAML)
 ```
 
 >Note: The kubernetes-version parameter is optional for the script and if you don't have it in your configuration, then it will default to the default version of the TKG cli.

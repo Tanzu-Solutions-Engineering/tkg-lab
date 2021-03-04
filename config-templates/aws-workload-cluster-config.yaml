@@ -1,0 +1,9 @@
+CLUSTER_NAME: # Added by scripts
+AWS_VPC_ID:  # Added by scripts
+AWS_PUBLIC_SUBNET_ID:  # Added by scripts
+AWS_PRIVATE_SUBNET_ID:  # Added by scripts
+
+CLUSTER_PLAN: dev # default is blank
+TKG_HTTP_PROXY_ENABLED: "false" # default is blank
+MACHINE_HEALTH_CHECK_ENABLED: "true" # default is blank
+BASTION_HOST_ENABLED: false # default is true
