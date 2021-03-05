@@ -41,12 +41,12 @@ $TKG_LAB_SCRIPTS/update-pinniped-configuration.sh
 # $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML management-cluster.name)
 
 # # Shared Services Step 1
-# $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
-#   $(yq r $PARAMS_YAML shared-services-cluster.name) \
-#   $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
-#   $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint) \
-#   $(yq r $PARAMS_YAML shared-services-cluster.kubernetes-version)
-# # Shared Services Step 2
+$TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.controlplane-endpoint $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.kubernetes-version $PARAMS_YAML)
+# Shared Services Step 2
 # $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
 # # Shared Services Step 3
 # $TKG_LAB_SCRIPTS/tmc-policy.sh \

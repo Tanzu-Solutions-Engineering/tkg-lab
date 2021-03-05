@@ -1,4 +1,4 @@
-AWS_REGION: us-east-2
+AWS_REGION: # Added by scripts
 AWS_SSH_KEY_NAME: # Added by scripts
 CLUSTER_NAME: # Added by scripts
 OIDC_IDENTITY_PROVIDER_CLIENT_ID: # Added by scripts
