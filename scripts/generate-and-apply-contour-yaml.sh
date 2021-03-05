@@ -42,3 +42,7 @@ while kubectl get app contour -n tanzu-system-ingress | grep contour | grep "Rec
   echo contour extension is not yet ready
   sleep 5
 done
+
+# Now warm up envoy
+
+kubectl apply -f tkg-extensions-mods-examples/ingress/contour/warm-up-envoy.yaml

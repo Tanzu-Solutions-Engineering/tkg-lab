@@ -21,8 +21,8 @@ yq e -i '.spec.dnsNames[0] = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/
 yq e -i '.spec.virtualhost.fqdn = env(DEX_CN)' generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
 yq e -i '.spec.virtualhost.fqdn = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 
-kubectl apply -f generated/dragonstone/pinniped/dex-ingress.yaml
-kubectl apply -f generated/dragonstone/pinniped/pinniped-ingress.yaml
+kubectl apply -f generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
+kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 
 while nslookup $DEX_CN | grep "Non-authoritative answer" ; [ $? -ne 0 ]; do
 	echo Waiting for external-dns to complete configuration of DNS to satisfy $DEX_CN
