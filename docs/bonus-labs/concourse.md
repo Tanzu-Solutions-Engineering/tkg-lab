@@ -28,12 +28,12 @@ okta:
 Once these are in place and correct, run the following to export the following into your shell:
 
 ```bash
-export TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
-export CONCOURSE_NAMESPACE=$(yq r $PARAMS_YAML concourse.namespace)
-export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq r $PARAMS_YAML concourse.tmc-workspace)
+export TMC_CLUSTER_GROUP=$(yq e .tmc.cluster-group $PARAMS_YAML)
+export CONCOURSE_NAMESPACE=$(yq e .concourse.namespace $PARAMS_YAML)
+export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq e .concourse.tmc-workspace $PARAMS_YAML)
 export CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
 export IAAS=$(yq e .iaas $PARAMS_YAML)
-export VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
+export VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 ```
 
 ## Scale Shared Cluster and Taint Nodes
@@ -46,8 +46,8 @@ Rather than creating a new cluster, which we normally would recommend for Concou
 First, create a pair of new worker nodes in the tkg cluster:
 
 ```bash
-NEW_NODE_COUNT=$(($(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) + 2))
-tkg scale cluster $CLUSTER_NAME -w $NEW_NODE_COUNT
+NEW_NODE_COUNT=$(($(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) + 2))
+tanzu cluster scale $CLUSTER_NAME -w $NEW_NODE_COUNT
 ```
 After a few minutes, check to see which new nodes were created.  These will be the nodes that are the most recent in the AGE output of "kubectl get nodes".  Label these nodes using a space to separate the list of nodes in the command:
 
@@ -130,7 +130,7 @@ kubectl get cert,ing -n $CONCOURSE_NAMESPACE
 
 ```bash
 fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) login \
-  -c https://$(yq r $PARAMS_YAML concourse.fqdn) \
+  -c https://$(yq e .concourse.fqdn $PARAMS_YAML) \
   -n main
 ```
 
@@ -138,7 +138,7 @@ fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) login \
 
 ## Create Sample Pipeline
 
-There are a number of ways to manage pipeline configuration values.  See notes at ...  In the sample pipeline we will place them in a Kubernetes secret.
+There are a number of ways to manage pipeline configuration values.  See notes at https://github.com/concourse/concourse-chart  In the sample pipeline we will place them in a Kubernetes secret.
 
 1. Create Kubernetes secret in the concourse_main namespace.
 

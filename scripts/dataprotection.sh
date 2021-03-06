@@ -22,7 +22,7 @@ tmc cluster dataprotection create --management-cluster-name attached \
   --backup-location-names ${BACKUP_LOCATION} 
 
 # Wait for it to be ready
-while [[ $(tmc cluster dataprotection get -m attached -p attached --cluster-name ${VMWARE_ID}-${CLUSTER_NAME}-${IAAS} | yq e --tojson | jq .status.phase) != "READY" ]] ; do
+while [[ $(tmc cluster dataprotection get -m attached -p attached --cluster-name ${VMWARE_ID}-${CLUSTER_NAME}-${IAAS} | yq e --tojson | jq .status.phase -r) != "READY" ]] ; do
   echo Velero is not yet ready
   sleep 5s
 done

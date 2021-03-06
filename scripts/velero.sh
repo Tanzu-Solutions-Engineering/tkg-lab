@@ -13,8 +13,8 @@ echo "Beginning Velero install..."
 CLUSTER_NAME=$1
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-VELERO_BUCKET=$(yq r $PARAMS_YAML velero.bucket)
-VELERO_REGION=$(yq r $PARAMS_YAML velero.region)
+VELERO_BUCKET=$(yq e .velero.bucket $PARAMS_YAML)
+VELERO_REGION=$(yq e .velero.region $PARAMS_YAML)
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
 if [ "$IAAS" = "vsphere" ];
@@ -26,9 +26,9 @@ then
   # this is currently under review with the vSphere Plugin team to see if we can address this issue.
   # Nevertheless, there is an easy workaround for it, simply create another secret with the name “vsphere-config-secret” and the required information.
   # See https://beyondelastic.com/2020/04/30/backup-and-migrate-tkgi-pks-to-tkg-with-velero/ for where this issue was identified
-  VSPHERE_SERVER=$(yq r $PARAMS_YAML vsphere.server)
-  VSPHERE_USERNAME=$(yq r $PARAMS_YAML vsphere.username)
-  VSPHERE_PASSWORD=$(yq r $PARAMS_YAML vsphere.password)
+  VSPHERE_SERVER=$(yq e .vsphere.server $PARAMS_YAML)
+  VSPHERE_USERNAME=$(yq e .vsphere.username $PARAMS_YAML)
+  VSPHERE_PASSWORD=$(yq e .vsphere.password $PARAMS_YAML)
 
   mkdir -p generated/$CLUSTER_NAME/velero/
 

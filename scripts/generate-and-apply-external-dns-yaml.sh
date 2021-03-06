@@ -75,7 +75,7 @@ else
   kubectl apply -f tkg-extensions/extensions/service-discovery/external-dns/external-dns-extension.yaml
 
   while kubectl get app external-dns -n tanzu-system-service-discovery | grep external-dns | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-    echo External extension is not yet ready
+    echo External-Dns extension is not yet ready
     sleep 5s
   done   
 

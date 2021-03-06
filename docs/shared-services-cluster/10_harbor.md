@@ -49,7 +49,7 @@ kubectl get po -n tanzu-system-registry
 
 2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
 ```bash
-open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
+open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
 ```
 
 
@@ -109,7 +109,7 @@ okta:
 2. In an incognito window, access Harbor UI: https://<harbor.harbor-cn from $PARAMS_YAML>.  You will now see a `Login Via OIDC Provider` button on the login page.
 
 ```bash
-open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
+open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
 ```
 
 3. Click `Login Via OIDC Provider` button, you will be redirected to Okta login page.
@@ -125,7 +125,7 @@ open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
 2. Now login with docker cli.  Use your Okta username and your `CLI secret` from Harbor
 
 ```bash
-docker login https://$(yq r $PARAMS_YAML harbor.harbor-cn) -u alana
+docker login https://$(yq e .harbor.harbor-cn $PARAMS_YAML) -u alana
 ```
 
 ### Add Alana as Admin

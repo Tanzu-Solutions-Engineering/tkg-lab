@@ -61,6 +61,6 @@ unset KUBECONFIG
 Go to the ingress URL to test out.  
 
 ```bash
-open https://$(yq r $PARAMS_YAML acme-fitness.fqdn)
+open https://$(yq e .acme-fitness.fqdn $PARAMS_YAML)
 # login with eric/vmware1! in order to make a purchase.
 ```
