@@ -32,6 +32,7 @@ then
   yq e -i '.CLUSTER_NAME = env(CLUSTER_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.AWS_REGION = env(REGION)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.AWS_SSH_KEY_NAME = env(AWS_SSH_KEY_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER_NAME/cluster-config.yaml
 
   if [ ! "$KUBERNETES_VERSION" = "null" ]; then
     yq e -i '.KUBERNETES_VERSION = env(KUBERNETES_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
