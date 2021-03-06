@@ -19,7 +19,7 @@ curl --output /tmp/crashd-linux-amd64-$CRASHD_VERSION.tar.gz http://build-squid.
 export MGMT_CLUSTER=$(yq e .management-cluster.name $PARAMS_YAML)
 export SSH_KEY=keys/$(yq e .environment-name $PARAMS_YAML)-ssh.pem
 kubectl config use-context $MGMT_CLUSTER-admin@$MGMT_CLUSTER
-export BASTION_IP=$(kubectl get awscluster -ojsonpath="{.items[0].status.bastion.addresses[?(@.type == 'ExternalIP')].address}")
+export BASTION_IP=$(kubectl get awscluster -ojsonpath="{.items[0].status.bastion.addresses[?(@.type == 'ExternalIP')].address}" -n tkg-system)
 
 # Create the crasd properties file
 cat > /tmp/crashd-args.properties << EOF

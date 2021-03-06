@@ -54,12 +54,13 @@ cp tkg-extensions/extensions/registry/harbor/harbor-data-values.yaml.example gen
 bash tkg-extensions/extensions/registry/harbor/generate-passwords.sh generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 # Specify settings in harbor-data-values.yaml
 
+export CLAIR_ENABLED=false
 yq e -i ".hostname = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.harborAdminPassword = "Harbor12345"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i '.clair.enabled = "false"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i ".tlsCertificate.tls\.crt = strenv(HARBOR_CERT_CRT)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i ".tlsCertificate.tls\.key = strenv(HARBOR_CERT_KEY)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i ".tlsCertificate.ca\.crt = strenv(HARBOR_CERT_CA)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml 
+yq e -i '.clair.enabled = env(CLAIR_ENABLED)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+yq e -i '.tlsCertificate."tls.crt" = strenv(HARBOR_CERT_CRT)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+yq e -i '.tlsCertificate."tls.key" = strenv(HARBOR_CERT_KEY)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml 
 yq e -i '.ca = "letsencrypt"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 # Enhance PVC to 30GB for TBS use cases. Comment this row if 10GB is enough for you
 yq e -i '.persistence.persistentVolumeClaim.registry.size = "30Gi"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
