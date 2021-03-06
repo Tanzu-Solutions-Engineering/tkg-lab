@@ -26,7 +26,7 @@ Prepare the YAML manifests for the related prometheus k8s objects.  Manifests wi
 
 ```bash
 ./scripts/generate-and-apply-prometheus-yaml.sh \
-  $(yq r $PARAMS_YAML workload-cluster.name) \
+  $(yq e .workload-cluster.name $PARAMS_YAML) \
   $(yq r $PARAMS_YAML workload-cluster.prometheus-fqdn)
 ```
 
@@ -48,7 +48,7 @@ Prepare the YAML manifests for the related grafana k8s objects.  Manifests will 
 
 ```bash
 ./scripts/generate-and-apply-grafana-yaml.sh \
-  $(yq r $PARAMS_YAML workload-cluster.name) \
+  $(yq e .workload-cluster.name $PARAMS_YAML) \
   $(yq r $PARAMS_YAML workload-cluster.grafana-fqdn)
 ```
 

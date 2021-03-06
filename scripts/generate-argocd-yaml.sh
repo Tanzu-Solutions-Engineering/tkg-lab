@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
+CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
 ARGOCD_CN=$(yq r $PARAMS_YAML argocd.server-fqdn)
 ARGOCD_PASSWORD=$(yq r $PARAMS_YAML argocd.password)
 

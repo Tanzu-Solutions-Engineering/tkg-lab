@@ -12,7 +12,7 @@ PROMETHEUS_FQDN=$2
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-IAAS=$(yq r $PARAMS_YAML iaas)
+IAAS=$(yq e .iaas $PARAMS_YAML)
 
 mkdir -p generated/$CLUSTER_NAME/monitoring/
 

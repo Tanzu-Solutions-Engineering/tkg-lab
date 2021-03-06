@@ -4,6 +4,7 @@ CLUSTER_NAME: # Added by scripts
 OIDC_IDENTITY_PROVIDER_CLIENT_ID: # Added by scripts
 OIDC_IDENTITY_PROVIDER_CLIENT_SECRET: # Added by scripts
 OIDC_IDENTITY_PROVIDER_ISSUER_URL: # Added by scripts
+WORKER_MACHINE_COUNT: # Added by scripts
 
 INFRASTRUCTURE_PROVIDER: aws
 CLUSTER_PLAN: dev # default is blank

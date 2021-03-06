@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
+CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
 CONCOURSE_URL=$(yq r $PARAMS_YAML concourse.fqdn)
 CONCOURSE_NAMESPACE=$(yq r $PARAMS_YAML concourse.namespace)
 OKTA_AUTH_SERVER_CN=$(yq r $PARAMS_YAML okta.auth-server-fqdn)

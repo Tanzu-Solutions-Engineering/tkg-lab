@@ -47,7 +47,7 @@ There are lots of potential validation steps, but let's focus on the ability to 
 6. Attempt to access the cluster with the new config
 
 ```bash
-open https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
+open https://$(yq e .workload-cluster.gangway-fqdn $PARAMS_YAML)
 
 KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -A
 ```

@@ -31,8 +31,8 @@ Once these are in place and correct, run the following to export the following i
 export TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
 export CONCOURSE_NAMESPACE=$(yq r $PARAMS_YAML concourse.namespace)
 export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq r $PARAMS_YAML concourse.tmc-workspace)
-export CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
-export IAAS=$(yq r $PARAMS_YAML iaas)
+export CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
+export IAAS=$(yq e .iaas $PARAMS_YAML)
 export VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
 ```
 
@@ -129,7 +129,7 @@ kubectl get cert,ing -n $CONCOURSE_NAMESPACE
 2. Log in and save alias
 
 ```bash
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) login \
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) login \
   -c https://$(yq r $PARAMS_YAML concourse.fqdn) \
   -n main
 ```
@@ -149,7 +149,7 @@ ytt -f concourse/common-secrets.yaml --ignore-unknown-comments | kapp deploy -n 
 2. Set the pipeline using fly cli
 
 ```bash
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) set-pipeline -p test-pipeline -c concourse/test-pipeline.yaml -n
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) unpause-pipeline -p test-pipeline
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) trigger-job -j test-pipeline/hello-world --watch
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) set-pipeline -p test-pipeline -c concourse/test-pipeline.yaml -n
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) unpause-pipeline -p test-pipeline
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) trigger-job -j test-pipeline/hello-world --watch
 ```

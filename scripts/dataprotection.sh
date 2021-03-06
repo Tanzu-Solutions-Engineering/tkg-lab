@@ -11,10 +11,10 @@ fi
 echo "Enabling TMC data protection (powered by Velero)..."
 
 CLUSTER_NAME=$1
-BACKUP_LOCATION=$(yq r $PARAMS_YAML tmc.data-protection-backup-location-name)
+BACKUP_LOCATION=$(yq e .tmc.data-protection-backup-location-name $PARAMS_YAML)
 
-IAAS=$(yq r $PARAMS_YAML iaas)
-VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
+IAAS=$(yq e .iaas $PARAMS_YAML)
+VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 
 tmc cluster dataprotection create --management-cluster-name attached \
   --provisioner-name attached \
@@ -22,7 +22,7 @@ tmc cluster dataprotection create --management-cluster-name attached \
   --backup-location-names ${BACKUP_LOCATION} 
 
 # Wait for it to be ready
-while [[ $(tmc cluster dataprotection get -m attached -p attached --cluster-name ${VMWARE_ID}-${CLUSTER_NAME}-${IAAS} | yq r - status.phase ) != "READY" ]] ; do
+while [[ $(tmc cluster dataprotection get -m attached -p attached --cluster-name ${VMWARE_ID}-${CLUSTER_NAME}-${IAAS} | yq e --tojson | jq .status.phase) != "READY" ]] ; do
   echo Velero is not yet ready
   sleep 5s
 done

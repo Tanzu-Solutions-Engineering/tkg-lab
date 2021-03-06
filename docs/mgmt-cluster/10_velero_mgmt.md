@@ -28,7 +28,7 @@ veloreo.region: us-east-2
 Prepare the YAML manifests for the related velero K8S objects and then run the following script to install velero and configure a nightly backup.
 
 ```bash
-./scripts/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
+./scripts/velero.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
 
 ## Validation Step

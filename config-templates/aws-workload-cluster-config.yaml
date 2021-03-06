@@ -4,6 +4,7 @@ CLUSTER_NAME: # Added by scripts
 AWS_VPC_ID:  # Added by scripts
 AWS_PUBLIC_SUBNET_ID:  # Added by scripts
 AWS_PRIVATE_SUBNET_ID:  # Added by scripts
+WORKER_MACHINE_COUNT: # Added by scripts
 
 CLUSTER_PLAN: dev # default is blank
 TKG_HTTP_PROXY_ENABLED: "false" # default is blank

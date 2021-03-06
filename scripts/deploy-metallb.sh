@@ -12,7 +12,7 @@ CLUSTER_NAME=$1
 METALLB_START_IP=$2
 METALLB_END_IP=$3
 
-IAAS=$(yq r $PARAMS_YAML iaas)
+IAAS=$(yq e .iaas $PARAMS_YAML)
 
 if [ "$IAAS" != "vsphere" ];
 then

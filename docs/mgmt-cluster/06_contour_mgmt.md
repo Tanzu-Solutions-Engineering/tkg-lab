@@ -1,16 +1,5 @@
 # Install Contour on management cluster
 
-## Deploy MetalLB (only for vSphere installations!!)
-Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
-Run the script passing the range as parameters. Example:
-
-```bash
-./scripts/deploy-metallb.sh \
-        $(yq r $PARAMS_YAML management-cluster.name) \
-        $(yq r $PARAMS_YAML management-cluster.metallb-start-ip) \
-        $(yq r $PARAMS_YAML management-cluster.metallb-end-ip)
-```
-
 ## Deploy Contour
 
 Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use this script to apply yamls.

@@ -8,39 +8,31 @@ if [ ! $# -eq 1 ]; then
   exit 1
 fi
 
-CLUSTER_NAME=$1
+export CLUSTER_NAME=$1
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-TKG_ENVIRONMENT_NAME=$(yq r $PARAMS_YAML environment-name)
+export TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
 
-if [ $(yq r $PARAMS_YAML shared-services-cluster.name) = $CLUSTER_NAME ];
+if [ $(yq e .shared-services-cluster.name $PARAMS_YAML) = $CLUSTER_NAME ];
 then
-  ELASTICSEARCH_CN=elasticsearch.elasticsearch-kibana
-  ELASTICSEARCH_PORT="9200"
+  export ELASTICSEARCH_CN=elasticsearch.elasticsearch-kibana
+  export ELASTICSEARCH_PORT="9200"
 else
-  ELASTICSEARCH_CN=$(yq r $PARAMS_YAML shared-services-cluster.elasticsearch-fqdn)
-  ELASTICSEARCH_PORT="80"
+  export ELASTICSEARCH_CN=$(yq e .shared-services-cluster.elasticsearch-fqdn $PARAMS_YAML)
+  export ELASTICSEARCH_PORT="80"
 fi
 
 mkdir -p generated/$CLUSTER_NAME/fluent-bit/
 
 # 04-fluent-bit-configmap.yaml
-yq read tkg-extensions/extensions/logging/fluent-bit/elasticsearch/fluent-bit-data-values.yaml.example > generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+cp tkg-extensions/extensions/logging/fluent-bit/elasticsearch/fluent-bit-data-values.yaml.example generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
-yq write generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml -i "tkg.instance_name" $TKG_ENVIRONMENT_NAME
-yq write generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml -i "tkg.cluster_name" $CLUSTER_NAME
-yq write generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml -i "fluent_bit.elasticsearch.host" $ELASTICSEARCH_CN
-yq write generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml -i "fluent_bit.elasticsearch.port" $ELASTICSEARCH_PORT --style single
+yq e -i ".tkg.instance_name = env(TKG_ENVIRONMENT_NAME)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+yq e -i ".tkg.cluster_name = env(CLUSTER_NAME)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+yq e -i ".fluent_bit.elasticsearch.host = env(ELASTICSEARCH_CN)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+yq e -i ".fluent_bit.elasticsearch.port = env(ELASTICSEARCH_PORT)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
-# Add in the document seperator that yq removes
-if [ `uname -s` = 'Darwin' ]; 
-then
-  sed -i '' '3i\
-  ---\
-  ' generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
-else
-  sed -i -e '3i\---\' generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
-fi
+add_yaml_doc_seperator generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
 kubectl apply -f tkg-extensions/extensions/logging/fluent-bit/namespace-role.yaml
 kubectl create secret generic fluent-bit-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml -n tanzu-system-logging -o yaml --dry-run=client | kubectl apply -f-

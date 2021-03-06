@@ -20,7 +20,7 @@ acme-fitness:
 Prepare the YAML manifests for customized acme-fitness K8S objects.  Manifests will be output into `generated/$WORKLOAD_CLUSTER_NAME/acme-fitness/` in case you want to inspect.
 
 ```bash
-./scripts/generate-acme-fitness-yaml.sh $(yq r $PARAMS_YAML workload-cluster.name)
+./scripts/generate-acme-fitness-yaml.sh $(yq e .workload-cluster.name $PARAMS_YAML)
 ```
 
 ## Deploy acme-fitness
@@ -50,7 +50,7 @@ ytt \
     -f acme_fitness_demo/kubernetes-manifests/users-redis-total.yaml \
     -f acme_fitness_demo/kubernetes-manifests/users-total.yaml \
     -f acme_fitness_demo/kubernetes-manifests/frontend-total.yaml \
-    -f generated/$(yq r $PARAMS_YAML workload-cluster.name)/acme-fitness/acme-fitness-frontend-ingress.yaml | \
+    -f generated/$(yq e .workload-cluster.name $PARAMS_YAML)/acme-fitness/acme-fitness-frontend-ingress.yaml | \
     kapp deploy -n acme-fitness -a acme-fitness -y -f -
 
 unset KUBECONFIG

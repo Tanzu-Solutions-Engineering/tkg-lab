@@ -12,9 +12,9 @@ CLUSTER_NAME=$1
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-IAAS=$(yq r $PARAMS_YAML iaas)
-VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
-TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
+IAAS=$(yq e .iaas $PARAMS_YAML)
+VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
+TMC_CLUSTER_GROUP=$(yq e .tmc.cluster-group $PARAMS_YAML)
 
 mkdir -p generated/$CLUSTER_NAME
 

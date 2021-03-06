@@ -24,7 +24,7 @@ Prepare the YAML manifests for the related elasticsearch and kibana K8S objects.
 Get an response back from elasticsearch rest interface
 
 ```bash
-curl -v http://$(yq r $PARAMS_YAML shared-services-cluster.elasticsearch-fqdn)
+curl -v http://$(yq e .shared-services-cluster.elasticsearch-fqdn $PARAMS_YAML)
 ```
 
 ## Go to Next Step

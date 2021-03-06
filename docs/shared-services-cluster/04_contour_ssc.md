@@ -6,9 +6,9 @@ Run the script passing the range as parameters. Example:
 
 ```bash
 ./scripts/deploy-metallb.sh \
-        $(yq r $PARAMS_YAML shared-services-cluster.name) \
+        $(yq e .shared-services-cluster.name $PARAMS_YAML) \
         $(yq r $PARAMS_YAML shared-services-cluster.metallb-start-ip) \
-        $(yq r $PARAMS_YAML shared-services-cluster.metallb-end-ip)
+        $(yq e .shared-services-cluster.metallb-end-ip $PARAMS_YAML)
 ```
 
 ## Deploy Cert Manager
@@ -16,14 +16,14 @@ Run the script passing the range as parameters. Example:
 Our solution leverages cert manager to generate valid ssl certs.  Use this script to deploy cert manager into the cluster using TKG Extensions.
 
 ```bash
-./scripts/deploy-cert-manager.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./scripts/deploy-cert-manager.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Deploy Contour
 
 Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use the script to  apply yamls.
 ```bash
-./scripts/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./scripts/generate-and-apply-contour-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Verify Contour
@@ -42,8 +42,8 @@ Execute the script below to deploy `external-dns` and to apply the annotation to
 
 ```bash
 ./scripts/generate-and-apply-external-dns-yaml.sh \
-  $(yq r $PARAMS_YAML shared-services-cluster.name) \
-  $(yq r $PARAMS_YAML shared-services-cluster.ingress-fqdn)
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.ingress-fqdn $PARAMS_YAML)
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests
@@ -51,7 +51,7 @@ Execute the script below to deploy `external-dns` and to apply the annotation to
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `generated/$CLUSTER_NAME/contour/` in case you want to inspect.
 It is assumed that if you IaaS is AWS, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment..
 ```bash
-./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Verify Cluster Issuer

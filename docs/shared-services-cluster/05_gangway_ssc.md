@@ -17,7 +17,7 @@ Prepare the YAML manifests for the related gangway K8S objects.  Manifests will 
 
 ```bash
 ./scripts/generate-and-apply-gangway-yaml.sh \
-   $(yq r $PARAMS_YAML shared-services-cluster.name) \
+   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
    $(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
 ```
 
@@ -37,8 +37,8 @@ Dex maintains a list of clients that are allowed to access it.  Just like Okta d
 
 ```bash
 ./scripts/inject-dex-client.sh \
-   $(yq r $PARAMS_YAML management-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.name) \
+   $(yq e .management-cluster.name $PARAMS_YAML) \
+   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
    $(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
 ```
 

@@ -5,7 +5,7 @@ We want to have all kubernetes cluster under TMC management.  As such, execute t
 > The script leverages values specified in your params.yaml file to use for the cluster name and cluster group
 
 ```bash
-./scripts/tmc-attach.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./scripts/tmc-attach.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Validation Step

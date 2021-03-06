@@ -5,11 +5,11 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 
 VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 
-# tmc cluster delete $VMWARE_ID-$(yq e .shared-services-cluster.name $PARAMS_YAML)-$(yq e .iaas $PARAMS_YAML) -m attached -p attached --force
-# tmc cluster delete $VMWARE_ID-$(yq e .workload-cluster.name $PARAMS_YAML)-$(yq e .iaas $PARAMS_YAML) -m attached -p attached  --force
+tmc cluster delete $VMWARE_ID-$(yq e .shared-services-cluster.name $PARAMS_YAML)-$(yq e .iaas $PARAMS_YAML) -m attached -p attached --force
+tmc cluster delete $VMWARE_ID-$(yq e .workload-cluster.name $PARAMS_YAML)-$(yq e .iaas $PARAMS_YAML) -m attached -p attached  --force
 
 tanzu login --server $(yq e .management-cluster.name $PARAMS_YAML)
-# tanzu cluster delete $(yq e .workload-cluster.name $PARAMS_YAML) --yes
+tanzu cluster delete $(yq e .workload-cluster.name $PARAMS_YAML) --yes
 tanzu cluster delete $(yq e .shared-services-cluster.name $PARAMS_YAML) --yes
 
 #Wait for clusters to be deleted

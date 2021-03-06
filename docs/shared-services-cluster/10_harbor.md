@@ -34,8 +34,8 @@ Harbor Registry will be installed in the shared services cluster, as it is going
 
 ```bash
 ./scripts/generate-and-apply-harbor-yaml.sh \
-   $(yq r $PARAMS_YAML management-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.name)
+   $(yq e .management-cluster.name $PARAMS_YAML) \
+   $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 The scripts will first create the Harbor certificates and check they are valid, which depends on the Let's Encrypt / Acme challenge to be resolved, that can take a couple of minutes.

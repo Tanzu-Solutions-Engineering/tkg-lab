@@ -7,7 +7,7 @@
 Prepare the YAML manifests for the related fluent-bit K8S objects.  Manifest will be output into `generated/$CLUSTER_NAME/fluent-bit/` in case you want to inspect.
 
 ```bash
-./scripts/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
+./scripts/generate-and-apply-fluent-bit-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
 
 ## Validation Step
@@ -21,7 +21,7 @@ kubectl get pods -n tanzu-system-logging
 Access kibana.  This leverages the wildcard DNS entry on the convoy ingress.  Your base domain will be different than mine.
 
 ```bash
-open http://$(yq r $PARAMS_YAML shared-services-cluster.kibana-fqdn)
+open http://$(yq e .shared-services-cluster.kibana-fqdn $PARAMS_YAML)
 ```
 
 You should see the kibana welcome screen.  

@@ -18,7 +18,7 @@ wavefront:
 Assuming you have helm3 installed, run this script:
 
 ```bash
-./scripts/deploy-wavefront.sh $(yq r $PARAMS_YAML management-cluster.name)
+./scripts/deploy-wavefront.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
 
 ## Validation Step
@@ -30,7 +30,7 @@ Follow the URL provided in the helm install command and filter the cluster list 
 TMC allows you to directly integrate with Tanzu Observability for clusters under management.  This is a new feature for TMC and is only available through the UI.  CLI integration is targeted for Q4 2020.  As such, the following is an option, but not the default as we can not script it.
 
 1. Log-in to TMC
-2. Select your management cluster from the cluster list: `echo $(yq r $PARAMS_YAML management-cluster.name)`
+2. Select your management cluster from the cluster list: `echo $(yq e .management-cluster.name $PARAMS_YAML)`
 3. Choose Actions->Tanzu Observability by Wavefront->Add...
 4. Add dialog.  For `Wavefront API URL` enter the result of `echo $(yq r $PARAMS_YAML wavefront.url)/api/`.  Notice the `/api/` addition to the name. For `Wavefront API token` enter the result of `echo $(yq r $PARAMS_YAML wavefront.api-key)` and then choose `Enable` button.
 5. It should take about 2 minutes to complete enablement of the cluster, and then a little more to see the data flowing in Tanzu Observability.

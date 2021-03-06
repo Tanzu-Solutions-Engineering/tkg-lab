@@ -25,7 +25,7 @@ tmc.data-protection-backup-location-name: my-tmc-data-protection-account-name
 Orchestrate commands for the `tmc` cli to enable data protection on the cluster and then setup a daily backup.
 
 ```bash
-./scripts/dataprotection.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+./scripts/dataprotection.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Validation Step
