@@ -41,6 +41,17 @@ spec:
               pathsFrom:
                 - secretRef:
                     name: harbor-data-values
-      deploy:
+              paths:
+                update-harbor-http-proxy.yaml: |
+                  #@ load("@ytt:overlay", "overlay")
+                  #@ harbor_httpproxy = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy"}})
+                  #@overlay/match by=harbor_httpproxy
+                  ---
+                  spec:
+                    routes:
+                      - #@overlay/match by=overlay.index(3)
+                        #@overlay/match missing_ok=True
+                        timeoutPolicy:
+                          response: 60s      deploy:
         - kapp:
             rawOptions: ["--wait-timeout=5m"]

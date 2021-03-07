@@ -107,12 +107,14 @@ kubectl patch oidcidentityprovider dex-oidc-identity-provider \
 	--type json \
 	-p="[{'op': 'replace', 'path': '/spec/issuer', 'value':'$DEX_SVC_ENDPOINT'},{'op': 'replace', 'path': '/spec/tls/certificateAuthorityData', 'value':$CA_BUNDLE}]"
 # Validate: k get oidcidentityprovider -n pinniped-supervisor -oyaml
+# Get CA: k get oidcidentityprovider -n pinniped-supervisor -ojsonpath="{.items[0].spec.tls.certificateAuthorityData}" | base64 --decode
 
 kubectl patch jwtauthenticator tkg-jwt-authenticator \
 	-n pinniped-concierge \
 	--type json \
 	-p="[{'op': 'replace', 'path': '/spec/issuer', 'value':$PINNIPED_SVC_ENDPOINT},{'op': 'replace', 'path': '/spec/audience', 'value':$PINNIPED_SVC_ENDPOINT},{'op': 'replace', 'path': '/spec/tls/certificateAuthorityData', 'value':$CA_BUNDLE}]"
 # Validate: k get jwtauthenticator -n pinniped-concierge -oyaml
+# Get CA k get jwtauthenticator -n pinniped-concierge -ojsonpath="{.items[0].spec.tls.certificateAuthorityData}" | base64 --decode
 
 # Validate: k get jwtauthenticator,federationdomain,oidcidentityprovider -A
 
@@ -121,3 +123,4 @@ kubectl patch cm pinniped-info \
 	--type json \
 	-p="[{'op': 'replace', 'path': '/data/issuer', 'value':$PINNIPED_SVC_ENDPOINT},{'op': 'replace', 'path': '/data/issuer_ca_bundle_data', 'value':$CA_BUNDLE}]"
 # Validate: k get cm pinniped-info -n kube-public -oyaml
+# Get CA: k get cm pinniped-info -n kube-public -ojsonpath="{.data.issuer_ca_bundle_data}" | base64 --decode

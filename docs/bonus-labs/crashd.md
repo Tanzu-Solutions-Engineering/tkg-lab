@@ -34,14 +34,14 @@ EOF
 echo $CRASHD_VERSION > /tmp/crashd-version
 
 # Transfer key files and values to the bastion host
-scp -i $SSH_KEY /tmp/crashd-linux-amd64-$CRASHD_VERSION.tar.gz  ubuntu@$BASTION_IP:
-scp -i $SSH_KEY /tmp/crashd-args.properties  ubuntu@$BASTION_IP:
-scp -i $SSH_KEY /tmp/crashd-version  ubuntu@$BASTION_IP:
-scp -i $SSH_KEY ~/.kube/config  ubuntu@$BASTION_IP:
-scp -i $SSH_KEY $SSH_KEY ubuntu@$BASTION_IP:ssh-key.pem
+scp -i $SSH_KEY -o StrictHostKeyChecking=no /tmp/crashd-linux-amd64-$CRASHD_VERSION.tar.gz  ubuntu@$BASTION_IP:
+scp -i $SSH_KEY -o StrictHostKeyChecking=no /tmp/crashd-args.properties  ubuntu@$BASTION_IP:
+scp -i $SSH_KEY -o StrictHostKeyChecking=no /tmp/crashd-version  ubuntu@$BASTION_IP:
+scp -i $SSH_KEY -o StrictHostKeyChecking=no ~/.kube/config  ubuntu@$BASTION_IP:
+scp -i $SSH_KEY -o StrictHostKeyChecking=no $SSH_KEY ubuntu@$BASTION_IP:ssh-key.pem
 
 # SSH to bastion host
-ssh -i $SSH_KEY ubuntu@$BASTION_IP
+ssh -i $SSH_KEY ubuntu@$BASTION_IP -o StrictHostKeyChecking=no
 ```
 
 Now execute the following on bastion host
