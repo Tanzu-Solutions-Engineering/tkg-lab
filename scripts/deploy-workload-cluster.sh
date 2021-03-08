@@ -10,6 +10,11 @@ export KUBERNETES_VERSION=$4
 export CLUSTER_NAME=$1
 export WORKER_REPLICAS=$2
 
+KUBERNETES_VERSION_FLAG_AND_VALUE=""
+if [ ! "$KUBERNETES_VERSION" = "null" ]; then
+  KUBERNETES_VERSION_FLAG_AND_VALUE="--tkr $KUBERNETES_VERSION"
+fi
+
 if [ "$IAAS" = "aws" ];
 then
   
@@ -33,12 +38,8 @@ then
   yq e -i '.AWS_REGION = env(REGION)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.AWS_SSH_KEY_NAME = env(AWS_SSH_KEY_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER_NAME/cluster-config.yaml
-
-  if [ ! "$KUBERNETES_VERSION" = "null" ]; then
-    yq e -i '.KUBERNETES_VERSION = env(KUBERNETES_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
-  fi
-    
-  tanzu cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml -v 6
+   
+  tanzu cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 
   # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
   aws ec2 create-tags --resources $AWS_PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER_NAME,Value=shared
