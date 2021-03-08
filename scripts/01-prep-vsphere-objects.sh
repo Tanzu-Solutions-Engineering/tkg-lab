@@ -55,13 +55,13 @@ yq write $TKG_CONFIG -i "VSPHERE_DATASTORE" $GOVC_DATASTORE
 
 # A bug in tkg 1.2.1 affects binding pv's to pods that are not run as root.  This impacts harbor and prometheus.
 # This can be resolved by modifying the cluster api provider manifests.  The following does this for you. The bug will be fixed in TKG 1.3
-if [ `uname -s` = 'Darwin' ];
-then
-  sed -i '' -e '400i\
-  \            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
-else
-  sed -i -e '400i\            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
-fi
+#if [ `uname -s` = 'Darwin' ];
+#then
+#  sed -i '' -e '400i\
+#  \            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
+#else
+#  sed -i -e '400i\            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
+#fi
 
 # Create SSH key
 mkdir -p keys/
@@ -76,5 +76,6 @@ else
 fi
 
 # Upload TKG k8s OVA
-govc import.ova -folder $TEMPLATE_FOLDER $LOCAL_OVA_FOLDER/photon-3-kube-v1.19.3-vmware.1.ova
-govc vm.markastemplate $TEMPLATE_FOLDER/photon-3-kube-v1.19.3
+ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.20.1 $LOCAL_OVA_FOLDER/photon-3-kube-v1.20.1+vmware.2-tkg.0-12902160816343315692.ova
+# Ubuntu OVA - commented out until we parametrize the choice of OVA in the cluster config
+# ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-kube-v1.20.1 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.20.1+vmware.2-tkg.0-15935558247135313201.ova
