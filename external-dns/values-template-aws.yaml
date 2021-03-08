@@ -1,6 +1,0 @@
-provider: aws
-aws:
-  credentials:
-    secretKey:
-    accessKey:
-  region:

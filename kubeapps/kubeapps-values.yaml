@@ -24,6 +24,16 @@ authProxy:
    #oauthLogoutURI: /oauth2/sign_out
    additionalFlags:
 
+# Pinniped Support
+# https://github.com/kubeapps/kubeapps/blob/master/docs/user/using-an-OIDC-provider-with-pinniped.md
+pinnipedProxy:
+  enabled: true
+
+clusters:
+ - name: default
+   pinnipedConfig:
+    enable: true
+
 apprepository:
   initialRepos:
     - name: tac-repo
