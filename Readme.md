@@ -3,31 +3,31 @@
 ![TKG Lab Base Diagram](docs/tkg-lab-base.png)
 ![TKG Lab Deployment Diagram](docs/tkg-deployment.png)
 
-In this lab, we will deploy Tanzu Kubernetes Grid (standalone deployment model) to AWS or vSphere.  We will additionally deploy TKG extensions for ingress, authentication, and logging.
+In this lab, we will deploy Tanzu Kubernetes Grid to vSphere, AWS, or Azure.  We will additionally deploy TKG extensions for ingress, logging, metrics, and container registry services.
 
 OSS Signed and Supported Extensions:
 
 - **Contour** for ingress
-- **Dex** and **Gangway** for authentication
 - **Fluent-bit** for logging
 - **Cert-manager** for certificate management
 - **Harbor** for image registry
-- **Velero** for backup, via Tanzu Mission Control
+- **Velero** for backup/restore, via Tanzu Mission Control
+- **Prometheus** and **Grafana** for monitoring
+- **External DNS** as Kubernetes native way to manage DNS records
 
 Incorporates the following Tanzu SaaS products:
 
 - **Tanzu Mission Control** for multi-cluster management
-- **Tanzu Observability** by Wavefront for observability
+- **Tanzu Observability** by Wavefront for enterprise full-stack observability (via optional Bonus Lab)
 
 Leverages the following external services:
 
 - **AWS S3** as an object store for Velero backups
-- **AWS Route 53** as DNS provider
+- **AWS Route 53** or **GCP Cloud DNS*** as DNS provider
 - **Okta** as an OIDC provider
 - **Let's Encrypt** as Certificate Authority
 
 Additional OSS components not supported by VMware
-- **External DNS** as Kubernetes native way to manage DNS records
 - **Elasticsearch and Kibana** for log aggregation and viewing
 
 ## Goals and Audience
@@ -36,7 +36,7 @@ The following demo is for Tanzu field team members to see how various components
 
 What we do have is a combination of open source and proprietary components, with a bias towards providing VMware built/signed OSS components by default, with flexibility to swap components and flexible integrations.
 
-VMware commercial products included are: TKG, TO, TMC and OSS products.
+VMware commercial products included are: TKG, TO and TMC.
 
 3rd-party SaaS services included are: AWS S3, AWS Route 53, GCP Cloud DNS, Let's Encrypt, Okta.  Note: There is flexibility in deployment planning.  For instance, You could Swap GCP Cloud DNS with Route53.  Or you could swap Okta for Google or Auth0 for OpenID Connect.
 
@@ -84,7 +84,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - tkg
 - velero
 - helm 3
-- [yq version 3.4+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).  **Do not use yq version 4.x**
+- [yq version 4.x+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
 - kind (helpful, but not required)
 - ytt, kapp, imgpkg, kbld (bundled with tkg)
 
