@@ -55,6 +55,7 @@ bash tkg-extensions/extensions/registry/harbor/generate-passwords.sh generated/$
 # Specify settings in harbor-data-values.yaml
 
 export CLAIR_ENABLED=false
+export HARBOR_ADMIN_PASSWORD=$(yq e ".harbor.admin-password" $PARAMS_YAML)
 yq e -i ".hostname = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.harborAdminPassword = "Harbor12345"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.clair.enabled = env(CLAIR_ENABLED)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
@@ -64,6 +65,7 @@ yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC
 yq e -i '.ca = "letsencrypt"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 # Enhance PVC to 30GB for TBS use cases. Comment this row if 10GB is enough for you
 yq e -i '.persistence.persistentVolumeClaim.registry.size = "30Gi"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+yq e -i '.harborAdminPassword = env(HARBOR_ADMIN_PASSWORD)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
 # Check for Blob storage type
 # TODO: COME BACK AND CONERT THIS TO YQ 4
@@ -97,8 +99,14 @@ kubectl create configmap harbor-overlay -n tanzu-system-registry -o yaml --dry-r
   --from-file=overlay-s3-pvc-fix.yaml=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml \
   --from-file=trust-letsencrypt.yaml=overlay/trust-certificate/overlay.yaml | kubectl apply -f-
 
-# Deploy the Harbor extension
-kubectl apply -f tkg-extensions-mods-examples/registry/harbor/harbor-extension.yaml
+# Generate the modified harbor extension
+ytt \
+  -f tkg-extensions/extensions/registry/harbor/harbor-extension.yaml \
+  -f tkg-extensions-mods-examples/registry/harbor/harbor-extension-overlay.yaml \
+  > generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-extension.yaml
+
+# Update Harbor using modifified Extension
+kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-extension.yaml
 
 while kubectl get app harbor -n tanzu-system-registry | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Harbor extension is not yet ready
