@@ -9,8 +9,7 @@ if [ ! $# -eq 2 ]; then
 fi
 CLUSTER_NAME=$1
 export GRAFANA_FQDN=$2
-GRAFANA_PASSWORD=$(yq r $PARAMS_YAML grafana.admin-password)
-IAAS=$(yq r $PARAMS_YAML iaas)
+GRAFANA_PASSWORD=$(yq e .grafana.admin-password $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
@@ -28,10 +27,10 @@ while kubectl get certificates -n tanzu-system-monitoring grafana-cert | grep Tr
 done
 
 # Read Grafana certificate details and store in files
-GRAFANA_CERT_CRT=$(kubectl get secret grafana-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.crt"} | base64 --decode)
-GRAFANA_CERT_KEY=$(kubectl get secret grafana-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.key"} | base64 --decode)
+export GRAFANA_CERT_CRT=$(kubectl get secret grafana-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.crt"} | base64 --decode)
+export GRAFANA_CERT_KEY=$(kubectl get secret grafana-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.key"} | base64 --decode)
 
-cp tkg-extensions/extensions/monitoring/grafana/$IAAS/grafana-data-values.yaml.example generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
+cp tkg-extensions/extensions/monitoring/grafana/grafana-data-values.yaml.example generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 
 export ADMIN_PASSWORD=$(echo -n $GRAFANA_PASSWORD | base64)
 yq e -i ".monitoring.grafana.secret.admin_password = env(ADMIN_PASSWORD)" generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
