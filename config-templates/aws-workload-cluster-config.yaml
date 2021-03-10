@@ -11,5 +11,5 @@ NODE_MACHINE_TYPE: c5.xlarge # t3.xlarge
 
 CLUSTER_PLAN: dev # default is blank
 TKG_HTTP_PROXY_ENABLED: "false" # default is blank
-MACHINE_HEALTH_CHECK_ENABLED: "true" # default is blank
+ENABLE_MHC: "true" # default is blank
 BASTION_HOST_ENABLED: false # default is true

@@ -12,7 +12,7 @@ CONTROL_PLANE_MACHINE_TYPE: c5.xlarge # t3.large
 NODE_MACHINE_TYPE: c5.xlarge # t3.xlarge
 
 TKG_HTTP_PROXY_ENABLED: "false" # default is blank
-MACHINE_HEALTH_CHECK_ENABLED: "true" # default is blank
+ENABLE_MHC: "true" # default is blank
 ENABLE_CEIP_PARTICIPATION: "false" # default is true
 BASTION_HOST_ENABLED: "true" # this is default but good to be explicit
 IDENTITY_MANAGEMENT_TYPE: oidc # this is default but good to be explicit
