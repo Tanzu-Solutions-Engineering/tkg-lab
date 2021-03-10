@@ -28,8 +28,12 @@ vsphere:
   password: "REDACTED_VALUE_KEEP_DOUBLE_QUOTES"
   insecure: true
   datastore: datastore2
-  template_folder: /Datacenter/vm/tkg
-  local_ova_folder: /Users/jaguilar/Code/tkg/
+  template-folder: /Datacenter/vm/tkg
+  datacenter: /Datacenter
+  network: TKG-VLAN14-PG
+  tls-thumbprint: F4:31:AC:BA:98:19:8C:94:BD:3E:49:63:C7:9C:66:0E:D6:61:1E:19
+  resource-pool: /Datacenter/host/Cluster/Resources/tkg
+  local-ova-folder: /Users/jaguilar/Code/tkg/
 gcloud:
   project: fe-jaguilar
 management-cluster:
@@ -100,3 +104,14 @@ kubeapps:
   server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live
 grafana:
   admin-password: REDACTED
+avi:
+  avi-enable: "true"
+  avi-ca-data: encodedlongstring
+  avi-cloud-name: Default-Cloud
+  avi-controller: 192.168.14.190
+  avi-data-network: VIP-VLAN15-PG
+  avi-data-network-cidr: 192.168.15.0/24
+  avi-labels: ""
+  avi-password: "VMware1!"
+  avi-service-engine-group: Default-Group
+  avi-username: admin

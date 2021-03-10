@@ -34,24 +34,35 @@ function ensure_upload_template() {
 
 }
 
-# Get vSphere configuration vars from params.yaml
-export GOVC_URL=$(yq r $PARAMS_YAML vsphere.server)
-export GOVC_USERNAME=$(yq r $PARAMS_YAML vsphere.username)
-export GOVC_PASSWORD=$(yq r $PARAMS_YAML vsphere.password)
-export GOVC_INSECURE=$(yq r $PARAMS_YAML vsphere.insecure)
-export GOVC_DATASTORE=$(yq r $PARAMS_YAML vsphere.datastore)
-export TEMPLATE_FOLDER=$(yq r $PARAMS_YAML vsphere.template_folder)
-export LOCAL_OVA_FOLDER=$(yq r $PARAMS_YAML vsphere.local_ova_folder)
+# Get cluster name and prepare cluster-config file
+export CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
+mkdir -p generated/$CLUSTER_NAME
+cp config-templates/vsphere-mc-config.yaml generated/$CLUSTER_NAME/cluster-config.yaml
 
-# Write those vars into ~/.tkg/config.yaml
-if [ "$TKG_CONFIG" = "" ]; then
-  TKG_CONFIG=~/.tkg/config.yaml
-fi
-yq write $TKG_CONFIG -i "VSPHERE_SERVER" $GOVC_URL
-yq write $TKG_CONFIG -i "VSPHERE_USERNAME" $GOVC_USERNAME
-yq write $TKG_CONFIG -i "VSPHERE_PASSWORD" $GOVC_PASSWORD --style=double
-yq write $TKG_CONFIG -i "VSPHERE_DATASTORE" $GOVC_DATASTORE
-# The rest of the ~/.tkg/config.yaml need to be set manually
+# Get vSphere configuration vars from params.yaml
+export GOVC_URL=$(yq e .vsphere.server $PARAMS_YAML)
+export GOVC_USERNAME=$(yq e .vsphere.username $PARAMS_YAML)
+export GOVC_PASSWORD=$(yq e .vsphere.password $PARAMS_YAML)
+export GOVC_INSECURE=$(yq e .vsphere.insecure $PARAMS_YAML)
+export GOVC_DATASTORE=$(yq e .vsphere.datastore $PARAMS_YAML)
+export TEMPLATE_FOLDER=$(yq e .vsphere.template-folder $PARAMS_YAML)
+export DATACENTER=$(yq e .vsphere.datacenter $PARAMS_YAML)
+export NETWORK=$(yq e .vsphere.network $PARAMS_YAML)
+export TLS_THUMBPRINT=$(yq e .vsphere.tls-thumbprint $PARAMS_YAML)
+export RESOURCE_POOL=$(yq e .vsphere.resource-pool $PARAMS_YAML)
+export LOCAL_OVA_FOLDER=$(yq e .vsphere.local-ova-folder $PARAMS_YAML)
+
+# Write vars into cluster-config file
+yq e -i '.VSPHERE_SERVER = env(GOVC_URL)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_USERNAME = env(GOVC_USERNAME)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_PASSWORD = strenv(GOVC_PASSWORD)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_DATASTORE = env(GOVC_DATASTORE)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_FOLDER = env(TEMPLATE_FOLDER)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_DATACENTER = env(DATACENTER)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_TLS_THUMBPRINT = strenv(TLS_THUMBPRINT)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER_NAME/cluster-config.yaml
+# The rest of the cluster-config needs to be set manually
 
 # A bug in tkg 1.2.1 affects binding pv's to pods that are not run as root.  This impacts harbor and prometheus.
 # This can be resolved by modifying the cluster api provider manifests.  The following does this for you. The bug will be fixed in TKG 1.3
@@ -72,8 +83,9 @@ if [ -f "$tkg_key_file" ]; then
 else
   echo_notfound "generating"
   ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
-  yq write $TKG_CONFIG -i "VSPHERE_SSH_AUTHORIZED_KEY" "$(cat ./keys/tkg_rsa.pub)"
 fi
+export VSPHERE_SSH_PUB_KEY=$(cat ./keys/tkg_rsa.pub)
+yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(VSPHERE_SSH_PUB_KEY)' generated/$CLUSTER_NAME/cluster-config.yaml
 
 # Upload TKG k8s OVA
 ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.20.1 $LOCAL_OVA_FOLDER/photon-3-kube-v1.20.1+vmware.2-tkg.0-12902160816343315692.ova
