@@ -83,3 +83,6 @@ tanzu cluster kubeconfig get $CLUSTER_NAME --admin
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
+
+# TODO: This is a temporary fix until this is updated with the add-on.  Addresses noise logs in pinniped-concierge
+kubectl apply -f tkg-extensions-mods-examples/authentication/pinniped/pinniped-rbac-extension.yaml

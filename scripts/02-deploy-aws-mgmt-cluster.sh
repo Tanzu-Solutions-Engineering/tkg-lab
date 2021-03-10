@@ -3,10 +3,6 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
-if [ "$TKG_CONFIG" = "" ]; then
-  TKG_CONFIG=~/.tkg/config.yaml
-fi
-
 export CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
 
 mkdir -p generated/$CLUSTER_NAME

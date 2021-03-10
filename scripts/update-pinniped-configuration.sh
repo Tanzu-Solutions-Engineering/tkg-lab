@@ -11,6 +11,9 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/pinniped/
 
+# TODO: This is a temporary fix until this is updated with the add-on.  Addresses noise logs in pinniped-concierge
+kubectl apply -f tkg-extensions-mods-examples/authentication/pinniped/pinniped-rbac-extension.yaml
+
 cp tkg-extensions-mods-examples/authentication/pinniped/dex-ingress.yaml  generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
 cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-ingress.yaml  generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 cp tkg-extensions-mods-examples/authentication/pinniped/dex-certificate.yaml  generated/$CLUSTER_NAME/pinniped/dex-certificate.yaml
@@ -24,12 +27,12 @@ yq e -i '.spec.virtualhost.fqdn = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinn
 kubectl apply -f generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
 kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 
-while nslookup $DEX_CN | grep "Non-authoritative answer" ; [ $? -ne 0 ]; do
+while dig $DEX_CN | grep "ANSWER SECTION" ; [ $? -ne 0 ]; do
 	echo Waiting for external-dns to complete configuration of DNS to satisfy $DEX_CN
 	sleep 5s
 done
 
-while nslookup $PINNIPED_CN | grep "Non-authoritative answer" ; [ $? -ne 0 ]; do
+while nslookup $PINNIPED_CN | grep "ANSWER SECTION" ; [ $? -ne 0 ]; do
 	echo Waiting for external-dns to complete  configuration of DNS to satisfy for $PINNIPED_CN
 	sleep 5s
 done
