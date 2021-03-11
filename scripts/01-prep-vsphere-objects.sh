@@ -88,6 +88,6 @@ export VSPHERE_SSH_PUB_KEY=$(cat ./keys/tkg_rsa.pub)
 yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(VSPHERE_SSH_PUB_KEY)' generated/$CLUSTER_NAME/cluster-config.yaml
 
 # Upload TKG k8s OVA
-ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.20.1 $LOCAL_OVA_FOLDER/photon-3-kube-v1.20.1+vmware.2-tkg.0-12902160816343315692.ova
+ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.20.4 $LOCAL_OVA_FOLDER/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova
 # Ubuntu OVA - commented out until we parametrize the choice of OVA in the cluster config
-# ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-kube-v1.20.1 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.20.1+vmware.2-tkg.0-15935558247135313201.ova
+# ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-kube-v1.20.4 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.20.4+vmware.1-tkg.0-16153464878630780629.ova
