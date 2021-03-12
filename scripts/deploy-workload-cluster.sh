@@ -4,7 +4,7 @@ TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 source $TKG_LAB_SCRIPTS/set-env.sh
 
 IAAS=$(yq e .iaas $PARAMS_YAML)
-VSPHERE_CONTROLPLANE_ENDPOINT=$3
+export VSPHERE_CONTROLPLANE_ENDPOINT=$3
 export KUBERNETES_VERSION=$4
 
 export CLUSTER_NAME=$1
@@ -15,13 +15,13 @@ if [ ! "$KUBERNETES_VERSION" = "null" ]; then
   KUBERNETES_VERSION_FLAG_AND_VALUE="--tkr $KUBERNETES_VERSION"
 fi
 
+mkdir -p generated/$CLUSTER_NAME
+
 if [ "$IAAS" = "aws" ];
 then
-  
+
   MANAGEMENT_CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
   kubectl config use-context $MANAGEMENT_CLUSTER_NAME-admin@$MANAGEMENT_CLUSTER_NAME
-
-  mkdir -p generated/$CLUSTER_NAME
 
   cp config-templates/aws-workload-cluster-config.yaml generated/$CLUSTER_NAME/cluster-config.yaml
 
@@ -38,7 +38,7 @@ then
   yq e -i '.AWS_REGION = env(REGION)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.AWS_SSH_KEY_NAME = env(AWS_SSH_KEY_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER_NAME/cluster-config.yaml
-   
+
   tanzu cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 
   # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
@@ -49,14 +49,36 @@ then
     --enable-cluster-options oidc \
     --plan dev \
     $KUBERNETES_VERSION_FLAG_AND_VALUE \
-    -w $WORKER_REPLICAS -v 6  
-else
-  tkg create cluster $CLUSTER_NAME \
-    --enable-cluster-options oidc \
-    --plan dev \
-    $KUBERNETES_VERSION_FLAG_AND_VALUE \
-    --vsphere-controlplane-endpoint $VSPHERE_CONTROLPLANE_ENDPOINT \
     -w $WORKER_REPLICAS -v 6
+else
+  cp config-templates/vsphere-workload-cluster-config.yaml generated/$CLUSTER_NAME/cluster-config.yaml
+
+  # Get vSphere configuration vars from params.yaml
+  export URL=$(yq e .vsphere.server $PARAMS_YAML)
+  export USERNAME=$(yq e .vsphere.username $PARAMS_YAML)
+  export PASSWORD=$(yq e .vsphere.password $PARAMS_YAML)
+  export DATASTORE=$(yq e .vsphere.datastore $PARAMS_YAML)
+  export TEMPLATE_FOLDER=$(yq e .vsphere.template-folder $PARAMS_YAML)
+  export DATACENTER=$(yq e .vsphere.datacenter $PARAMS_YAML)
+  export NETWORK=$(yq e .vsphere.network $PARAMS_YAML)
+  export TLS_THUMBPRINT=$(yq e .vsphere.tls-thumbprint $PARAMS_YAML)
+  export RESOURCE_POOL=$(yq e .vsphere.resource-pool $PARAMS_YAML)
+
+  # Write vars into cluster-config file
+  yq e -i '.CLUSTER_NAME = env(CLUSTER_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_CONTROL_PLANE_ENDPOINT = env(VSPHERE_CONTROLPLANE_ENDPOINT)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_SERVER = env(URL)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_USERNAME = env(USERNAME)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_PASSWORD = strenv(PASSWORD)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_DATASTORE = env(DATASTORE)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_FOLDER = env(TEMPLATE_FOLDER)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_DATACENTER = env(DATACENTER)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_TLS_THUMBPRINT = strenv(TLS_THUMBPRINT)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER_NAME/cluster-config.yaml
+
+  tanzu cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
 
 # No need to patch the workload-cluster-pinniped-addon secret on the managent cluster and wait for it to reconcile
