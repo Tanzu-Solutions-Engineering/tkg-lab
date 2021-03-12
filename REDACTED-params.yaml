@@ -41,6 +41,7 @@ management-cluster:
   name: dragonstone
   ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
   dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
+  pinniped-fqdn: pinniped.dragonstone.tkg-aws-e2-lab.winterfell.live
   controlplane-endpoint: 192.168.7.180 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.200 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.209 # only required for vsphere iaas
