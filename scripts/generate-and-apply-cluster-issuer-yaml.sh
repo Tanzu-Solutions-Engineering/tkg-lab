@@ -29,7 +29,7 @@ then
         --from-file=credentials.json=keys/gcloud-dns-credentials.json \
         -n cert-manager
     export GCLOUD_PROJECT=$(yq e .gcloud.project $PARAMS_YAML )
-    yq e -i '.spec.acme.solvers[0].dns01.cloudDNS.project = "env(GCLOUD_PROJECT)"' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    yq e -i '.spec.acme.solvers[0].dns01.cloudDNS.project = env(GCLOUD_PROJECT)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
   else
     # Using Route53
     cp tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns-aws.yaml generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
