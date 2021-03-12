@@ -24,6 +24,12 @@ yq e -i '.spec.dnsNames[0] = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/
 yq e -i '.spec.virtualhost.fqdn = env(DEX_CN)' generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
 yq e -i '.spec.virtualhost.fqdn = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 
+IAAS=$(yq e .iaas $PARAMS_YAML)
+if [ "$IAAS" = "vsphere" ];
+then
+	yq e -i '.spec.tcpproxy.services[0].port = 5556' generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
+fi
+
 kubectl apply -f generated/$CLUSTER_NAME/pinniped/dex-ingress.yaml
 kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 
@@ -32,7 +38,7 @@ while dig $DEX_CN | grep "ANSWER SECTION" ; [ $? -ne 0 ]; do
 	sleep 5s
 done
 
-while nslookup $PINNIPED_CN | grep "ANSWER SECTION" ; [ $? -ne 0 ]; do
+while dig $PINNIPED_CN | grep "ANSWER SECTION" ; [ $? -ne 0 ]; do
 	echo Waiting for external-dns to complete  configuration of DNS to satisfy for $PINNIPED_CN
 	sleep 5s
 done
@@ -76,7 +82,7 @@ kubectl annotate secret $CLUSTER_NAME-pinniped-addon --overwrite -n tkg-system t
 kubectl label secret $CLUSTER_NAME-pinniped-addon --overwrite=true -n tkg-system tkg.tanzu.vmware.com/addon-name=pinniped
 kubectl label secret $CLUSTER_NAME-pinniped-addon --overwrite=true -n tkg-system tkg.tanzu.vmware.com/cluster-name=$CLUSTER_NAME
 
-# Now we must wait for post deploy job to run.  We will first 
+# Now we must wait for post deploy job to run.  We will first
 NEXT_POST_DEPLOY_JOB_NUMBER=`expr $POST_DEPLOY_JOB_NUMBER_COMPLETED + 1`
 
 while kubectl get jobs -n pinniped-supervisor | grep pinniped-post-deploy-job-ver-$NEXT_POST_DEPLOY_JOB_NUMBER | grep "1/1"; [ $? -ne 0 ]; do
