@@ -20,8 +20,7 @@ tanzu cluster list --include-management-cluster
 kubectl config use-context $SHAREDSVC_CLUSTER_NAME-admin@$SHAREDSVC_CLUSTER_NAME
 
 echo "Beginning Harbor install..."
-# Since this is installed after Contour, then cert-manager, tmc-extension-manager and kapp-controller should be already deployed in the cluster,
-# so we don't need to install those.
+# Since this is installed after Contour, then cert-manager should be already deployed in the cluster, so we don't need to install those.
 
 export HARBOR_CN=$(yq e .harbor.harbor-cn $PARAMS_YAML)
 # NOTARY_CN=$(yq r $PARAMS_YAML harbor.notary-cn) - TKG 1.2 Extensions force the Notary FQDN to be "notary."+HARBOR_CN
@@ -34,7 +33,7 @@ kubectl apply -f tkg-extensions/extensions/registry/harbor/namespace-role.yaml
 
 # Create certificate 02-certs.yaml
 cp tkg-extensions-mods-examples/registry/harbor/02-certs.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
-yq e -i ".spec.commonName = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml 
+yq e -i ".spec.commonName = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 yq e -i ".spec.dnsNames[0] = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 yq e -i ".spec.dnsNames[1] = env(NOTARY_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
@@ -57,11 +56,10 @@ bash tkg-extensions/extensions/registry/harbor/generate-passwords.sh generated/$
 export CLAIR_ENABLED=false
 export HARBOR_ADMIN_PASSWORD=$(yq e ".harbor.admin-password" $PARAMS_YAML)
 yq e -i ".hostname = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i '.harborAdminPassword = "Harbor12345"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.clair.enabled = env(CLAIR_ENABLED)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.crt" = strenv(HARBOR_CERT_CRT)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.key" = strenv(HARBOR_CERT_KEY)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml 
+yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.ca = "letsencrypt"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 # Enhance PVC to 30GB for TBS use cases. Comment this row if 10GB is enough for you
 yq e -i '.persistence.persistentVolumeClaim.registry.size = "30Gi"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
