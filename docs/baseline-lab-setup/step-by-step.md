@@ -20,8 +20,7 @@ export PARAMS_YAML=local-config/params.yaml
 ### 4. [Configure Okta](../mgmt-cluster/04_okta_mgmt.md)
 ### 5. [Retrieve TKG Extensions](../mgmt-cluster/05_extensions_mgmt.md)
 ### 6. [Install Contour Ingress Controller](../mgmt-cluster/06_contour_mgmt.md)
-### 7. [Install Dex](../mgmt-cluster/07_dex_mgmt.md)
-### 8. [Install Tanzu Observability](../mgmt-cluster/08_to_mgmt.md)
+### 7. [Install Tanzu Observability](../mgmt-cluster/08_to_mgmt.md)
 
 ## Setup Shared Services Cluster
 ### 1. [Create new Shared Services Cluster](../shared-services-cluster/01_install_tkg_ssc.md)

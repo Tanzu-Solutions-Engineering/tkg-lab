@@ -55,4 +55,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Gangway](05_gangway_ssc.md)
+[Install Elasticsearch and Kibana](06_ek_ssc.md)

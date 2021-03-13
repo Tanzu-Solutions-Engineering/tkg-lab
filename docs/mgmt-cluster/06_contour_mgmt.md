@@ -88,4 +88,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Dex](07_dex_mgmt.md)
+[Install Monitoring](08_to_mgmt.md)

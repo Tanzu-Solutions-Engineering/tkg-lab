@@ -43,6 +43,9 @@ while kubectl get app contour -n tanzu-system-ingress | grep contour | grep "Rec
   sleep 5
 done
 
-# Now warm up envoy
-
+# Contour would not spinup an http listener on the envoy service until an http ingress or httpproxy is created
+# Specifically for AWS, the load balancer created for the envoy service, uses the http port on the node port
+# for health check.  This causes a problems with our auth services which use a httpproxy with tls pass through
+# as that does not activate the http listen and thus doesn't set AWS load balancers to active.  By deploying this
+# service and httpproxy with non-tls endpoint, we activate the load balancer's health check
 kubectl apply -f tkg-extensions-mods-examples/ingress/contour/warm-up-envoy.yaml

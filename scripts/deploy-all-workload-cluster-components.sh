@@ -27,6 +27,12 @@ $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .workload-clus
 # Workload Step 6
 $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq e .workload-cluster.name $PARAMS_YAML)
 # Workload Step 7
-$TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq e .workload-cluster.name $PARAMS_YAML)
+# $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq e .workload-cluster.name $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-prometheus-yaml.sh \
+  $(yq e .workload-cluster.name $PARAMS_YAML) \
+  $(yq e .workload-cluster.prometheus-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-grafana-yaml.sh \
+  $(yq e .workload-cluster.name $PARAMS_YAML) \
+  $(yq e .workload-cluster.grafana-fqdn $PARAMS_YAML)
 # Workload Step 8
 $TKG_LAB_SCRIPTS/dataprotection.sh $(yq e .workload-cluster.name $PARAMS_YAML)
