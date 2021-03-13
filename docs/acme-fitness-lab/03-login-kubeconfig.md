@@ -1,16 +1,8 @@
 # Log-in to workload cluster and setup kubeconfig
 
-1. (Using Incognito Window) Login to the workload cluster at https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
-2. Click Sign In
-3. Log into okta as cody
-4. Give a secret question answer
-5. Download kubeconfig
-6. Attempt to access workload-cluster cluster with the new config
-
 ```bash
 tanzu cluster kubeconfig get $(yq e .workload-cluster.name $PARAMS_YAML)
 kubectl config use-context tanzu-cli-$(yq e .workload-cluster.name $PARAMS_YAML)@$(yq e .workload-cluster.name $PARAMS_YAML)
-open https://$(yq e . $PARAMS_YAML workload-cluster.gangway-fqdn)
 kubectl get pods -n acme-fitness
 ```
 
