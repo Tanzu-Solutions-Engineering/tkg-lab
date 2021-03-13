@@ -1,16 +1,5 @@
 # Install Contour on Shared Services Cluster
 
-## Deploy MetalLB (only for vSphere installations!!)
-Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
-Run the script passing the range as parameters. Example:
-
-```bash
-./scripts/deploy-metallb.sh \
-        $(yq e .shared-services-cluster.name $PARAMS_YAML) \
-        $(yq r $PARAMS_YAML shared-services-cluster.metallb-start-ip) \
-        $(yq e .shared-services-cluster.metallb-end-ip $PARAMS_YAML)
-```
-
 ## Deploy Cert Manager
 
 Our solution leverages cert manager to generate valid ssl certs.  Use this script to deploy cert manager into the cluster using TKG Extensions.
