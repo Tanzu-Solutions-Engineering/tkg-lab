@@ -5,6 +5,7 @@ source $TKG_LAB_SCRIPTS/set-env.sh
 
 MANAGEMENT_CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
 WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
+IAAS=$(yq e .iaas $PARAMS_YAML)
 
 tanzu cluster scale $MANAGEMENT_CLUSTER_NAME -n tkg-system -w $WORKER_REPLICAS
 
@@ -18,3 +19,4 @@ while kubectl get po -n pinniped-supervisor | grep Completed ; [ $? -ne 0 ]; do
 done
 
 kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
+kubectl apply -f storage-classes/default-storage-class-$IAAS.yaml
