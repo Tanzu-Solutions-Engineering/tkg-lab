@@ -67,9 +67,9 @@ Shortly after submitting their request, the acme fitness team received an email 
 
 DEMO: With this information, let’s go explore and make use of the platform…
 
-- Access login link to retrieve kubeconfig (gangway)
+- Retrieve kubeconfig with tanzu cli
 - Update ingress definition based upon base domain and deploy application (acme-fitness)
-- Test access to the app as and end user (convoy)
+- Test access to the app as an end user (convoy)
 - View application logs (kibana, elastic search, fluent-bit)
 - View application metrics (tanzu observability)
 - View backup configuration (velero)
