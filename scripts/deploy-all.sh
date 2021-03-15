@@ -48,7 +48,7 @@ $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) \
   $(yq e .shared-services-cluster.controlplane-endpoint $PARAMS_YAML) \
-  $(yq e .shared-services-cluster.kubernetes-version $PARAMS_YAML)
+  $(yq e '.shared-services-cluster.kubernetes-version // null' $PARAMS_YAML)
 # Shared Services Step 2
 $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 3

@@ -8,7 +8,7 @@ $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
   $(yq e .workload-cluster.name $PARAMS_YAML) \
   $(yq e .workload-cluster.worker-replicas $PARAMS_YAML) \
   $(yq e .workload-cluster.controlplane-endpoint $PARAMS_YAML) \
-  $(yq e .workload-cluster.kubernetes-version $PARAMS_YAML)
+  $(yq e '.shared-services-cluster.kubernetes-version // null' $PARAMS_YAML)
 # Workload Step 2
 $TKG_LAB_SCRIPTS/tmc-attach.sh $(yq e .workload-cluster.name $PARAMS_YAML)
 # Workload Step 3
