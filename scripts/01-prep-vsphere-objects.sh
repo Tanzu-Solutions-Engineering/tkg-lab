@@ -76,15 +76,16 @@ yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER_NAME/cl
 
 # Create SSH key
 mkdir -p keys/
-tkg_key_file="./keys/tkg_rsa"
+TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
+tkg_key_file="./keys/$TKG_ENVIRONMENT_NAME-ssh"
 echo -n "Checking for existing SSH key at $tkg_key_file: "
 if [ -f "$tkg_key_file" ]; then
   echo_found "skipping generation"
 else
   echo_notfound "generating"
-  ssh-keygen -t rsa -b 4096 -f ./keys/tkg_rsa -q -N ""
+  ssh-keygen -t rsa -b 4096 -f $tkg_key_file -q -N ""
 fi
-export VSPHERE_SSH_PUB_KEY=$(cat ./keys/tkg_rsa.pub)
+export VSPHERE_SSH_PUB_KEY=$(cat $tkg_key_file.pub)
 yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(VSPHERE_SSH_PUB_KEY)' generated/$CLUSTER_NAME/cluster-config.yaml
 
 # Upload TKG k8s OVA

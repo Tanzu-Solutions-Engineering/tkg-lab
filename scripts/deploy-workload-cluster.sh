@@ -63,7 +63,9 @@ else
   export NETWORK=$(yq e .vsphere.network $PARAMS_YAML)
   export TLS_THUMBPRINT=$(yq e .vsphere.tls-thumbprint $PARAMS_YAML)
   export RESOURCE_POOL=$(yq e .vsphere.resource-pool $PARAMS_YAML)
-
+  TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
+  export SSH_PUB_KEY=$(cat ./keys/$TKG_ENVIRONMENT_NAME-ssh.pub)
+  
   # Write vars into cluster-config file
   yq e -i '.CLUSTER_NAME = env(CLUSTER_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.VSPHERE_CONTROL_PLANE_ENDPOINT = env(VSPHERE_CONTROLPLANE_ENDPOINT)' generated/$CLUSTER_NAME/cluster-config.yaml
@@ -77,6 +79,7 @@ else
   yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.VSPHERE_TLS_THUMBPRINT = strenv(TLS_THUMBPRINT)' generated/$CLUSTER_NAME/cluster-config.yaml
   yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(SSH_PUB_KEY)' generated/$CLUSTER/cluster-config.yaml
 
   tanzu cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
