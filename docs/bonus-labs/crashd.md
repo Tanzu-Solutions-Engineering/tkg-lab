@@ -1,10 +1,12 @@
-# Using crashd to retrieve diagnostics from your AWS cluster
+# Using crashd to retrieve diagnostics
 
-Crashd is a diagnostics tool that will gather logs and additional information regarding your cluster and bundle them so that you can include this as an artifact
-for a support case or troubleshooting.
+Crashd is a diagnostics tool that will gather logs and additional information regarding your cluster and bundle them so that you can include this as an artifact for a support case or troubleshooting.
 
-The following lab walks through a series of commands that can be used to retrieve crashd data from TKG on AWS.  There is an added complexity here in that the AWS
-setup includes a bastion hosts to get to cluster nodes.
+>Note: Currently crashd is only supported for vSphere and AWS.  Examples for both are listed in separate sections below.
+
+## For TKG on AWS
+
+The following lab walks through a series of commands that can be used to retrieve crashd data from TKG on AWS.  There is an added complexity here in that the AWS setup includes a bastion hosts to get to cluster nodes.
 
 ```bash
 export CRASHD_VERSION=v0.3.2+vmware.2
@@ -73,3 +75,42 @@ Now get the file and you can upload it into a ticket.
 ```bash
 scp -i $SSH_KEY ubuntu@$BASTION_IP:crashd/tkg-mgmt.diagnostics.tar.gz /tmp/tkg-mgmt.diagnostics.tar.gz
 ```
+
+## For TKG on vSphere
+
+The following lab walks through a series of commands that can be used to retrieve crashd data from TKG assuming you have direct access from your macbook to the management cluster.  This was the case for me with vSphere (but not with AWS due to bastion host).
+
+```bash
+export CRASHD_VERSION=v0.3.2+vmware.2
+
+# This shows retrieving the binary from internal source for pre-testing, however here is where to get the offical GA version
+https://www.vmware.com/go/get-tkg
+
+# Retrieve the binary package for pre-release versions...
+curl --output /tmp/crashd-darwin-amd64-$CRASHD_VERSION.tar.gz http://build-squid.eng.vmware.com/build/mts/release/bora-17672021/publish/lin64/tkg_release/crash-diagnostics-$CRASHD_VERSION/crashd/executables/crashd-darwin-amd64-$CRASHD_VERSION.tar.gz
+
+# Extract crashd binary
+tar -xvf /tmp/crashd-darwin-amd64-$CRASHD_VERSION.tar.gz 
+sudo mv crashd/crashd-darwin-amd64-$CRASHD_VERSION /usr/local/bin/crashd
+
+# Setup key variables
+export SSH_KEY_PATH=$(pwd)/keys/$(yq e .environment-name $PARAMS_YAML)-ssh
+export MGMT_CLUSTER=$(yq e .management-cluster.name $PARAMS_YAML)
+kubectl config use-context $MGMT_CLUSTER-admin@$MGMT_CLUSTER
+
+# Create the crasd properties file
+cat > /tmp/crashd-args.properties << EOF
+target=mgmt
+infra=vsphere
+workdir=/tmp/workdir
+ssh_user=capv
+ssh_pk_file=$SSH_KEY_PATH
+mgmt_cluster_ns=tkg-system
+mgmt_cluster_config=~/.kube/config
+EOF
+
+# Run crashd
+crashd run --args-file /tmp/crashd-args.properties crashd/diagnostics.crsh --debug
+```
+
+Now get the `tkg-mgmt.diagnostics.tar.gz` file at your project root and can upload it into a ticket.
