@@ -36,33 +36,6 @@ export IAAS=$(yq e .iaas $PARAMS_YAML)
 export VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 ```
 
-## Scale Shared Cluster and Taint Nodes
-Rather than creating a new cluster, which we normally would recommend for Concourse, to save on resources we can create a couple of worker nodes in our shared cluster and taint them.  What this does is enable us to use these new nodes exclusively for Concourse.  The Concourse web and worker pods will be given a toleration for the taint, and use node selectors to ensure that they are "pinned" to the new cluster worker nodes.  To do this, we will:
-- Scale the Shared Services cluster
-- Label the new nodes
-- Taint the labelled nodes to prevent any other workload from running there
-- Apply the toleration and node selector to the Concourse Helm chart
-
-First, create a pair of new worker nodes in the tkg cluster:
-
-```bash
-NEW_NODE_COUNT=$(($(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) + 2))
-tanzu cluster scale $CLUSTER_NAME -w $NEW_NODE_COUNT
-```
-After a few minutes, check to see which new nodes were created.  These will be the nodes that are the most recent in the AGE output of "kubectl get nodes".  Label these nodes using a space to separate the list of nodes in the command:
-
-```bash
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-kubectl get nodes
-kubectl label nodes ip-10-0-0-57.us-east-2.compute.internal ip-10-0-0-105.us-east-2.compute.internal type=concourse
-```
-
-Now add the taint to the same nodes.  This will prevent other workloads from being scheduled on the new nodes.  Note that any DaemonSet may still have a pod running on these nodes because the taint was not added until after node creation.
-
-```bash
-kubectl taint nodes -l type=concourse type=concourse:PreferNoSchedule --overwrite
-```
-
 ## Create Concourse Namespace
 In order to deploy the Helm chart for Concourse to a dedicated namespace, we need to create it first.  To do this, we can use Tanzu Mission Control, as it is already running on our shared services cluster.  This will create a "managed namespace", where we can assert additional control over what is deployed.  
 
@@ -102,6 +75,7 @@ okta:
  Prepare and deploy the YAML manifests for the related Concourse K8S objects.  Manifest will be output into `concourse/generated/` in case you want to inspect.
 
 ```bash
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 ./scripts/generate-and-apply-concourse-yaml.sh
 ```
 
