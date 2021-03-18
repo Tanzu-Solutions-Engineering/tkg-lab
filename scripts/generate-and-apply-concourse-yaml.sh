@@ -16,7 +16,6 @@ mkdir -p generated/$CLUSTER_NAME/concourse/
 
 cp concourse/concourse-values-contour-template.yaml generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
 
-# yq write -d0 generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml -i "secrets.oidcCaCert" -- "${OKTA_AUTH_SERVER_CA_CERT}"
 yq e -i --unwrapScalar=false ".secrets.oidcCaCert = strenv(OKTA_AUTH_SERVER_CA_CERT)" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml
 yq e -i ".secrets.localUsers = env(ADMIN_CREDS)" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml 
 yq e -i ".web.ingress.hosts[0] = env(CONCOURSE_FQDN)" generated/$CLUSTER_NAME/concourse/concourse-values-contour.yaml 
