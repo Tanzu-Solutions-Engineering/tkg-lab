@@ -11,3 +11,6 @@ generated/
 .DS_Store
 local-config/*
 !local-config/.gitkeep
+crashd/*
+!crashd/.gitkeep
+tkg-mgmt.diagnostics.tar.gz
