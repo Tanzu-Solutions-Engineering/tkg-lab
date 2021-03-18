@@ -2,7 +2,7 @@
 
 ## Set configuration parameters
 
-The scripts to prepare the YAML to deploy elasticsearch and kibana depend on a parameters to be set.  Ensure the following are set in `params.yaml':
+The scripts to prepare the YAML to deploy elasticsearch and kibana depend on a parameters to be set.  Ensure the following are set in `params.yaml`:
 
 ```yaml
 # the DNS CN to be used for elasticsearch service

@@ -1,6 +1,6 @@
 # Install fluent bit
 
-**You must complete the [Install ElasticSearch and Kibana](docs/shared-services-cluster/06_ek_scc.md) lab prior to this lab.**
+**You must complete the [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_scc.md) lab prior to this lab.**
 
 ## Prepare Manifests and Deploy Fluent Bit
 
@@ -26,13 +26,9 @@ open http://$(yq e .shared-services-cluster.kibana-fqdn $PARAMS_YAML)
 
 You should see the kibana welcome screen.  
 
-Click the Discover icon at the top of the left menu bar.
+We assume you have already configured your kibana index during the configuration of [FluentBit for Shared Services Cluster](../shared-services-cluster/07_fluentbit_ssc.md).
 
-You will see widget to create an index pattern.  Enter `logstash-*` and click `next step`.
-
-Select `@timestamp` for the Time filter field name. and then click `Create index pattern`
-
-Now click the Discover icon at the top of the left menu bar.  You can start searching for logs.
+Click the Discover icon at the top of the left menu bar.  You can start searching for management cluster logs.
 
 ## Go to Next Step
 

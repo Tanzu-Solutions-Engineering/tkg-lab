@@ -19,7 +19,7 @@ Prepare the YAML manifests for the related fluent-bit K8S objects.  Manifest wil
 
 ## Validation Step
 
-Ensure that fluent bit pods are running
+Ensure that fluent bit pods are running.
 
 ```bash
 kubectl get pods -n tanzu-system-logging

@@ -13,7 +13,7 @@ Run the script passing the range as parameters. Example:
 
 ## Deploy Contour
 
-Apply Contour configuration. We will use AWS one for any environment (including vSphere) since the only difference is the service type=LoadBalancer for Envoy which we need.  Use this script to apply yamls.
+Apply Contour configuration. We explicitly configure contour to use service type=LoadBalancer for Envoy.  Use this script to apply yamls.
 ```bash
 ./scripts/generate-and-apply-contour-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
@@ -72,6 +72,7 @@ For any DNS provider, execute the script below to deploy `external-dns` and to a
 ## Prepare and Apply Cluster Issuer Manifests
 
 Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect. It is assumed that if you IaaS is AWS or Azure, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment. If using the `dns` challenge, this script assumes Route 53 DNS by default unless `dns.provider` is set to `gcloud-dns`.
+
 ```bash
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
@@ -88,4 +89,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Monitoring](08_to_mgmt.md)
+[Install Monitoring](08_monitoring_mgmt.md)
