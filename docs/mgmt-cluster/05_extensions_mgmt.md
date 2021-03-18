@@ -8,7 +8,7 @@ rm -rf tkg-extensions
 gunzip ~/Downloads/tkg-extensions-manifests-v1.3.0+vmware.1.tar.gz
 tar -xzf ~/Downloads/tkg-extensions-manifests-v1.3.0+vmware.1.tar
 mv tkg-extensions-v1.3.0+vmware.1 tkg-extensions
-# Optionally run this if your working with a pre-ga version of the extensions manifets
+# Optionally run this if your working with a version of the extensions manifests prior to RTM or GA
 cd tkg-extensions
 # On Mac
 find ./ -type f -exec sed -i '' 's/projects.registry.vmware.com/projects-stg.registry.vmware.com/' {} \;
