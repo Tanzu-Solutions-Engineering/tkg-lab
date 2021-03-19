@@ -7,16 +7,18 @@ The example workload cluster leverages common components that were used to creat
 - Applying default policy on the cluster allowing platform-team admin access
 - Setting up contour for ingress with a cluster certificate issuer
 - Setting up fluent-bit to send logging to the centralized Elasticsearch server on shared services cluster
-- Setting up Tanzu Observability for metrics
+- Setting up prometheus and grafana for monitoring
 - Setting up daily Velero backups
 
-Here we are pulling the following values from the `params.yaml` file.  See examples
+Here we are pulling the following values from the `params.yaml` file.  See examples:
 
 ```yaml
 workload-cluster:
   worker-replicas: 2
   name: highgarden
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
+  prometheus-fqdn: prometheus.highgarden.tkg-aws-e2-lab.winterfell.live
+  grafana-fqdn: grafana.highgarden.tkg-aws-e2-lab.winterfell.live
 ```
 
 Now you can execute the following script to perform all of those tasks:
@@ -24,8 +26,6 @@ Now you can execute the following script to perform all of those tasks:
 ```bash
 ./scripts/deploy-all-workload-cluster-components.sh
 ```
-
->Note: This script assumes AWS Route 53 configuration. If not using Route 53 then disable running `generate-and-apply-external-dns-yaml.sh` script. If you decide to use Google Cloud DNS, please check [these Google Cloud DNS instructions](/docs/misc/goog_cloud_dns.md).
 
 >Note: Wait until your cluster has been created and components installed. It may take 12 minutes.
 >Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credentials

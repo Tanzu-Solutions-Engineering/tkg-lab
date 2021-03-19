@@ -2,7 +2,7 @@
 
 ## Set configuration parameters
 
-The scripts to prepare the YAML to deploy acme-fitness depend on a parameters to be set.  Ensure the following are set in `params.yaml':
+The scripts to prepare the YAML to deploy acme-fitness depend on a parameters to be set.  Ensure the following are set in `params.yaml`:
 
 ```yaml
 acme-fitness:
@@ -25,11 +25,10 @@ Prepare the YAML manifests for customized acme-fitness K8S objects.  Manifests w
 
 ## Deploy acme-fitness
 
-Once we use our "cody" kubeconfig and set it into the shell, we can update the current context and then avoid specifying namespace for each command below.  These will all apply to the acme-fitness namespace.
+Ensure you are using your non-admin context and logged in with your developer account: `cody`.
 
 ```bash
-export KUBECONFIG=~/Downloads/kubeconf.txt
-
+kubectl config use-context tanzu-cli-$(yq e .workload-cluster.name $PARAMS_YAML)@$(yq e .workload-cluster.name $PARAMS_YAML)
 ytt \
     --ignore-unknown-comments \
     -f acme-fitness/app-label-overlay.yaml \
@@ -52,8 +51,6 @@ ytt \
     -f acme_fitness_demo/kubernetes-manifests/frontend-total.yaml \
     -f generated/$(yq e .workload-cluster.name $PARAMS_YAML)/acme-fitness/acme-fitness-frontend-ingress.yaml | \
     kapp deploy -n acme-fitness -a acme-fitness -y -f -
-
-unset KUBECONFIG
 ```
 
 ### Validation Step

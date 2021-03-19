@@ -2,7 +2,7 @@
 
 ## Prepare Manifests and Execute Yaml
 
-Prepare the YAML manifests for acme-fitness workspace and namespace for acme-fitness related to tmc.  Manifest will be output into `generated/$CLUSTER_NAME/tmc/` in case you want to inspect.
+Prepare the YAML manifests for acme-fitness workspace and namespace for acme-fitness related to TMC.  Manifest will be output into `generated/$CLUSTER_NAME/tmc/` in case you want to inspect.
 
 ```bash
 ./scripts/generate-and-apply-tmc-acme-fitness-yaml.sh $(yq e .workload-cluster.name $PARAMS_YAML)

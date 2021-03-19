@@ -1,8 +1,22 @@
-# Log-in to workload cluster and setup kubeconfig
+# Log-in to workload cluster as developer and setup kubeconfig
+
+## Log out of your alana context
+
+You may already have a session established as alana, the admin user.  If so, perform the following steps.
+
+1. Go to okta using your okta domain and if you are logged in, then perform a log out
+2. Delete your local tanzu pinniped session
+
+```bash
+rm -rf ~/.tanzu/pinnpied
+```
+
+## Login As Cody
 
 ```bash
 tanzu cluster kubeconfig get $(yq e .workload-cluster.name $PARAMS_YAML)
 kubectl config use-context tanzu-cli-$(yq e .workload-cluster.name $PARAMS_YAML)@$(yq e .workload-cluster.name $PARAMS_YAML)
+# At login prompt, login with your development user: cody
 kubectl get pods -n acme-fitness
 ```
 
