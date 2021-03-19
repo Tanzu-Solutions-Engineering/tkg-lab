@@ -113,7 +113,7 @@ This lab will go through our simulated experience of receiving a request from an
 
 The following labs additional labs can be run on the base lab configuration.
 
-#### [Deploy Prometheus & Grafana for Monitoring](docs/bonus-labs/prometheus_grafana.md)
+#### [Deploy Advanced Observability with Tanzu Observability](docs/bonus-labs/to.md)
 #### [Deploy Kubeapps to Shared Services Cluster](docs/bonus-labs/kubeapps.md)
 #### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/gitlab.md)
 #### [Deploy Concourse to Shared Services Cluster](docs/bonus-labs/concourse.md)

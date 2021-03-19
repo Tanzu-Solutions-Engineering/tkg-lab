@@ -45,4 +45,4 @@ open http://$(yq e .shared-services-cluster.kibana-fqdn $PARAMS_YAML)
 
 ## Go to Next Step
 
-[Install Tanzu Observability](08_to_ssc.md)
+[Install Tanzu Observability](08_monitoring_ssc.md)
