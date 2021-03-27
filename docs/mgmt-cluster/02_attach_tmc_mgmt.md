@@ -4,9 +4,9 @@
 
 The following scripts assume that you have an active `tmc` cli session.  In order to test this, execute `tmc system context current` command to retrieve current context.  If you don't have an active session, login using `tmc login` command.
 
-## NOOP
+## Attach Management Cluster to TMC
 
-The remainder of this step is intentionally blank.  In the near future, TMC will be adding the ability to register a TKG management cluster so that it can drive the lifecycle of its workload clusters.  We are super excited for that feature set, until that time management clusters can not be attached to TMC.
+Run `scripts/tmc-mgmt-cluster-attach.sh` and verify that the management cluster `$VMWARE-ID-$MANAGEMENT_CLUSTER_NAME-$IAAS` was correctly attached in TSM.
 
 ## Go to Next Step
 
