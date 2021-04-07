@@ -1,6 +1,6 @@
-# Setup NSX-ALB (AVI) Controller
+# NSX-ALB (AVI) Controller Setup
 
-This guide includes a comprehensive set of steps to Set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG 1.3.0+
+This guide includes a comprehensive set of steps to Set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.3.0+`
 
 ## 1. Get Binaries
 

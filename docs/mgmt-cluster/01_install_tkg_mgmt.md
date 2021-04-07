@@ -78,8 +78,26 @@ You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc
 ./scripts/01-prep-vsphere-objects.sh
 ```
 
-2. Deploy AVI Controller to enable AVI integration in TKG and leverage AVI (NSX-ALB) L4 Load Balancing capabilities.
-> TODO: Provide instructions & links on how to install the AVI Controller.
+2. Enable AVI integration in TKG and leverage AVI (NSX-ALB) L4 Load Balancing capabilities.
+
+Make sure you install and set up the AVI Controller by following this [instructions](../avi/setup_avi_ctrl.md).
+
+Configure all AVI properties in your `params.yaml` file. For these properties you can leave the default values if you followed the provided AVI Controller Setup instructions.
+- `avi-enable: "true"`
+- `avi-cloud-name: Default-Cloud`
+- `avi-service-engine-group: Default-Group`
+- `avi-username: admin`
+For the CA data use the base64 encoded cert you obtained during the AVI Controller Setup.
+- `avi-ca-data: encodedlongstring`
+Configure the network information according to your network topology choice and the configuration you added in the Controller. Examples:
+- `avi-controller: 192.168.14.190`
+- `avi-data-network: VIP-VLAN15-PG`
+- `avi-data-network-cidr: 192.168.15.0/24`
+Set the admin password
+- `avi-password: "REDACTED"`
+You can leave labels empty to ensure AVI is used from every clusters
+- `avi-labels: ""`
+
 
 3. The documentation to [Deploy the Management Cluster to vSphere with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-vsphere-cli.html) explains that the `tanzu management-cluster create` cli command requires a configuration file that identifies the configuration values for your management cluster.  The script below will copy a template configuration file for vSphere from this lab, and then replace the values with the specific configuration found in your `$PARAMS_YAML` file. Run this script to complete the deployment.
 
