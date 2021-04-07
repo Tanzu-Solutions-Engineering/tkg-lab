@@ -113,7 +113,7 @@ Choose Multiple Tenants
 <img src="avi-tenant.png" width="400"><br>
 
 
-### Configure DNS Profile
+### 4.2. Configure DNS Profile
 Already in the AVI UI, Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage DNS` type.
@@ -122,7 +122,7 @@ Already in the AVI UI, Go to `Templates > Profiles > IPAM/DNS Profiles`. Create 
 
 - Click `Save`.
 
-### Configure IPAM Profile
+### 4.3. Configure IPAM Profile
 Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage IPAM` type.
@@ -132,7 +132,7 @@ Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 
 - Click `Save`.
 
-### Add Profiles to Cloud
+### 4.4. Add Profiles to Cloud
 Go to `Infrastructure > Cloud` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
 
 In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` Profiles we just created.
@@ -140,7 +140,7 @@ In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` a
 Click `Save`.
 
 
-### Create VIP Pool
+### 4.5. Create VIP Pool
 Go to `Infrastructure > Networks` and Edit the network you chose in the `IPAM Profile` configuration.
 
 Click on `Add subnet`:
@@ -154,8 +154,39 @@ You should see now both Management and Data networks ready with the respective r
 <img src="avi-net-ready.png"><br>
 
 
-### Create Custom Certificate for Controller
-> TODO
+### 4.6. Create Custom Certificate for Controller
+
+The default certificate configured in the Controller doesn't contain IP SAN and because of that the AKO Operator will fail to communicate with the Controller. To fix this we need to generate and configure a new certificate.
+
+Go to `Templates > Security > SSL/TLS Certificates` and create a `Controller Certificate`.
+In the pop-up form, insert the following information:
+- Choose a distinctive name.
+- You can leave type = `Self Signed` unless you are using an existing CSR or importing the certificate.
+- Choose a distinctive Common Name. This can be the same as name since we are adding the IP or hostname as a SAN.
+- `Subject Alternate Name (SAN)` should be Controller IP or hostname
+<img src="avi-create-cert.png" width="800"><br>
+- Click `Save`.
+
+Go to `Administration > Settings > Access Settings` and edit `System Access Settings` by clicking on the pencil icon on the right side:
+- Delete all certificate in the `SSL/TLS Certificate` field, add the custom certificate you created above:
+<img src="avi-config-new-cert.png" width="800"><br>
+- Click `Save`.
+- Reload the page since the Controller cert has changed.
+
+Go to `Templates > Security > SSL/TLS Certificates` and export the certificate you created y clicking on the export icon on the right side:
+
+<img src="avi-export-cert.png" width="800"><br>
+
+Base64 encode the certificate so that the lab can correctly prepare the TKG Management Cluster configuration file. Assuming you have exported the certificate in a file named `avi_ca_new`, run the following command:
+```
+base64 avi_ca_new
+```
+You will use the output value in the `avi.avi-ca-data` property in your `params.yaml` file.
+
+
+> TODO : Create trusted CA cert instead of self-signed.
+
+
 
 ## License
 > TODO
