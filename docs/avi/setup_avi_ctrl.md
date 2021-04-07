@@ -19,11 +19,14 @@ Here are some basic concepts related to NSX-ALB networking. For more information
 
 ### 2.1. Flat Network
 This is the simplest scenario with minimum requirements where the Management network
-![AVI Flat Network Diagram](net-flat.png)
+
+<img src="net-flat.png" width="800"><br>
 
 ### 2.2. Separate Management network and VIP network
 This is the minimum recommended for a Production environment to ensure separation between the LB Management Plane and Data Plane.
-![AVI Separate Management Network and VIP Network Diagram](net-2.png)
+
+<img src="net-2.png" width="800"><br>
+
 In the screenshots and configuration samples of this lab we will use this configuration. These are the networks used in the examples found below:
 
 Management Network:
@@ -39,14 +42,16 @@ Data Network:
 
 ### 2.3. Separate Management network, VIP network and TKG network
 This is the recommended approach for Production, with full separation.
-![AVI Separate Management Network VIP Network TKG Network Diagram](net-3.png)
+
+<img src="net-3.png" width="800"><br>
 
 ## 3. Install Controller
 
 Access vCenter and Deploy OVF Template selecting the Controller OVA you previously downloaded. Follow the instructions on screen to select Name and Folder/Location, Cluster or Resource Pool, Datastore and Network.
 
 For the Network select the right Management Network according to the network topology chosen. Configure Management Network details: Controller IP, Subnet, Gateway. Leave key `Sysadmin login authentication key` empty.
-![AVI OVA Setup](avi-ova-setup.png)
+
+<img src="avi-ova-setup.png" width="800"><br>
 
 ## 4. Configure Controller
 
@@ -58,31 +63,39 @@ Wait a couple of minutes and access the Controller IP in the Browser. Wait until
 From the browser, follow the Controller Setup Wizard.
 
 Choose the admin username and password. Email is optional.
-![AVI Admin User](avi-admin-user.png)
+
+<img src="avi-admin-user.png" width="400"><br>
 
 Choose the right DNS resolver and Search Domain (optional) for your environment. Also choose a passphrase for the backups.
-![AVI DNS](avi-dns.png)
+
+<img src="avi-dns.png" width="400"><br>
 
 Choose the right NTP servers for your environment or leave the default ones if you have connectivity.
-![AVI NTP](avi-ntp.png)
+
+<img src="avi-ntp.png" width="400"><br>
 
 Choose None in the SMTP Setup
-![AVI SMTP](avi-smtp.png)
+
+<img src="avi-smtp.png" width="400"><br>
 
 Choose Orchestrator
 - Select VMware.
-![AVI Orchestrator](avi-orchestrator.png)
+
+<img src="avi-orchestrator.png" width="400"><br>
 
 Provide vCenter Credentials
 - Enter vSphere FQDN and credentials.
 - Select Write permissions.
 - Select `None` SDN Integration.
-![AVI vCenter](avi-vc.png)
+
+<img src="avi-vc.png" width="400"><br>
 
 Choose Datacenter and IP Address management.s
 - Select Static IP Address management.
 - Leave both checkboxes unchecked.
-![AVI Datacenter Network](avi-datacenter.png)
+
+<img src="avi-datacenter.png" width="400"><br>
+
 
 Configure Management network
 Sometimes this step is skipped during the installation wizard. If that is the case you can complete it after in the AVI Controller UI going to Infrastructure > Clouds > Default-Cloud > Edit > Network. And enter the information required ass per the instructions below.
@@ -91,18 +104,22 @@ Sometimes this step is skipped during the installation wizard. If that is the ca
 - In `IP Subnet` enter the Management Network CIDR. Same network used for the Controller IP.
 - In `IP Address Pool` choose the available IP range within the CIDR. This range will be used to configure the Management Network NIC in the AVI Service Engines. Make sure this range does not overlap with the Controller IP. Also since we are selecting `Static` and since AVI Management Plane and TKG nodes will be in the same network then you need to make sure the DHCP range (needed by TKG) is limited to a specific part of this network to leave room for this `IP Address Pool`.
 - Enter the Management Network Gateway.
-![AVI MGMT Network](avi-mgmt-net.png)
+
+<img src="avi-mgmt-net.png" width="400"><br>
 
 Choose Multiple Tenants
 - Select `No`
-![AVI Tenant](avi-tenant.png)
+
+<img src="avi-tenant.png" width="400"><br>
+
 
 ### Configure DNS Profile
 Already in the AVI UI, Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage DNS` type.
 - `Add DNS Service Domain` and enter a `Domain Name`. This will be the base subdomain to be used internally by AVI for the LB Services and Ingress. This is more critical for DNS and L7 capabilities (Enterprise License only) but better select a subdomain that can be managed.
-![AVI DNS Profile](avi-dns-profile.png)
+<img src="avi-dns-profile.png" width="800">
+
 - Click `Save`.
 
 ### Configure IPAM Profile
@@ -111,14 +128,15 @@ Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 - Select `Avi Vantage IPAM` type.
 - Leave `Allocate IP in VRF` unchecked.
 - `Add Usable Network` then select `Default-Cloud` Cloud and the network to be used for the VIPs. this is the Data Plane Network from your network topology.
-![AVI DNS Profile](avi-ipam.png)
+<img src="avi-ipam.png" width="800">
+
 - Click `Save`.
 
 ### Add Profiles to Cloud
 Go to `Infrastructure > Cloud` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
 
 In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` Profiles we just created.
-![AVI DNS Profile](avi-cloud-ipam-dns.png)
+<img src="avi-cloud-ipam-dns.png">
 Click `Save`.
 
 
@@ -128,12 +146,12 @@ Go to `Infrastructure > Networks` and Edit the network you chose in the `IPAM Pr
 Click on `Add subnet`:
 - Enter the CIDR of the Data Network to be used for the VIPs in the `IP Subnet` field.
 - Click on `Add Static IP Address Pool` and add the range to be used for VIPs in that subnet. Make sure `Use Static IP Address for VIPs and SE` is checked.
-![AVI DNS Profile](avi-vip-pool.png)
+<img src="avi-vip-pool.png">
 - Click `Save` twice.
 
 You should see now both Management and Data networks ready with the respective ranges you have configured:
 
-![AVI DNS Profile](avi-net-ready.png)
+<img src="avi-net-ready.png"><br>
 
 
 ### Create Custom Certificate for Controller
