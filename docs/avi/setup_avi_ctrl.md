@@ -1,24 +1,24 @@
 # NSX-ALB (AVI) Controller Setup
 
-This guide includes a comprehensive set of steps to Set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.3.0+`
+This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.3.0+`
 
 ## 1. Get Binaries
 
 To download the Controller binaries we can go to the same location where we download the rest of the TKG components [here](https://www.vmware.com/go/get-tkg).
 Look for `VMware NSX Advanced Load Balancer`, `GO TO DOWNLOADS` and `DOWNLOAD NOW`.
 That will take you to the Partner Connect Portal where you need to enter your credentials.
-You will be redirected to the AVI Portal. Once there go to Downloads and download Current version (20.1.4 when this guide was created). Choose the VMware Controller OVA.
+You will be redirected to the AVI Portal. Once there go to Downloads and download current version (20.1.4 when this guide was created). Choose the VMware Controller OVA.
 
 ## 2. Choose Topology
 
 You can set up NSX-ALB to fit different network topologies, from a simple flat network to a scenario where management plane, data plane and nodes are in separate networks.
 Here are some basic concepts related to NSX-ALB networking. For more information about basic NSX-ALB concepts and networking please check the official documentation.
-- The Controller and Service Engine are connected to and communicate with each other via the Management network, for the controller to setup the SEs.
+- The Controller and Service Engine (SE) are connected to and communicate with each other via the Management network, for the controller to setup the SEs.
 - The Service Engines are also connected to the Data network where the VIPs are allocated, to handle the LB traffic data.
-- Kubernetes worker nodes where the pods exposed via LB VIPs need connectivity with the Data network for traffic to flow to the pods.
+- Kubernetes worker nodes where the pods, exposed via LB VIPs, need connectivity with the Data network for traffic to flow to the pods.
 
 ### 2.1. Flat Network
-This is the simplest scenario with minimum requirements where the Management network
+This is the simplest scenario with minimum requirements where the Management network, Data network, and Kubernetes nodes are on same network.
 
 <img src="net-flat.png" width="800"><br>
 
@@ -56,7 +56,7 @@ For the Network select the right Management Network according to the network top
 ## 4. Configure Controller
 
 Power on the Controller VM you created in the previous step.
-Wait a couple of minutes and access the Controller IP in the Browser. Wait until the Controller setup wizard screen.
+Wait a couple of minutes (~5m) and access the Controller IP in the Browser. Wait until the Controller setup wizard screen.
 
 ### 4.1 Initial Controller Setup
 
@@ -90,25 +90,26 @@ Provide vCenter Credentials
 
 <img src="avi-vc.png" width="400"><br>
 
-Choose Datacenter and IP Address management.s
+Choose Datacenter and IP Address management.
 - Select Static IP Address management.
 - Leave both checkboxes unchecked.
 
 <img src="avi-datacenter.png" width="400"><br>
 
 
-Configure Management network
+Configure Management Network
+
 Sometimes this step is skipped during the installation wizard. If that is the case you can complete it after in the AVI Controller UI going to Infrastructure > Clouds > Default-Cloud > Edit > Network. And enter the information required ass per the instructions below.
 - Select Management Network. Same network you chose when installing the AVI Controller OVA.
-- You can choose `Static` or `DHCP`. In this lab we will chose `Static`, so the network range chosen should be outside of he DHCP range.
+- You can choose `Static` or `DHCP`. In this lab we will chose `Static`, so the network range chosen should be outside of the DHCP range.
 - In `IP Subnet` enter the Management Network CIDR. Same network used for the Controller IP.
 - In `IP Address Pool` choose the available IP range within the CIDR. This range will be used to configure the Management Network NIC in the AVI Service Engines. Make sure this range does not overlap with the Controller IP. Also since we are selecting `Static` and since AVI Management Plane and TKG nodes will be in the same network then you need to make sure the DHCP range (needed by TKG) is limited to a specific part of this network to leave room for this `IP Address Pool`.
 - Enter the Management Network Gateway.
 
 <img src="avi-mgmt-net.png" width="400"><br>
 
-Choose Multiple Tenants
-- Select `No`
+Tenant Settings
+- Choose Multiple Tenants? Select `No`
 
 <img src="avi-tenant.png" width="400"><br>
 
@@ -127,7 +128,7 @@ Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage IPAM` type.
 - Leave `Allocate IP in VRF` unchecked.
-- `Add Usable Network` then select `Default-Cloud` Cloud and the network to be used for the VIPs. this is the Data Plane Network from your network topology.
+- Click `Add Usable Network` then select `Default-Cloud` option for cloud for usable network. And choose the network to be used for the VIPs. This is the Data Plane Network from your network topology.
 <img src="avi-ipam.png" width="800">
 
 - Click `Save`.
@@ -168,7 +169,7 @@ In the pop-up form, insert the following information:
 - Click `Save`.
 
 Go to `Administration > Settings > Access Settings` and edit `System Access Settings` by clicking on the pencil icon on the right side:
-- Delete all certificate in the `SSL/TLS Certificate` field, add the custom certificate you created above:
+- Delete all certificates in the `SSL/TLS Certificate` field, add the custom certificate you created above:
 <img src="avi-config-new-cert.png" width="800"><br>
 - Click `Save`.
 - Reload the page since the Controller cert has changed.
