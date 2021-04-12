@@ -7,11 +7,10 @@ source "$TKG_LAB_SCRIPTS/set-env.sh"
 # Setup and preflight checks
 #
 
-
-# Check if client-id is already set, if so exit 
-AZURE_CLIENT_ID=$(yq r "$PARAMS_YAML" azure.client-id)
-if [ -n "$AZURE_CLIENT_ID" ]; then
-  echo "INFO: client id already configured in $PARAMS_YAML, not doing anything"
+# Get client id 
+export AZURE_CLIENT_ID=$(yq e .azure.client-id "$PARAMS_YAML")
+if [ "$AZURE_CLIENT_ID" != "null" ]; then
+  echo "INFO: client id already configured in $PARAMS_YAML, not doing anything more"
   exit 0
 fi
 
@@ -21,13 +20,11 @@ if ! az account show > /dev/null; then
   exit 1
 fi
 
-if [ "$TKG_CONFIG" = "" ]; then
-  TKG_CONFIG=~/.tkg/config.yaml
-fi
-
-if [ ! -f "$TKG_CONFIG" ]; then
-  # Create ~/.tkg
-  tkg get mc > /dev/null
+# check for jq
+if ! command -v jq &> /dev/null
+then
+    echo "ERROR: this script requires jq, please install it"
+    exit 1
 fi
 
 #
@@ -35,25 +32,32 @@ fi
 #
 
 # Get subscription id
-AZURE_SUBSCRIPTION_ID=$(yq r "$PARAMS_YAML" azure.subscription-id)
-if [ -z "$AZURE_SUBSCRIPTION_ID" ]; then
-    AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+export AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id "$PARAMS_YAML")
+if [ "$AZURE_SUBSCRIPTION_ID" == "null" ]; then
+    export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+    echo "INFO: AZURE_SUBSCRIPTION_ID is $AZURE_SUBSCRIPTION_ID"
 fi
 
 # Create an app name - tkg-$date
-AZURE_APP_NAME=$(yq r "$PARAMS_YAML" azure.app-name)
-if [ -z "$AZURE_APP_NAME" ]; then
-  AZURE_APP_NAME=tkg-$(date +%F-%H-%M)
+export AZURE_APP_NAME=$(yq e .azure.app-name "$PARAMS_YAML")
+if [ "$AZURE_APP_NAME" == "null" ] || [ -z "$AZURE_APP_NAME" ]; then
+  export AZURE_APP_NAME=tkg-$(date +%F-%H-%M)
 fi
+echo "INFO: AZURE_APP_NAME is $AZURE_APP_NAME"
 
 # Create a service principle and app and store the returned json
 RETURNED_SP_APP_JSON=$(az ad sp create-for-rbac --name $AZURE_APP_NAME)
+echo "INFO: RETURNED_SP_APP_JSON is $RETURNED_SP_APP_JSON"
 
 # Setup variables from resulting json
 # NOTE(curtis): There are fancy ways to do this as well, but this works
-AZURE_CLIENT_ID=$(echo "$RETURNED_SP_APP_JSON" | jq -r '.appId')
-AZURE_CLIENT_SECRET=$(echo "$RETURNED_SP_APP_JSON" | jq -r '.password')
-AZURE_TENANT_ID=$(echo "$RETURNED_SP_APP_JSON" | jq -r '.tenant')
+export AZURE_CLIENT_ID=$(echo "$RETURNED_SP_APP_JSON" | jq -r '.appId')
+export AZURE_CLIENT_SECRET=$(echo "$RETURNED_SP_APP_JSON" | jq -r '.password')
+export AZURE_TENANT_ID=$(echo "$RETURNED_SP_APP_JSON" | jq -r '.tenant')
+
+echo "INFO: AZURE_CLIENT_ID is $AZURE_CLIENT_ID"
+echo "INFO: AZURE_CLIENT_SECRET is $AZURE_CLIENT_SECRET"
+echo "INFO: AZURE_TENANT_ID is $AZURE_TENANT_ID"
 
 # Create an SSH key for use
 # Create SSH key
@@ -68,25 +72,32 @@ else
 fi
 
 #
-# Write resulting variables to params file
+# Write resulting variables to management cluster template file
 #
 
-echo "INFO: writing ssh key to config file"
-yq write $TKG_CONFIG -i "AZURE_SSH_PUBLIC_KEY_B64" "$(base64 < "$tkg_key_file".pub | tr -d '\r\n')"
+# Get cluster name and prepare cluster-config file
+export CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
+export CLUSTER_CONFIG="generated/$CLUSTER_NAME/cluster-config.yaml"
+mkdir -p generated/$CLUSTER_NAME
+cp config-templates/azure-mc-config.yaml "$CLUSTER_CONFIG"
+
+echo "INFO: writing ssh key to tanzu cluster config file"
+export AZURE_SSH_PUBLIC_KEY_B64=$(base64 < "$tkg_key_file".pub | tr -d '\r\n')
+yq e -i '.AZURE_SSH_PUBLIC_KEY_B64 = env(AZURE_SSH_PUBLIC_KEY_B64)' "$CLUSTER_CONFIG"
 
 echo "INFO: azure app name is $AZURE_APP_NAME"
-yq write "$PARAMS_YAML" -i "azure.app-name" "$AZURE_APP_NAME"
+yq e -i '.azure.app-name = env(AZURE_APP_NAME)' "$PARAMS_YAML"
 
 echo "INFO: azure subscription id is $AZURE_SUBSCRIPTION_ID"
-yq write "$PARAMS_YAML" -i "azure.subscription-id" "$AZURE_SUBSCRIPTION_ID"
+yq e -i '.azure.subscription-id = env(AZURE_SUBSCRIPTION_ID)' "$PARAMS_YAML"
 
 echo "INFO: azure tenant id is $AZURE_TENANT_ID"
-yq write "$PARAMS_YAML" -i "azure.tenant-id" "$AZURE_TENANT_ID"
+yq e -i '.azure.tenant-id = env(AZURE_TENANT_ID)' "$PARAMS_YAML"
 
 echo "INFO: azure client id is $AZURE_CLIENT_ID"
-yq write "$PARAMS_YAML" -i azure.client-id "$AZURE_CLIENT_ID"
+yq e -i '.azure.client-id = env(AZURE_CLIENT_ID)' "$PARAMS_YAML"
 
 echo "INFO: azure client secret written to $PARAMS_YAML at azure.client-secret"
-yq write "$PARAMS_YAML" -i "azure.client-secret" "$AZURE_CLIENT_SECRET"
+yq e -i '.azure.client-secret = env(AZURE_CLIENT_SECRET)' "$PARAMS_YAML"
 
 # done
