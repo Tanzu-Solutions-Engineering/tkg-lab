@@ -2,7 +2,7 @@
 
 The TKG Extensions bundle is available for download from the [same location](https://www.vmware.com/go/get-tkg) where you download the TKG CLI.
 
-Follow [the documentation](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-extensions-index.html) to unpack the bundle for instructions on how to install the in-cluster/shared services.
+Follow [the documentation](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-extensions-index.html) to unpack the bundle for instructions on how to install the in-cluster/shared services.
 ```bash
 rm -rf tkg-extensions
 gunzip ~/Downloads/tkg-extensions-manifests-v1.3.0+vmware.1.tar.gz
