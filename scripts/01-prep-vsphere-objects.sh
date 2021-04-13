@@ -64,16 +64,6 @@ yq e -i '.VSPHERE_TLS_THUMBPRINT = strenv(TLS_THUMBPRINT)' generated/$CLUSTER_NA
 yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER_NAME/cluster-config.yaml
 # The rest of the cluster-config needs to be set manually
 
-# A bug in tkg 1.2.1 affects binding pv's to pods that are not run as root.  This impacts harbor and prometheus.
-# This can be resolved by modifying the cluster api provider manifests.  The following does this for you. The bug will be fixed in TKG 1.3
-#if [ `uname -s` = 'Darwin' ];
-#then
-#  sed -i '' -e '400i\
-#  \            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
-#else
-#  sed -i -e '400i\            - --default-fstype=ext4' ~/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/csi.lib.yaml
-#fi
-
 # Create SSH key
 mkdir -p keys/
 TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
