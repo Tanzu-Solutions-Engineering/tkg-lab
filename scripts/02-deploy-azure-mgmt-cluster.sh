@@ -53,5 +53,4 @@ yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_SECRET = env(OIDC_CLIENT_SECRET)' "$CLUS
 yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' "$CLUSTER_CONFIG"
 
 # create the cluster
-tkg init --infrastructure=azure --name="$CLUSTER_NAME" \
-  --plan=dev -v 6
+tanzu management-cluster create --file=$CLUSTER_CONFIG -v 6
