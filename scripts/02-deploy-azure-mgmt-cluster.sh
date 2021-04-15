@@ -15,13 +15,13 @@ export AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)
 export AZURE_CLIENT_SECRET=$(yq e .azure.client-secret $PARAMS_YAML)
 export AZURE_CONTROL_PLANE_MACHINE_TYPE=$(yq e .azure.control-plane-machine-type $PARAMS_YAML)
 export AZURE_APP_NAME=$(yq e .azure.app-name $PARAMS_YAML)
-export AZURE_CONTROL_PLANE_SUBNET_NAME="$AZURE_APP_NAME-control-plane-subnet"
+export AZURE_CONTROL_PLANE_SUBNET_NAME="$CLUSTER_NAME-control-plane-subnet"
 export AZURE_LOCATION=$(yq e .azure.location $PARAMS_YAML)
 export AZURE_NODE_MACHINE_TYPE=$(yq e .azure.node-machine-type $PARAMS_YAML)
-export AZURE_NODE_SUBNET_NAME="$AZURE_APP_NAME-node-subnet"
+export AZURE_NODE_SUBNET_NAME="$CLUSTER_NAME-node-subnet"
 export AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id $PARAMS_YAML)
 export AZURE_TENANT_ID=$(yq e .azure.tenant-id $PARAMS_YAML)
-export AZURE_VNET_NAME="$AZURE_APP_NAME-vnet"
+export AZURE_VNET_NAME="$CLUSTER_NAME-vnet"
 
 export OIDC_ISSUER_URL=https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)
 export OIDC_CLIENT_ID=$(yq e .okta.dex-app-client-id $PARAMS_YAML)

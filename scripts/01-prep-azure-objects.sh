@@ -12,7 +12,7 @@ AZURE_CREDENTIALS_CONFIGURED=false
 export AZURE_CLIENT_ID=$(yq e .azure.client-id "$PARAMS_YAML")
 # NOTE: yq returns null string...
 if [ "$AZURE_CLIENT_ID" != "null" ]; then
-  echo "INFO: client id already configured in $PARAMS_YAML, setting up azure credentials"
+  echo "INFO: client id already configured in $PARAMS_YAML, not setting up azure credentials"
   AZURE_CREDENTIALS_CONFIGURED=true
 fi
 
@@ -91,6 +91,7 @@ fi
 # Get cluster name and prepare cluster-config file
 export CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
 export CLUSTER_CONFIG="generated/$CLUSTER_NAME/cluster-config.yaml"
+echo "INFO: creating cluster config file"
 mkdir -p generated/$CLUSTER_NAME
 cp config-templates/azure-mc-config.yaml "$CLUSTER_CONFIG"
 
