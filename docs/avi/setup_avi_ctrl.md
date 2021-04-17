@@ -134,7 +134,7 @@ Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 - Click `Save`.
 
 ### 4.4. Add Profiles to Cloud
-Go to `Infrastructure > Cloud` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
+Go to `Infrastructure > Clouds` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
 
 In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` Profiles we just created.
 <img src="avi-cloud-ipam-dns.png">
@@ -174,7 +174,7 @@ Go to `Administration > Settings > Access Settings` and edit `System Access Sett
 - Click `Save`.
 - Reload the page since the Controller cert has changed.
 
-Go to `Templates > Security > SSL/TLS Certificates` and export the certificate you created y clicking on the export icon on the right side:
+Go to `Templates > Security > SSL/TLS Certificates` and export the certificate you created vy clicking on the export icon on the right side:
 
 <img src="avi-export-cert.png" width="800"><br>
 
