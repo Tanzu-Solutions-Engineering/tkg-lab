@@ -48,8 +48,7 @@ then
 
   cp config-templates/azure-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
 
-  export CLUSTER_NAME=$(yq e .workload-cluster.name $PARAMS_YAML)
-  export CLUSTER_CONFIG="generated/$CLUSTER_NAME/cluster-config.yaml"
+  export CLUSTER_CONFIG="generated/$CLUSTER/cluster-config.yaml"
 
   # get vars from params file
   export AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)
@@ -62,7 +61,7 @@ then
   export AZURE_SSH_PUBLIC_KEY_B64=$(base64 < ./keys/tkg_rsa.pub | tr -d '\r\n')
 
   # set vars in cluster config
-  yq e -i '.CLUSTER_NAME = env(CLUSTER_NAME)' "$CLUSTER_CONFIG"
+  yq e -i '.CLUSTER_NAME = env(CLUSTER)' "$CLUSTER_CONFIG"
   yq e -i '.AZURE_CLIENT_ID = env(AZURE_CLIENT_ID)' "$CLUSTER_CONFIG"
   yq e -i '.AZURE_CLIENT_SECRET = env(AZURE_CLIENT_SECRET)' "$CLUSTER_CONFIG"
   yq e -i '.AZURE_CONTROL_PLANE_MACHINE_TYPE = env(AZURE_CONTROL_PLANE_MACHINE_TYPE)' "$CLUSTER_CONFIG"
