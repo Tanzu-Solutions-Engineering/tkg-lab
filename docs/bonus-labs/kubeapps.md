@@ -14,15 +14,6 @@ Kubeapps should be installed in the workload cluster, as it is going to be avail
 ./kubeapps/generate-and-apply-kubeapps-yaml.sh $(yq e .workload-cluster.name $PARAMS_YAML)
 ```
 
-### Modify Dex Configuration
-Modify Dex Configuration
-```bash
-./scripts/inject-dex-client-kubeapps.sh \
-   $(yq e .management-cluster.name $PARAMS_YAML) \
-   $(yq e .workload-cluster.name $PARAMS_YAML) \
-   $(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
-```
-
 ## Validation Step
 1. All kubeapps pods are in a running state:
 ```bash
