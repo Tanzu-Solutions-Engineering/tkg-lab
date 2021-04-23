@@ -4,7 +4,7 @@ metadata:
   name: kubeapps-jwt-authenticator
   namespace: pinniped-concierge
 spec:
-  audience: # dynamically populated with client id
+  audience: kubeapps
   claims:
     groups: "groups"
     username: "email"

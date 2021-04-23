@@ -18,7 +18,8 @@ authProxy:
    enabled: true
    provider: oidc
    cookieSecret: bm90LWdvb2Qtc2VjcmV0Cg==
-   additionalFlags:
+   clientID: kubeapps
+   clientSecret: FOO_SECRET
 
 # Pinniped Support
 # https://liveandletlearn.net/post/kubeapps-on-tanzu-kubernetes-grid-13-part-2/

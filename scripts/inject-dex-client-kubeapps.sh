@@ -1,50 +1,18 @@
 #! /bin/bash -e
 
-if [ ! $# -eq 3 ]; then
-  echo "Must supply Mgmt and cluster and Gangway CN as args"
-  exit 1
-fi
-MGMT_CLUSTER_NAME=$1
-CLUSTER_NAME=$2
-GANGWAY_CN=$3
+MGMT_CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
 
 ## Adds additional path to the Shared Services DEX Entry for kubeapps OIDC
-KUBEAPPS="          - https://$(yq e .kubeapps.server-fqdn $PARAMS_YAML)/oauth2/callback"
+export KUBEAPPS_URL="https://$(yq e .kubeapps.server-fqdn $PARAMS_YAML)/oauth2/callback"
 
-set +e
-# Ensure that the cluster already has an entry in the Dex configuration, else exit
-cat generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml | grep "id: $CLUSTER_NAME"
-exists=$?
-set -e
-if [ $exists -eq 0 ]; then
+yq e -i '.staticClients[1].redirectURIs[0] = env(KUBEAPPS_URL)' generated/$MGMT_CLUSTER_NAME/pinniped/dex-cm-config.yaml
+yq e -i '.staticClients[1].id = "kubeapps"' generated/$MGMT_CLUSTER_NAME/pinniped/dex-cm-config.yaml
+yq e -i '.staticClients[1].name = "kubeapps"' generated/$MGMT_CLUSTER_NAME/pinniped/dex-cm-config.yaml
+yq e -i '.staticClients[1].secret = "FOO_SECRET"' generated/$MGMT_CLUSTER_NAME/pinniped/dex-cm-config.yaml
 
-    # Find the Gangway CN entry in the redirect list for the cluster and add the Kubeapps redirect URL below that
-    awk "1;/$GANGWAY_CN/{print \"$KUBEAPPS\"}" generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml > tmp && mv tmp generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml
+kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
 
-    kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
-
-    # Update the dex data values secret
-    kubectl create secret generic dex-data-values --from-file=values.yaml=generated/$MGMT_CLUSTER_NAME/dex/dex-data-values.yaml -n tanzu-system-auth -o yaml --dry-run=client | kubectl replace -f-
-
-    # Force reconciliation of the dex app
-    kubectl patch app dex \
-      -n tanzu-system-auth \
-      --type json \
-      -p='[{"op": "replace", "path": "/spec/paused", "value":true}]'
-    kubectl patch app dex \
-      -n tanzu-system-auth \
-      --type json \
-      -p='[{"op": "replace", "path": "/spec/paused", "value":false}]'
-
-    while [[ $(kubectl get app dex -n tanzu-system-auth -o yaml | yq r - status.friendlyDescription ) != "Reconcile succeeded" ]] ; do
-      echo Dex extension is not yet ready
-      sleep 5s
-    done
-
-    #switch back
-    kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-else
-    echo "An entry for $CLUSTER_NAME needs to be present in the dex config for this to work."
-    exit 1;
-fi
+kubectl create cm dex -n tanzu-system-auth --from-file=config.yaml=generated/$MGMT_CLUSTER_NAME/pinniped/dex-cm-config.yaml -o yaml --dry-run=client | kubectl apply -f-
+# And bounce dex
+kubectl set env deployment dex --env="LAST_RESTART=$(date)" --namespace tanzu-system-auth
 
