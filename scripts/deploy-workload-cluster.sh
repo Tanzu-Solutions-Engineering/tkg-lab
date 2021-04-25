@@ -42,7 +42,7 @@ then
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 
   # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
-  aws ec2 create-tags --resources $AWS_PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
+  aws ec2 create-tags --resources $PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
 elif [ "$IAAS" == "azure" ];
 then
   tkg create cluster $CLUSTER \
