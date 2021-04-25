@@ -4,7 +4,7 @@
 
 #@ def updates():
 spec:
-  fetch: 
+  fetch:
     #@overlay/append
     - inline:
         pathsFrom:
@@ -19,20 +19,6 @@ spec:
          - 0/tkg-extensions/registry/harbor
          - 1/overlay-s3-pvc-fix.yaml
          - 1/trust-letsencrypt.yaml
-       inline:
-         #@overlay/match missing_ok=True
-         paths: 
-           update-harbor-http-proxy.yaml: |
-             #@ load("@ytt:overlay", "overlay")
-             #@ harbor_httpproxy = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy"}})
-             #@overlay/match by=harbor_httpproxy
-             ---
-             spec:
-               routes:
-                 - #@overlay/match by=overlay.index(3)
-                   #@overlay/match missing_ok=True
-                   timeoutPolicy:
-                     response: 60s
 
 #@ end
 
