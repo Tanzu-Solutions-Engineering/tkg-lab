@@ -32,8 +32,8 @@ else
     export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
     export AWS_ACCESS_KEY_ID=$(yq e .aws.access-key-id $PARAMS_YAML)
     export AWS_SECRET_ACCESS_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
-    AWS_HOSTED_ZONE_ID=$(aws route53 create-hosted-zone --name $LAB_SUBDOMAIN --caller-reference "$LAB_SUBDOMAIN-`date`" --output json | jq .HostedZone.Id -r | cut -d'/' -f 3)
-    yq write $PARAMS_YAML -i "aws.hosted-zone-id" $AWS_HOSTED_ZONE_ID
+    export AWS_HOSTED_ZONE_ID=$(aws route53 create-hosted-zone --name $LAB_SUBDOMAIN --caller-reference "$LAB_SUBDOMAIN-`date`" --output json | jq .HostedZone.Id -r | cut -d'/' -f 3)
+    yq e -i '.aws.hosted-zone-id = env(AWS_HOSTED_ZONE_ID)' $PARAMS_YAML
   else
     echo "AWS Hosted Zone Id found in configuration, no need to create it."
   fi
