@@ -45,11 +45,41 @@ then
   aws ec2 create-tags --resources $PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
 elif [ "$IAAS" == "azure" ];
 then
-  tkg create cluster $CLUSTER \
-    --enable-cluster-options oidc \
-    --plan dev \
-    $KUBERNETES_VERSION_FLAG_AND_VALUE \
-    -w $WORKER_REPLICAS -v 6
+
+  cp config-templates/azure-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
+
+  export CLUSTER_CONFIG="generated/$CLUSTER/cluster-config.yaml"
+
+  # get vars from params file
+  export AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)
+  export AZURE_CLIENT_SECRET=$(yq e .azure.client-secret $PARAMS_YAML)
+  export AZURE_CONTROL_PLANE_MACHINE_TYPE=$(yq e .azure.control-plane-machine-type $PARAMS_YAML)
+  export AZURE_LOCATION=$(yq e .azure.location $PARAMS_YAML)
+  export AZURE_NODE_MACHINE_TYPE=$(yq e .azure.node-machine-type $PARAMS_YAML)
+  export AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id $PARAMS_YAML)
+  export AZURE_TENANT_ID=$(yq e .azure.tenant-id $PARAMS_YAML)
+  export AZURE_SSH_PUBLIC_KEY_B64=$(base64 < ./keys/tkg_rsa.pub | tr -d '\r\n')
+
+  # set vars in cluster config
+  yq e -i '.CLUSTER_NAME = env(CLUSTER)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_CLIENT_ID = env(AZURE_CLIENT_ID)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_CLIENT_SECRET = env(AZURE_CLIENT_SECRET)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_CONTROL_PLANE_MACHINE_TYPE = env(AZURE_CONTROL_PLANE_MACHINE_TYPE)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_LOCATION = env(AZURE_LOCATION)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_NODE_MACHINE_TYPE = env(AZURE_NODE_MACHINE_TYPE)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_SUBSCRIPTION_ID = env(AZURE_SUBSCRIPTION_ID)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_TENANT_ID = env(AZURE_TENANT_ID)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_SSH_PUBLIC_KEY_B64 = env(AZURE_SSH_PUBLIC_KEY_B64)' "$CLUSTER_CONFIG"
+
+  # from cli options
+  yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' "$CLUSTER_CONFIG"
+
+  # create the cluster
+  tanzu cluster create \
+  --file=generated/$CLUSTER/cluster-config.yaml \
+  $KUBERNETES_VERSION_FLAG_AND_VALUE \
+  -v 6
+
 else
   cp config-templates/vsphere-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
 

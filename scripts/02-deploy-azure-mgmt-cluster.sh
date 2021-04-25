@@ -3,48 +3,50 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$TKG_LAB_SCRIPTS/set-env.sh"
 
-if [ "$TKG_CONFIG" = "" ]; then
-  TKG_CONFIG=~/.tkg/config.yaml
-fi
+#####################
+# get variables
+#####################
 
-# List of vars that need to be added to the $TKG_CONFIG. WilL be taken from
-# the params.yml file.
-AZURE_VAR_LIST="ENVIRONMENT 
-TENANT_ID 
-SUBSCRIPTION_ID 
-CLIENT_ID
-CLIENT_SECRET 
-LOCATION 
-CONTROL_PLANE_MACHINE_TYPE
-NODE_MACHINE_TYPE"
+# Get cluster name and prepare cluster-config file
+export CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
+export CLUSTER_CONFIG="generated/$CLUSTER_NAME/cluster-config.yaml"
 
-# Read variables from the params file and write to the tkg config
-AZURE_CLIENT_SECRET=$(yq r $TKG_CONFIG AZURE_CLIENT_SECRET)
-if [ -z "$AZURE_CLIENT_SECRET" ]; then
-  echo "Azure client secret NOT found in config, setting up $TKG_CONFIG with \
-  Azure variables from params.yaml."
+export AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)
+export AZURE_CLIENT_SECRET=$(yq e .azure.client-secret $PARAMS_YAML)
+export AZURE_CONTROL_PLANE_MACHINE_TYPE=$(yq e .azure.control-plane-machine-type $PARAMS_YAML)
+export AZURE_APP_NAME=$(yq e .azure.app-name $PARAMS_YAML)
+export AZURE_CONTROL_PLANE_SUBNET_NAME="$CLUSTER_NAME-control-plane-subnet"
+export AZURE_LOCATION=$(yq e .azure.location $PARAMS_YAML)
+export AZURE_NODE_MACHINE_TYPE=$(yq e .azure.node-machine-type $PARAMS_YAML)
+export AZURE_NODE_SUBNET_NAME="$CLUSTER_NAME-node-subnet"
+export AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id $PARAMS_YAML)
+export AZURE_TENANT_ID=$(yq e .azure.tenant-id $PARAMS_YAML)
+export AZURE_VNET_NAME="$CLUSTER_NAME-vnet"
 
-  for AZURE_VAR in $AZURE_VAR_LIST; do
-    
-    echo "Processing $AZURE_VAR from list..."
+export OIDC_ISSUER_URL=https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)
+export OIDC_CLIENT_ID=$(yq e .okta.dex-app-client-id $PARAMS_YAML)
+export OIDC_CLIENT_SECRET=$(yq e .okta.dex-app-client-secret $PARAMS_YAML)
+export WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
 
-    # Make lowercase and convert _ to - to find in params file
-    CONVERTED_AZURE_VAR=`echo $AZURE_VAR | awk '{print tolower($0)}'`
-    CONVERTED_AZURE_VAR=`echo $CONVERTED_AZURE_VAR | awk '{gsub("_","-",$0); print $0}'`
-    
-    # Find the entry in the params file to write the TKG_CONFIG
-    entry=$(yq r "$PARAMS_YAML" azure."$CONVERTED_AZURE_VAR")
-    if [ -z "$entry" ]; then
-      echo "ERROR: missing parameter azure.$CONVERTED_AZURE_VAR, exiting"
-      exit 1
-    fi
+###################################
+# set variables into cluster config
+###################################
+yq e -i '.CLUSTER_NAME = env(CLUSTER_NAME)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_CLIENT_ID = env(AZURE_CLIENT_ID)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_CLIENT_SECRET = env(AZURE_CLIENT_SECRET)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_CONTROL_PLANE_MACHINE_TYPE = env(AZURE_CONTROL_PLANE_MACHINE_TYPE)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_APP_NAME = env(AZURE_APP_NAME)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_CONTROL_PLANE_SUBNET_NAME = env(AZURE_CONTROL_PLANE_SUBNET_NAME)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_LOCATION = env(AZURE_LOCATION)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_NODE_MACHINE_TYPE = env(AZURE_NODE_MACHINE_TYPE)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_SUBSCRIPTION_ID = env(AZURE_SUBSCRIPTION_ID)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_TENANT_ID = env(AZURE_TENANT_ID)' "$CLUSTER_CONFIG"
+yq e -i '.AZURE_VNET_NAME = env(AZURE_VNET_NAME)' "$CLUSTER_CONFIG"
 
-    # Write the entry prefixing variables with "AZURE_"
-    yq write $TKG_CONFIG -i "AZURE_$AZURE_VAR" "$entry"
-  done
-fi
+yq e -i '.OIDC_IDENTITY_PROVIDER_ISSUER_URL = env(OIDC_ISSUER_URL)' "$CLUSTER_CONFIG"
+yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_ID = env(OIDC_CLIENT_ID)' "$CLUSTER_CONFIG"
+yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_SECRET = env(OIDC_CLIENT_SECRET)' "$CLUSTER_CONFIG"
+yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' "$CLUSTER_CONFIG"
 
-MANAGEMENT_CLUSTER_NAME=$(yq r "$PARAMS_YAML" management-cluster.name)
-
-tkg init --infrastructure=azure --name="$MANAGEMENT_CLUSTER_NAME" \
-  --plan=dev -v 6
+# create the cluster
+tanzu management-cluster create --file=$CLUSTER_CONFIG -v 6

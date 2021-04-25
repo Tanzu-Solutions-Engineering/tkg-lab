@@ -31,9 +31,9 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 
 ### On Azure
 
-1. Complete [the initial general requirements](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#general-requirements) for deploying a TKG management cluster to Azure.
+1. Complete [the initial general requirements](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-azure.html#general-requirements) for deploying a TKG management cluster to Azure.
 
-2. Review the [documentation to register a TKG application](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#register-app) on Azure to understand the steps. It's not necessary to manually create the Azure application, instead the below script will automate the steps. It will use the current `az` CLI context to find your tenant and subscription ID, then it will create an application and a client secret. Those items will be written to the parameters file for use in the following steps.
+2. Review the [documentation to register a TKG application](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-azure.html#register-a-tanzu-kubernetes-grid-app-on-azure-1) on Azure to understand the steps. It's not necessary to manually create the Azure application, instead the below script will automate the steps. It will use the current `az` CLI context to find your tenant and subscription ID, then it will create an application and a client secret. Those items will be written to the parameters file for use in the following steps.
 
 *NOTE: For the `app-name` you can either set it manually in the params file (`azure.app-name`) to a preferred name, or let the script set one.*
 
@@ -47,10 +47,10 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 * `azure.control-plane-machine-type` - e.g. Standard_D2s_v3 cpu: 2, ram: 8GiB
 * `azure.node-machine-type` - e.g. Standard_D2s_v3
 
-4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#license).
+4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-azure.html#accept-the-base-image-license-2).
 
 ```bash
-az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot19dot1-ubuntu-1804
+az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot4-ubuntu-2004
 ```
 
 5. Deploy the management cluster.

@@ -23,7 +23,7 @@ echo "Beginning Harbor install..."
 # Since this is installed after Contour, then cert-manager and TMC Extensions Manager should be already deployed in the cluster, so we don't need to install those.
 
 export HARBOR_CN=$(yq e .harbor.harbor-cn $PARAMS_YAML)
-# NOTARY_CN=$(yq r $PARAMS_YAML harbor.notary-cn) - TKG 1.2 Extensions force the Notary FQDN to be "notary."+HARBOR_CN
+
 export NOTARY_CN="notary."$HARBOR_CN
 
 mkdir -p generated/$SHAREDSVC_CLUSTER_NAME/harbor

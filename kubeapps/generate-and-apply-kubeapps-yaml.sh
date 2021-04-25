@@ -9,7 +9,7 @@ if [ ! $# -eq 1 ]; then
 fi
 
 export CLUSTER_NAME=$1
-DEX_FQDN=$(yq e .management-cluster.dex-fqdn $PARAMS_YAML)
+export OIDC_ISSUER_URL=https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)
 export KUBEAPPS_FQDN=$(yq e .kubeapps.server-fqdn $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
@@ -21,14 +21,25 @@ mkdir -p generated/$CLUSTER_NAME/kubeapps
 # 01-namespace.yaml
 
 cp kubeapps/01-namespace.yaml generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
-export ISSUER_URL_FLAG=" --oidc-issuer-url=https://$DEX_FQDN"
+export ISSUER_URL_FLAG=" --oidc-issuer-url=$OIDC_ISSUER_URL"
+export OIDC_CLIENT_ID=$(yq e .okta.kubeapps-app-client-id $PARAMS_YAML)
+export OIDC_CLIENT_SECRET=$(yq e .okta.kubeapps-app-client-secret $PARAMS_YAML)
 
 # kubeapps-values.yaml
 cp kubeapps/kubeapps-values.yaml generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
 yq e -i ".ingress.hostname = env(KUBEAPPS_FQDN)" generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
-yq e -i ".authProxy.clientID = env(CLUSTER_NAME)" generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+yq e -i ".authProxy.clientID = env(OIDC_CLIENT_ID)" generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+yq e -i ".authProxy.clientSecret = env(OIDC_CLIENT_SECRET)" generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
 yq e -i '.authProxy.additionalFlags.[0] = env(ISSUER_URL_FLAG)' generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
 yq e -i '.authProxy.additionalFlags.[1] = "--scope=openid email groups"' generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+
+# jwt-authenticator
+cp kubeapps/kubeapps-jwt-authenticator.yaml generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
+yq e -i ".spec.audience = env(OIDC_CLIENT_ID)" generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
+yq e -i ".spec.issuer = env(OIDC_ISSUER_URL)" generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
+
+# TODO: Once TKG bumps pinniped to 0.6.0+ need to remove namespace from following resource
+kubectl apply -f generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
 

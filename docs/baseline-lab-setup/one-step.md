@@ -19,7 +19,7 @@ Ensure that your copy of `params.yaml` indicates your IaaS as `aws`, `azure` or 
 
 Ensure the `az` CLI is installed and configured. The deploy all script will use `az` to deploy TKG.
 
-To run management cluster VMs on Azure, [accept the license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-azure.html#-accept-the-base-os-image-license-2) for their base Kubernetes version and machine OS.
+To run management cluster VMs on Azure, [accept the license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-azure.html#accept-the-base-image-license-2) for their base Kubernetes version and machine OS.
 
 ```
 az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot19dot1-ubuntu-1804
