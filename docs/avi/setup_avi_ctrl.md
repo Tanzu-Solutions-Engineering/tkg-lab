@@ -6,7 +6,7 @@ This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Contr
 
 To download the Controller binaries we can go to the same location where we download the rest of the TKG components [here](https://www.vmware.com/go/get-tkg).
 Look for `VMware NSX Advanced Load Balancer`, `GO TO DOWNLOADS` and `DOWNLOAD NOW`.
-That will take you to the Partner Connect Portal where you need to enter your credentials.
+That will take you to the Partner Connect Portal.  If don't already have an active session, you will need to log-in.
 You will be redirected to the AVI Portal. Once there go to Downloads and download current version (20.1.4 when this guide was created). Choose the VMware Controller OVA.
 
 ## 2. Choose Topology
@@ -33,6 +33,7 @@ Management Network:
 - VLAN: `TKG-VLAN14-PG`
 - CIDR: `192.168.14.0/24`
 - Controller IP: `192.168.14.190`
+- DHCP Range (for TKG Nodes): `192.168.14.6 - 192.168.14.179`
 - SE Pool Range: `192.168.14.191 - 192.168.14.199`
 
 Data Network:
@@ -66,7 +67,7 @@ Choose the admin username and password. Email is optional.
 
 <img src="avi-admin-user.png" width="400"><br>
 
-Choose the right DNS resolver and Search Domain (optional) for your environment. Also choose a passphrase for the backups.
+Choose the right DNS resolver and Search Domain (optional, if you do not use FQDN references for internal components) for your environment. Also choose a passphrase for the backups.
 
 <img src="avi-dns.png" width="400"><br>
 
@@ -99,7 +100,7 @@ Choose Datacenter and IP Address management.
 
 Configure Management Network
 
-Sometimes this step is skipped during the installation wizard. If that is the case you can complete it after in the AVI Controller UI going to Infrastructure > Clouds > Default-Cloud > Edit > Network. And enter the information required ass per the instructions below.
+Enter the information required as per the instructions below.
 - Select Management Network. Same network you chose when installing the AVI Controller OVA.
 - You can choose `Static` or `DHCP`. In this lab we will chose `Static`, so the network range chosen should be outside of the DHCP range.
 - In `IP Subnet` enter the Management Network CIDR. Same network used for the Controller IP.
@@ -114,7 +115,7 @@ Tenant Settings
 <img src="avi-tenant.png" width="400"><br>
 
 
-### 4.2. Configure DNS Profile
+### 4.2. Configure DNS Profile (Optional, only relevant for NSX ALB Enterprise)
 Already in the AVI UI, Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage DNS` type.
@@ -136,7 +137,7 @@ Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 ### 4.4. Add Profiles to Cloud
 Go to `Infrastructure > Clouds` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
 
-In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` Profiles we just created.
+In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` (if NSX ALB Enterprise) Profiles we just created.
 <img src="avi-cloud-ipam-dns.png">
 Click `Save`.
 
@@ -174,7 +175,7 @@ Go to `Administration > Settings > Access Settings` and edit `System Access Sett
 - Click `Save`.
 - Reload the page since the Controller cert has changed.
 
-Go to `Templates > Security > SSL/TLS Certificates` and export the certificate you created vy clicking on the export icon on the right side:
+Go to `Templates > Security > SSL/TLS Certificates` and export the certificate you created by clicking on the export icon on the right side:
 
 <img src="avi-export-cert.png" width="800"><br>
 
@@ -183,11 +184,3 @@ Base64 encode the certificate so that the lab can correctly prepare the TKG Mana
 base64 avi_ca_new
 ```
 You will use the output value in the `avi.avi-ca-data` property in your `params.yaml` file.
-
-
-> TODO : Create trusted CA cert instead of self-signed.
-
-
-
-## License
-> TODO
