@@ -100,6 +100,7 @@ kubectl create configmap harbor-overlay -n tanzu-system-registry -o yaml --dry-r
 ytt \
   -f tkg-extensions/extensions/registry/harbor/harbor-extension.yaml \
   -f tkg-extensions-mods-examples/registry/harbor/harbor-extension-overlay.yaml \
+  --ignore-unknown-comments \
   > generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-extension.yaml
 
 # Update Harbor using modifified Extension

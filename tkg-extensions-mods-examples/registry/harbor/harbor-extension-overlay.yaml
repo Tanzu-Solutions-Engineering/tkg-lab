@@ -2,7 +2,8 @@
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:data", "data")
 
-#@ def updates():
+#@overlay/match by=overlay.subset({"kind": "App"}),expects="1+"
+---
 spec:
   fetch:
     #@overlay/append
@@ -19,11 +20,3 @@ spec:
          - 0/tkg-extensions/registry/harbor
          - 1/overlay-s3-pvc-fix.yaml
          - 1/trust-letsencrypt.yaml
-
-#@ end
-
-#@overlay/match by=overlay.subset({"kind": "Extension"})
----
-spec:
-  #@overlay/replace via=lambda a,_: yaml.encode(overlay.apply(yaml.decode(a), updates()))
-  objects:
