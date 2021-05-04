@@ -53,6 +53,24 @@ then
   # set vars in cluster config
   yq e -i '.CLUSTER_NAME = env(CLUSTER)' "$CLUSTER_CONFIG"
 
+  TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
+  tkg_key_file="./keys/$TKG_ENVIRONMENT_NAME-ssh"
+  export AZURE_SSH_PUBLIC_KEY_B64=$(base64 < "$tkg_key_file".pub | tr -d '\r\n')
+
+  export AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)
+  export AZURE_CLIENT_SECRET=$(yq e .azure.client-secret $PARAMS_YAML)
+  export AZURE_LOCATION=$(yq e .azure.location $PARAMS_YAML)
+  export AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id $PARAMS_YAML)
+  export AZURE_TENANT_ID=$(yq e .azure.tenant-id $PARAMS_YAML)
+
+  yq e -i '.AZURE_SSH_PUBLIC_KEY_B64 = env(AZURE_SSH_PUBLIC_KEY_B64)' "$CLUSTER_CONFIG"
+
+  yq e -i '.AZURE_SUBSCRIPTION_ID = env(AZURE_SUBSCRIPTION_ID)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_TENANT_ID = env(AZURE_TENANT_ID)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_CLIENT_ID = env(AZURE_CLIENT_ID)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_CLIENT_SECRET = env(AZURE_CLIENT_SECRET)' "$CLUSTER_CONFIG"
+  yq e -i '.AZURE_LOCATION = env(AZURE_LOCATION)' "$CLUSTER_CONFIG"
+
   # from cli options
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' "$CLUSTER_CONFIG"
 
@@ -90,29 +108,12 @@ else
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
 
-# No need to patch the workload-cluster-pinniped-addon secret on the managent cluster and wait for it to reconcile
-# This is a hack becasue the tanzu cli does not properly create that secret with the right CA for pinniped from pinniped-info secret
-mkdir -p generated/$CLUSTER/pinniped
-kubectl get secret $CLUSTER-pinniped-addon -n default -ojsonpath="{.data.values\.yaml}" | base64 --decode > generated/$CLUSTER/pinniped/pinniped-addon-values.yaml
-export CA_BUNDLE=`cat keys/letsencrypt-ca.pem | base64`
-
-yq e -i '.pinniped.supervisor_ca_bundle_data = env(CA_BUNDLE)' generated/$CLUSTER/pinniped/pinniped-addon-values.yaml
-
-add_yaml_doc_seperator generated/$CLUSTER/pinniped/pinniped-addon-values.yaml
-
-kubectl create secret generic $CLUSTER-pinniped-addon --from-file=values.yaml=generated/$CLUSTER/pinniped/pinniped-addon-values.yaml -n default -o yaml --type=tkg.tanzu.vmware.com/addon --dry-run=client | kubectl apply -f-
-kubectl annotate secret $CLUSTER-pinniped-addon --overwrite -n default tkg.tanzu.vmware.com/addon-type=authentication/pinniped
-kubectl label secret $CLUSTER-pinniped-addon --overwrite=true -n default tkg.tanzu.vmware.com/addon-name=pinniped
-kubectl label secret $CLUSTER-pinniped-addon --overwrite=true -n default tkg.tanzu.vmware.com/cluster-name=$CLUSTER
-
-# NOTE: You won't be able to login successfully for another 10 minutes or so, as you wait for the addon manager on mangement cluster to reconcile and update the
-# pinniped-addon secret on the workload cluster.  I have not put a wait step in here so that we don't cause a blocking activity, as you can certainly use the admin
-# credentials to work with the cluster.  You will know that the addon has reconciled if you do `kubectl get jobs -A` and you see that the pinniped-post-deploy job has version 2.
-
+# Retrive admin kubeconfig
 tanzu cluster kubeconfig get $CLUSTER --admin
 
 kubectl config use-context $CLUSTER-admin@$CLUSTER
 
+# Create namespace that the lab uses for kapp metadata
 kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
 
 # TODO: This is a temporary fix until this is updated with the add-on.  Addresses noise logs in pinniped-concierge

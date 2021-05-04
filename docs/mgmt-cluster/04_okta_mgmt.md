@@ -20,13 +20,13 @@ Choose Directory (side menu) > Groups and then > Add Group:
 
 Click on platform-team group > Manage People: Then add alana to the platform-team. Save
 
-## Create Application for Dex
+## Create Application for TKG
 
 Choose Applications (side menu) > Application.  Then click Add Application button.  Then click Create New App button. Choose Web, OpenID Connect and Create button.
   - Give your app a name: TKG
-  - Login redirect URIs: https://dex.dragonstone.tkg-aws-e2-lab.winterfell.live/callback
-  - Logout redirect URIs: https://dex.dragonstone.tkg-aws-e2-lab.winterfell.live/logout
-> Note: Use your dex-fqdn domain as defined in your params.yaml
+  - Login redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/callback 
+  - Logout redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/logout
+> Note: Use your management-cluster.pinniped-fqdn domain as defined in your params.yaml
 
 Click Save button
 
@@ -37,8 +37,8 @@ Capture ClientID and Client Secret from Client Credentials card.  Capture Okta D
 ```yaml
 okta:
   auth-server-fqdn: # Your Okta Domain
-  dex-app-client-id: # Client Id
-  dex-app-client-secret: # Client Secret
+  tkg-app-client-id: # Client Id
+  tkg-app-client-secret: # Client Secret
 ```
 
 ## Setup groups to be returned

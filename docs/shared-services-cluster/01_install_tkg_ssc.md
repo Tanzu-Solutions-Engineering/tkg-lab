@@ -5,8 +5,8 @@ Here we will deploy a new workload cluster for use as the shared services cluste
 Here we are pulling the following values from the `params.yaml` file.  See examples
 
 ```yaml
-# the DNS CN to be used for dex service
-management-cluster.dex.fqdn: dex.mgmt.tkg-aws-lab.winterfell.live
+# the DNS CN to be used for Pinniped service
+management-cluster.pinniped-fqdn: pinniped.mgmt.tkg-aws-lab.winterfell.live
 shared-services-cluster.name: dorn
 shared-services-cluster.worker-replicas: 2
 iaas: aws

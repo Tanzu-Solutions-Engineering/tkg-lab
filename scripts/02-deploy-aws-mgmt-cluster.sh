@@ -11,8 +11,8 @@ cp config-templates/aws-cluster-config.yaml generated/$CLUSTER/cluster-config.ya
 export REGION=$(yq e .aws.region $PARAMS_YAML)
 export SSH_KEY_NAME=tkg-$(yq e .environment-name $PARAMS_YAML)-default
 export OIDC_ISSUER_URL=https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)
-export OIDC_CLIENT_ID=$(yq e .okta.dex-app-client-id $PARAMS_YAML)
-export OIDC_CLIENT_SECRET=$(yq e .okta.dex-app-client-secret $PARAMS_YAML)
+export OIDC_CLIENT_ID=$(yq e .okta.tkg-app-client-id $PARAMS_YAML)
+export OIDC_CLIENT_SECRET=$(yq e .okta.tkg-app-client-secret $PARAMS_YAML)
 export WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
 
 yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml

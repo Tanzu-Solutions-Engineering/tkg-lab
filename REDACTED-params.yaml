@@ -40,7 +40,6 @@ management-cluster:
   worker-replicas: 2
   name: dragonstone
   ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
-  dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
   pinniped-fqdn: pinniped.dragonstone.tkg-aws-e2-lab.winterfell.live
   prometheus-fqdn: prometheus.dragonstone.tkg-aws-e2-lab.winterfell.live
   grafana-fqdn: grafana.dragonstone.tkg-aws-e2-lab.winterfell.live
@@ -66,8 +65,8 @@ workload-cluster:
   controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas
 okta:
   auth-server-fqdn: dev-677945.okta.com
-  dex-app-client-id: REDACTED
-  dex-app-client-secret: REDACTED
+  tkg-app-client-id: REDACTED
+  tkg-app-client-secret: REDACTED
   harbor-app-client-id: REDACTED # if deploying harbor and using OIDC integration
   harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
   concourse-app-client-id: REDACTED # if deploying concourse and using OIDC integration

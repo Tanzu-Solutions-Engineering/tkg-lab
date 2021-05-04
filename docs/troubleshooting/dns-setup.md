@@ -47,7 +47,7 @@ management-cluster:
   worker-replicas: 2
   name: tkg-mgmt
   ingress-fqdn: '*.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com'
-  dex-fqdn: dex.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com
+  pinniped-fqdn: pinniped.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com
   metallb-start-ip: 192.168.1.170
   metallb-end-ip: 192.168.1.175
 shared-services-cluster:
