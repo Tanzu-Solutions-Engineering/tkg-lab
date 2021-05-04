@@ -27,7 +27,7 @@ then
     cp tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns-gcloud.yaml generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
     kubectl create secret generic gcloud-dns-service-account \
         --from-file=credentials.json=keys/gcloud-dns-credentials.json \
-        -n cert-manager
+        -n cert-manager -o yaml --dry-run=client | kubectl apply -f-
     export GCLOUD_PROJECT=$(yq e .gcloud.project $PARAMS_YAML )
     yq e -i '.spec.acme.solvers[0].dns01.cloudDNS.project = env(GCLOUD_PROJECT)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
   else
