@@ -90,6 +90,7 @@ kubectl create secret generic contour-data-values --from-file=values.yaml=genera
 ytt \
   -f tkg-extensions/extensions/ingress/contour/contour-extension.yaml \
   -f tkg-extensions-mods-examples/ingress/contour/contour-extension-overlay.yaml \
+  --ignore-unknown-comments \
   > generated/$CLUSTER_NAME/contour/contour-extension.yaml
 
 # Create configmap with the overlay
