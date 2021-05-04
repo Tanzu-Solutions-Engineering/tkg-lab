@@ -16,9 +16,6 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/contour/
 
-# Install the TMC Extensions Manager
-kubectl apply -f tkg-extensions/extensions/tmc-extension-manager.yaml
-
 # Create a namespace and RBAC config for the Contour service
 kubectl apply -f tkg-extensions/extensions/ingress/contour/namespace-role.yaml
 
