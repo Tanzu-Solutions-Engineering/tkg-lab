@@ -49,7 +49,7 @@ export TEMPLATE_FOLDER=$(yq e .vsphere.template-folder $PARAMS_YAML)
 export DATACENTER=$(yq e .vsphere.datacenter $PARAMS_YAML)
 export NETWORK=$(yq e .vsphere.network $PARAMS_YAML)
 export TLS_THUMBPRINT=$(yq e .vsphere.tls-thumbprint $PARAMS_YAML)
-export RESOURCE_POOL=$(yq e .vsphere.resource-pool $PARAMS_YAML)
+export GOVC_RESOURCE_POOL=$(yq e .vsphere.resource-pool $PARAMS_YAML)
 export LOCAL_OVA_FOLDER=$(yq e .vsphere.local-ova-folder $PARAMS_YAML)
 
 # Write vars into cluster-config file
@@ -61,7 +61,7 @@ yq e -i '.VSPHERE_FOLDER = env(TEMPLATE_FOLDER)' generated/$CLUSTER_NAME/cluster
 yq e -i '.VSPHERE_DATACENTER = env(DATACENTER)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.VSPHERE_TLS_THUMBPRINT = strenv(TLS_THUMBPRINT)' generated/$CLUSTER_NAME/cluster-config.yaml
-yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.VSPHERE_RESOURCE_POOL = env(GOVC_RESOURCE_POOL)' generated/$CLUSTER_NAME/cluster-config.yaml
 # The rest of the cluster-config needs to be set manually
 
 # Create SSH key
@@ -79,6 +79,6 @@ export VSPHERE_SSH_PUB_KEY=$(cat $tkg_key_file.pub)
 yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(VSPHERE_SSH_PUB_KEY)' generated/$CLUSTER_NAME/cluster-config.yaml
 
 # Upload TKG k8s OVA
-ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.20.4 $LOCAL_OVA_FOLDER/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova
+ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.20.4 $LOCAL_OVA_FOLDER/photon-3-kube-v1.20.5+vmware.1-tkg.1-15494591720319458065.ova
 # Ubuntu OVA - commented out until we parametrize the choice of OVA in the cluster config
-# ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-kube-v1.20.4 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.20.4+vmware.1-tkg.0-16153464878630780629.ova
+# ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-kube-v1.20.4 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.20.5+vmware.1-tkg.1-16555584836258482890.ova
