@@ -9,7 +9,7 @@ if [ ! $# -eq 1 ]; then
 fi
 
 export CLUSTER_NAME=$1
-export OIDC_ISSUER_URL=https://$(yq e .kubapps.oidc-issuer-fqdn $PARAMS_YAML)
+export OIDC_ISSUER_URL=https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)
 export KUBEAPPS_FQDN=$(yq e .kubeapps.server-fqdn $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME

@@ -39,6 +39,6 @@ kubectl get cert,ing -n kubeapps
 ```
 3. Open a browser and navigate to https://<$KUBEAPPS_FQDN>.  
 ```bash
-open https://$(yq r $PARAMS_YAML kubeapps.server-fqdn)
+open https://$(yq e .kubeapps.server-fqdn $PARAMS_YAML)
 ```
 4. Login as `alana`, who is an admin on the cluster.  You should be taken to the kubeapps home page

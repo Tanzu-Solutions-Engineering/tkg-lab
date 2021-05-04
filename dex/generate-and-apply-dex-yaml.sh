@@ -12,11 +12,11 @@ export CLUSTER_NAME=$1
 
 export DEX_CN=$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)
 export DEX_URL=https://$DEX_CN
-export DEX_CALLBACK_URL=$DEX_URL/oauth2/callback
+export DEX_CALLBACK_URL=$DEX_URL/callback
 
 export OKTA_AUTH_SERVER_URL=https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)
-export OKTA_CLIENT_ID=https://$(yq e .okta.kubeapps-dex-client-id $PARAMS_YAML)
-export OKTA_CLIENT_SECRET=https://$(yq e .okta.kubeapps-dex-client-secret $PARAMS_YAML)
+export OKTA_CLIENT_ID=$(yq e .okta.kubeapps-dex-app-client-id $PARAMS_YAML)
+export OKTA_CLIENT_SECRET=$(yq e .okta.kubeapps-dex-app-client-secret $PARAMS_YAML)
 
 export KUBEAPPS_FQDN=$(yq e .kubeapps.server-fqdn $PARAMS_YAML)
 export KUBEAPPS_CALLBACK_URL=https://$KUBEAPPS_FQDN/oauth2/callback
