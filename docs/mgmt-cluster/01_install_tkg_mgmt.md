@@ -50,7 +50,7 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-azure.html#accept-the-base-image-license-2).
 
 ```bash
-az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot4-ubuntu-2004
+az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004
 ```
 
 5. Deploy the management cluster.

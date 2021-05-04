@@ -79,8 +79,8 @@ fi
 
 # Create an SSH key for use
 mkdir -p keys/
-tkg_key_file="./keys/tkg_rsa"
-echo "INFO: checking for existing SSH key at $tkg_key_file: "
+TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
+tkg_key_file="./keys/$TKG_ENVIRONMENT_NAME-ssh"
 if [ -f "$tkg_key_file" ]; then
   echo "INFO: skipping ssh key generation"
 else
