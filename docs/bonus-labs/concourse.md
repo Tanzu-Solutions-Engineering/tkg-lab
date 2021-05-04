@@ -48,7 +48,7 @@ tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAM
 
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
-2. Choose Applications (top menu) > Add Application > Create New App > Web, Click Next.
+2. Choose Applications (Left menu) > Add Application > Create New App > Web, Click Next.
 
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Concourse`
@@ -65,9 +65,7 @@ okta:
   concourse-app-client-secret: MY_CLIENT_SECRET
 ```
 
-4. On the top left, Choose the arrow next to Developer Console and choose `Classic UI`
-
-5. Choose Applications (top menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
+5. Choose Applications (left menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
   - Groups claim type => `Filter`
   - Groups claim filter => **groups** Matches regex **.\***
 
