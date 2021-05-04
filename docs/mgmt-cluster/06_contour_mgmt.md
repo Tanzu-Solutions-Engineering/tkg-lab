@@ -89,4 +89,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Monitoring](08_monitoring_mgmt.md)
+[Install Monitoring](07_update_pinniped_config_mgmt.md)
