@@ -49,8 +49,8 @@ export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 
 # Prepare Harbor custom configuration
 cp tkg-extensions/extensions/registry/harbor/harbor-data-values.yaml.example generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-# Run script to generate passwords (temporarily using a custom script that's compatible with yq 4.6, until Calgary.1 comes out)
-bash tkg-extensions-mods-examples/registry/harbor/generate-passwords.sh generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+# Run script to generate passwords
+bash tkg-extensions/registry/harbor/scripts/generate-passwords.sh generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 # Specify settings in harbor-data-values.yaml
 export CLAIR_ENABLED=false
 export HARBOR_ADMIN_PASSWORD=$(yq e ".harbor.admin-password" $PARAMS_YAML)
