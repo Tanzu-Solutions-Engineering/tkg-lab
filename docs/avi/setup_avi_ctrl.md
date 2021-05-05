@@ -22,7 +22,7 @@ This is the simplest scenario with minimum requirements where the Management net
 
 <img src="net-flat.png" width="800"><br>
 
-In the screenshots below, it is assumed you are using the `Seperate Management network and VIP network` configuration.  However, if you choose the `Flat Network` configuration, we will point out what is option.  Here are the configuration parameters in one of our contributor's (guess who) homelab.
+In the screenshots below, it is assumed you are using the `Seperate Management network and VIP network` configuration.  However, if you choose the `Flat Network` configuration, we will point out any optional or different steps.  Here are the configuration parameters in one of our contributor's (guess who) homelab.
 
 All-in-one Management and Data Network:
 - VLAN: `VM Network`
