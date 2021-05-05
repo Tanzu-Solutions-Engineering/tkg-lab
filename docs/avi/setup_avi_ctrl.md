@@ -22,6 +22,15 @@ This is the simplest scenario with minimum requirements where the Management net
 
 <img src="net-flat.png" width="800"><br>
 
+In the screenshots below, it is assumed you are using the `Seperate Management network and VIP network` configuration.  However, if you choose the `Flat Network` configuration, we will point out any optional or different steps.  Here are the configuration parameters in one of our contributor's (guess who) homelab.
+
+All-in-one Management and Data Network:
+- VLAN: `VM Network`
+- CIDR: `192.168.7.0/24`
+- Controller IP: `192.168.7.11`
+- DHCP Range (for TKG Nodes): `192.168.7.70 - 192.168.7.149`
+- SE & VIP Pool Range: `192.168.7.21 - 192.168.7.50`
+
 ### 2.2. Separate Management network and VIP network
 This is the minimum recommended for a Production environment to ensure separation between the LB Management Plane and Data Plane.
 
@@ -142,7 +151,7 @@ In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` a
 Click `Save`.
 
 
-### 4.5. Create VIP Pool
+### 4.5. Create VIP Pool (Only for 2 network configuration, skip for flat network)
 Go to `Infrastructure > Networks` and Edit the network you chose in the `IPAM Profile` configuration.
 
 Click on `Add subnet`:
@@ -179,8 +188,13 @@ Go to `Templates > Security > SSL/TLS Certificates` and export the certificate y
 
 <img src="avi-export-cert.png" width="800"><br>
 
-Base64 encode the certificate so that the lab can correctly prepare the TKG Management Cluster configuration file. Assuming you have exported the certificate in a file named `avi_ca_new`, run the following command:
+Click the `Copy to clipboard` button for the key and save it to `keys/nsx-alb-controller.key`.
+
+Click the `Copy to clipboard` button for the cert and save it to `keys/nsx-alb-controller.cert`.
+
+Base64 encode the certificate so that the lab can correctly prepare the TKG Management Cluster configuration file.
+
+```bash
+export NSX_ALB_CONTROLLER_ENCODED_CERT=`cat keys/nsx-alb-controller.cert | base64`
+yq e -i '.avi.avi-ca-data = env(NSX_ALB_CONTROLLER_ENCODED_CERT)' $PARAMS_YAML
 ```
-base64 avi_ca_new
-```
-You will use the output value in the `avi.avi-ca-data` property in your `params.yaml` file.
