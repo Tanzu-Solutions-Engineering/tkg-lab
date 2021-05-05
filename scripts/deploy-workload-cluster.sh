@@ -18,6 +18,7 @@ fi
 mkdir -p generated/$CLUSTER
 
 MANAGEMENT_CLUSTER=$(yq e .management-cluster.name $PARAMS_YAML)
+tanzu login --server $MANAGEMENT_CLUSTER
 kubectl config use-context $MANAGEMENT_CLUSTER-admin@$MANAGEMENT_CLUSTER
 
 if [ "$IAAS" = "aws" ];
