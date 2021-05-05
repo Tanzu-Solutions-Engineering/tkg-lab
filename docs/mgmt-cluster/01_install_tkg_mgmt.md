@@ -63,11 +63,11 @@ az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot
 
 1. Complete [Deploy Management Clusters to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-vsphere.html) which prepares an SSH key and the OS image templates to be used for all clusters.
 
-First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.3.0 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.20.4 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
+First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.3.1 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.20.5 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
 
-- Photon v3 Kubernetes v1.20.4 OVA (our scripts will only use this version)
-- Photon v3 Kubernetes v1.19.8 OVA
-- Photon v3 Kubernetes v1.18.16 OVA
+- Photon v3 Kubernetes v1.20.5 OVA (our scripts will only use this version)
+- Photon v3 Kubernetes v1.19.9 OVA
+- Photon v3 Kubernetes v1.18.17 OVA
 - Photon v3 Kubernetes v1.17.16 OVA
 
 Then you can follow the manual steps in the documentation or use the following script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at `keys/tkg_rsa` and `keys/tkg_rsa.pub`.
