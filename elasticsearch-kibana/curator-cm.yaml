@@ -1,0 +1,36 @@
+apiVersion: v1
+data:
+  action_file.yml: |-
+    ---
+    actions:
+      1:
+        action: delete_indices
+        description: "Clean up ES by deleting old indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+        - filtertype: age
+          source: name
+          direction: older
+          timestring: '%Y.%m.%d'
+          unit: days
+          unit_count: 1
+          field:
+          stats_result:
+          epoch:
+          exclude: False
+  config.yml: |-
+    ---
+    client:
+      hosts:
+        - elasticsearch
+      port: 9200
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: curator
+  name: curator-elasticsearch-curator
+  namespace: elasticsearch-kibana
