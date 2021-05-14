@@ -21,8 +21,8 @@ ingress:
 config:
   issuer: # Dyanamically Populated
   expiry:
-    signingKeys: 90m
-    idTokens: 5m
+    signingKeys: 360m
+    idTokens: 180m
   logger:
     level: info
     format: json
