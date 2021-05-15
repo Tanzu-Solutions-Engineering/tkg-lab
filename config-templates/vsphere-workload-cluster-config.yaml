@@ -8,6 +8,8 @@ VSPHERE_RESOURCE_POOL: #/Datacenter/host/Cluster/Resources/tkg
 VSPHERE_SSH_AUTHORIZED_KEY: #changeme
 VSPHERE_TLS_THUMBPRINT: #changeme
 VSPHERE_NETWORK: #changeme
+OS_NAME: #photon
+OS_VERSION: #3
 
 # Defaults
 INFRASTRUCTURE_PROVIDER: vsphere

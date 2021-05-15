@@ -19,6 +19,15 @@ export AVI_LABELS=$(yq e .avi.avi-labels $PARAMS_YAML)
 export AVI_PASSWORD=$(yq e .avi.avi-password $PARAMS_YAML)
 export AVI_SERVICE_ENGINE_GROUP=$(yq e .avi.avi-service-engine-group $PARAMS_YAML)
 export AVI_USERNAME=$(yq e .avi.avi-username $PARAMS_YAML)
+NODE_OS=$(yq e .vsphere.node-os $PARAMS_YAML)
+if [ "$NODE_OS" = "photon" ];
+then
+  export NODE_OS="photon"
+  export NODE_VERSION="3"
+else
+  export NODE_OS="ubuntu"
+  export NODE_VERSION="20.04"
+fi
 
 yq e -i '.CLUSTER_NAME = env(CLUSTER_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.VSPHERE_CONTROL_PLANE_ENDPOINT = env(CONTROLPLANE_ENDPOINT)' generated/$CLUSTER_NAME/cluster-config.yaml
@@ -36,5 +45,7 @@ yq e -i '.AVI_LABELS = strenv(AVI_LABELS)' generated/$CLUSTER_NAME/cluster-confi
 yq e -i '.AVI_PASSWORD = strenv(AVI_PASSWORD)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_SERVICE_ENGINE_GROUP = env(AVI_SERVICE_ENGINE_GROUP)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_USERNAME = env(AVI_USERNAME)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
 
 tanzu management-cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml -v 6 -y

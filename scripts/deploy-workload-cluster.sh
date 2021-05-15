@@ -93,6 +93,15 @@ else
   export RESOURCE_POOL=$(yq e .vsphere.resource-pool $PARAMS_YAML)
   TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
   export SSH_PUB_KEY=$(cat ./keys/$TKG_ENVIRONMENT_NAME-ssh.pub)
+  NODE_OS=$(yq e .vsphere.node-os $PARAMS_YAML)
+  if [ "$NODE_OS" = "photon" ];
+  then
+    export NODE_OS="photon"
+    export NODE_VERSION="3"
+  else
+    export NODE_OS="ubuntu"
+    export NODE_VERSION="20.04"
+  fi
 
   # Write vars into cluster-config file
   yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml
@@ -105,6 +114,8 @@ else
   yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(SSH_PUB_KEY)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
 
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
