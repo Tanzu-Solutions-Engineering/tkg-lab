@@ -114,8 +114,8 @@ else
   yq e -i '.VSPHERE_RESOURCE_POOL = env(RESOURCE_POOL)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(SSH_PUB_KEY)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
-  yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
+  yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER/cluster-config.yaml
 
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
