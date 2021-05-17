@@ -35,26 +35,10 @@ web:
       kubernetes.io/ingress.class: "contour"
       cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
       projectcontour.io/websocket-routes: "/"
+      ingress.kubernetes.io/force-ssl-redirect: true
     hosts:
       - CONCOURSE_URL # TO BE REPLACED
     tls:
     - hosts:
       - CONCOURSE_URL # TO BE REPLACED
       secretName: concourse-cert
-  # Toleration needed for tainted node
-  tolerations:
-  - key: "type"
-    operator: "Equal"
-    value: "concourse"
-    effect: "NoSchedule"
-  nodeSelector:
-    type: "concourse"
-# Toleration needed for tainted node
-worker:
-  tolerations:
-  - key: "type"
-    operator: "Equal"
-    value: "concourse"
-    effect: "NoSchedule"
-  nodeSelector:
-    type: "concourse"

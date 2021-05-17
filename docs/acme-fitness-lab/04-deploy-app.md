@@ -2,7 +2,7 @@
 
 ## Set configuration parameters
 
-The scripts to prepare the YAML to deploy acme-fitness depend on a parameters to be set.  Ensure the following are set in `params.yaml':
+The scripts to prepare the YAML to deploy acme-fitness depend on a parameters to be set.  Ensure the following are set in `params.yaml`:
 
 ```yaml
 acme-fitness:
@@ -20,16 +20,15 @@ acme-fitness:
 Prepare the YAML manifests for customized acme-fitness K8S objects.  Manifests will be output into `generated/$WORKLOAD_CLUSTER_NAME/acme-fitness/` in case you want to inspect.
 
 ```bash
-./scripts/generate-acme-fitness-yaml.sh $(yq r $PARAMS_YAML workload-cluster.name)
+./scripts/generate-acme-fitness-yaml.sh $(yq e .workload-cluster.name $PARAMS_YAML)
 ```
 
 ## Deploy acme-fitness
 
-Once we use our "cody" kubeconfig and set it into the shell, we can update the current context and then avoid specifying namespace for each command below.  These will all apply to the acme-fitness namespace.
+Ensure you are using your non-admin context and logged in with your developer account: `cody`.
 
 ```bash
-export KUBECONFIG=~/Downloads/kubeconf.txt
-
+kubectl config use-context tanzu-cli-$(yq e .workload-cluster.name $PARAMS_YAML)@$(yq e .workload-cluster.name $PARAMS_YAML)
 ytt \
     --ignore-unknown-comments \
     -f acme-fitness/app-label-overlay.yaml \
@@ -50,10 +49,8 @@ ytt \
     -f acme_fitness_demo/kubernetes-manifests/users-redis-total.yaml \
     -f acme_fitness_demo/kubernetes-manifests/users-total.yaml \
     -f acme_fitness_demo/kubernetes-manifests/frontend-total.yaml \
-    -f generated/$(yq r $PARAMS_YAML workload-cluster.name)/acme-fitness/acme-fitness-frontend-ingress.yaml | \
+    -f generated/$(yq e .workload-cluster.name $PARAMS_YAML)/acme-fitness/acme-fitness-frontend-ingress.yaml | \
     kapp deploy -n acme-fitness -a acme-fitness -y -f -
-
-unset KUBECONFIG
 ```
 
 ### Validation Step
@@ -61,6 +58,6 @@ unset KUBECONFIG
 Go to the ingress URL to test out.  
 
 ```bash
-open https://$(yq r $PARAMS_YAML acme-fitness.fqdn)
+open https://$(yq e .acme-fitness.fqdn $PARAMS_YAML)
 # login with eric/vmware1! in order to make a purchase.
 ```

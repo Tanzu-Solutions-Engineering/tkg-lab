@@ -6,13 +6,14 @@ The following section should be added to or exist in your local params.yaml file
 ```yaml
 harbor:
   harbor-cn: harbor.<shared-cluster domain name>
+  admin-password: FOO
 ```
-> NOTE: TKG 1.2 Extensions force the Notary FQDN to be "notary."+harbor-cn
+> NOTE: TKG 1.3 Extensions force the Notary FQDN to be "notary."+harbor-cn
 
 ### S3 Backing for Harbor
-The default settings for Harbor use PVCs behind the registry and chartmuseum pods for blob storage.  Persistent Volume performance can be slow in home labs, or environments with poor storage or networking performance.  You can opt in to using S3 compatible storage as the backing for Harbor, and this can dramatically increase the performance in these environments.
+The default settings for Harbor use PVCs behind the registry pods for blob storage.  Persistent Volume performance can be slow in home labs, or environments with poor storage or networking performance.  You can opt in to using S3 compatible storage as the backing for Harbor, and this can dramatically increase the performance in these environments.
 
-To use S3 blob storage for images and helm charts managed by Harbor, you can use the following settings in your params.yaml file:
+To use S3 blob storage for images managed by Harbor, you can use the following settings in your params.yaml file:
 
 ```yaml
 harbor:
@@ -34,8 +35,8 @@ Harbor Registry will be installed in the shared services cluster, as it is going
 
 ```bash
 ./scripts/generate-and-apply-harbor-yaml.sh \
-   $(yq r $PARAMS_YAML management-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.name)
+   $(yq e .management-cluster.name $PARAMS_YAML) \
+   $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 The scripts will first create the Harbor certificates and check they are valid, which depends on the Let's Encrypt / Acme challenge to be resolved, that can take a couple of minutes.
@@ -49,7 +50,7 @@ kubectl get po -n tanzu-system-registry
 
 2. Open a browser and navigate to https://<$HARBOR_CN>.  The default user is admin and pwd is Harbor12345
 ```bash
-open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
+open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
 ```
 
 
@@ -59,16 +60,14 @@ open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
 
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
-2. Choose Applications (top menu) > Add Application > Create New App > Web, Click Next.
+2. Choose Applications (side menu) > Application.  Then click Add Application button.  Then click Create New App button. Choose Web, OpenID Connect and Create button.
 
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Harbor`
-  - Remove Base URL
   - Login redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/callback` #
   - Logout redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/logout`
-  - Grant type allowed: `Authorization Code`
 
-3. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file
+3. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file.
 
 ```yaml
 okta:
@@ -76,9 +75,7 @@ okta:
   harbor-app-client-secret: MY_CLIENT_SECRET
 ```
 
-4. On the top left, Choose the arrow next to Developer Console and choose `Classic UI`
-
-5. Choose Applications (top menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
+4. Choose Sign On tab > Edit **OpenID Connect ID Token** section
   - Groups claim type => `Filter`
   - Groups claim filter => **groups** Matches regex **.\***
 
@@ -86,9 +83,9 @@ okta:
 
 ![Harbor OIDC Configuration](harbor-oidc-config.png)
 
-1. Log-in to Harbor as admin and password Harbor12345
+1. Log-in to Harbor as admin and your configured admin password
 
-2. On the right hand nav, select Administration -> Configuration
+2. On the left hand nav, select Administration -> Configuration
 
 3. Choose Authentication tab, and then complete the form as follows:
   - Auth Mode: `OIDC`
@@ -109,7 +106,7 @@ okta:
 2. In an incognito window, access Harbor UI: https://<harbor.harbor-cn from $PARAMS_YAML>.  You will now see a `Login Via OIDC Provider` button on the login page.
 
 ```bash
-open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
+open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
 ```
 
 3. Click `Login Via OIDC Provider` button, you will be redirected to Okta login page.
@@ -125,19 +122,18 @@ open https://$(yq r $PARAMS_YAML harbor.harbor-cn)
 2. Now login with docker cli.  Use your Okta username and your `CLI secret` from Harbor
 
 ```bash
-docker login https://$(yq r $PARAMS_YAML harbor.harbor-cn) -u alana
+docker login https://$(yq e .harbor.harbor-cn $PARAMS_YAML) -u alana
 ```
 
 ### Add Alana as Admin
 
 1. Now logout of Harbor UI.  Log back in as `admin` and password `Harbor12345`
 
-2. On the right hand nav, select Administration -> Users
+2. On the left hand nav, select Administration -> Users
 
 3. Select `alana` user and click the `Set as Admin` button
 
 4. Next time `alana` logs in, she will have admin privileges.
-
 
 ## Go to Next Step
 

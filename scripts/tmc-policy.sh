@@ -11,9 +11,9 @@ fi
 CLUSTER_NAME=$1
 ROLE=$2
 POLICY_GROUPS=$3
-IAAS=$(yq r $PARAMS_YAML iaas)
+IAAS=$(yq e .iaas $PARAMS_YAML)
 
-VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
+VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 
 tmc cluster iam add-binding $VMWARE_ID-$CLUSTER_NAME-$IAAS \
   --role $ROLE \

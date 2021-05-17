@@ -3,15 +3,10 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
-IAAS=$(yq r $PARAMS_YAML iaas)
+IAAS=$(yq e .iaas $PARAMS_YAML)
 
 # Management Step 1
-# vSphere's prep script is not idempotent and can only be run once, so we assume it has already happened
-if [ "$IAAS" != "vsphere" ];
-then
-  $TKG_LAB_SCRIPTS/01-prep-$IAAS-objects.sh
-fi
-# Intentionally skiping 01-prep-$IAAS-objects.sh as this was likely done manually
+$TKG_LAB_SCRIPTS/01-prep-$IAAS-objects.sh
 $TKG_LAB_SCRIPTS/02-deploy-$IAAS-mgmt-cluster.sh
 $TKG_LAB_SCRIPTS/03-post-deploy-mgmt-cluster.sh
 # Management Step 2
@@ -23,72 +18,69 @@ $TKG_LAB_SCRIPTS/retrieve-lets-encrypt-ca-cert.sh
 if [ "$IAAS" = "vsphere" ];
 then
   $TKG_LAB_SCRIPTS/deploy-metallb.sh \
-    $(yq r $PARAMS_YAML management-cluster.name) \
-    $(yq r $PARAMS_YAML management-cluster.metallb-start-ip) \
-    $(yq r $PARAMS_YAML management-cluster.metallb-end-ip)
+    $(yq e .management-cluster.name $PARAMS_YAML) \
+    $(yq e .management-cluster.metallb-start-ip $PARAMS_YAML) \
+    $(yq e .management-cluster.metallb-end-ip $PARAMS_YAML)
 fi
-$TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
+$TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
-  $(yq r $PARAMS_YAML management-cluster.name) \
-  $(yq r $PARAMS_YAML management-cluster.ingress-fqdn)
-$TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
+  $(yq e .management-cluster.name $PARAMS_YAML) \
+  $(yq e .management-cluster.ingress-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 # Management Step 7
-$TKG_LAB_SCRIPTS/generate-and-apply-dex-yaml.sh
+$TKG_LAB_SCRIPTS/update-pinniped-configuration.sh
 # Management Step 8
-$TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML management-cluster.name)
+# $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq e .management-cluster.name $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-prometheus-yaml.sh \
+  $(yq e .management-cluster.name $PARAMS_YAML) \
+  $(yq e .management-cluster.prometheus-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-grafana-yaml.sh \
+  $(yq e .management-cluster.name $PARAMS_YAML) \
+  $(yq e .management-cluster.grafana-fqdn $PARAMS_YAML)
 
-# Shared Services Step 1
+# # Shared Services Step 1
 $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
-  $(yq r $PARAMS_YAML shared-services-cluster.name) \
-  $(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) \
-  $(yq r $PARAMS_YAML shared-services-cluster.controlplane-endpoint) \
-  $(yq r $PARAMS_YAML shared-services-cluster.kubernetes-version)
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.controlplane-endpoint $PARAMS_YAML) \
+  $(yq e '.shared-services-cluster.kubernetes-version // null' $PARAMS_YAML)
 # Shared Services Step 2
-$TKG_LAB_SCRIPTS/tmc-attach.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+$TKG_LAB_SCRIPTS/tmc-attach.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 3
 $TKG_LAB_SCRIPTS/tmc-policy.sh \
-  $(yq r $PARAMS_YAML shared-services-cluster.name) \
+  $(yq e .shared-services-cluster.name $PARAMS_YAML ) \
   cluster.admin \
   platform-team
 # Shared Services Step 4
-if [ "$IAAS" = "vsphere" ];
-then
-  $TKG_LAB_SCRIPTS/deploy-metallb.sh \
-    $(yq r $PARAMS_YAML shared-services-cluster.name) \
-    $(yq r $PARAMS_YAML shared-services-cluster.metallb-start-ip) \
-    $(yq r $PARAMS_YAML shared-services-cluster.metallb-end-ip)
-fi
-$TKG_LAB_SCRIPTS/deploy-cert-manager.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
-$TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+$TKG_LAB_SCRIPTS/deploy-cert-manager.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
-  $(yq r $PARAMS_YAML shared-services-cluster.name) \
-  $(yq r $PARAMS_YAML shared-services-cluster.ingress-fqdn)
-$TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
-# Shared Services Step 5
-$TKG_LAB_SCRIPTS/generate-and-apply-gangway-yaml.sh \
-   $(yq r $PARAMS_YAML shared-services-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
-$TKG_LAB_SCRIPTS/inject-dex-client.sh \
-   $(yq r $PARAMS_YAML management-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.gangway-fqdn)
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.ingress-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 6
 $TKG_LAB_SCRIPTS/generate-and-apply-elasticsearch-kibana-yaml.sh
 # Shared Services Step 7
-$TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+$TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 8
-$TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+# $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-prometheus-yaml.sh \
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.prometheus-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-grafana-yaml.sh \
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+  $(yq e .shared-services-cluster.grafana-fqdn $PARAMS_YAML)
 # Shared Services Step 9
-$TKG_LAB_SCRIPTS/dataprotection.sh $(yq r $PARAMS_YAML shared-services-cluster.name)
+$TKG_LAB_SCRIPTS/dataprotection.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 10
 $TKG_LAB_SCRIPTS/generate-and-apply-harbor-yaml.sh \
-   $(yq r $PARAMS_YAML management-cluster.name) \
-   $(yq r $PARAMS_YAML shared-services-cluster.name)
+   $(yq e .management-cluster.name $PARAMS_YAML) \
+   $(yq e .shared-services-cluster.name $PARAMS_YAML)
 
 # Management Step 9
-$TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq r $PARAMS_YAML management-cluster.name)
+$TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 # Management Step 10
-$TKG_LAB_SCRIPTS/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
+$TKG_LAB_SCRIPTS/velero.sh $(yq e .management-cluster.name $PARAMS_YAML)
 
 # Workload Step 1
 $TKG_LAB_SCRIPTS/deploy-all-workload-cluster-components.sh

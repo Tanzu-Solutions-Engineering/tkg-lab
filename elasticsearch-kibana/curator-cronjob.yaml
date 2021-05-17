@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    app: curator
+  name: curator-elasticsearch-curator
+  namespace: elasticsearch-kibana
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        app: curator
+    spec:
+      template:
+        metadata:
+          labels:
+            app: curator
+        spec:
+          containers:
+          - args:
+            - --config
+            - /etc/es-curator/config.yml
+            - /etc/es-curator/action_file.yml
+            command:
+            - curator
+            image: docker.io/bitnami/elasticsearch-curator:5.8.4-debian-10-r0
+            imagePullPolicy: IfNotPresent
+            name: curator-elasticsearch-curator
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /etc/es-curator
+              name: config-volume
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - configMap:
+              defaultMode: 420
+              name: curator-elasticsearch-curator
+            name: config-volume
+  schedule: '0 * * * *'
+  successfulJobsHistoryLimit: 3
+  suspend: false

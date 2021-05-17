@@ -28,15 +28,22 @@ vsphere:
   password: "REDACTED_VALUE_KEEP_DOUBLE_QUOTES"
   insecure: true
   datastore: datastore2
-  template_folder: /Datacenter/vm/tkg
-  local_ova_folder: /Users/jaguilar/Code/tkg/
+  template-folder: /Datacenter/vm/tkg
+  datacenter: /Datacenter
+  network: TKG-VLAN14-PG
+  tls-thumbprint: F4:31:AC:BA:98:19:8C:94:BD:3E:49:63:C7:9C:66:0E:D6:61:1E:19
+  resource-pool: /Datacenter/host/Cluster/Resources/tkg
+  local-ova-folder: /Users/jaguilar/Code/tkg/
+  node-os: photon
 gcloud:
   project: fe-jaguilar
 management-cluster:
   worker-replicas: 2
   name: dragonstone
   ingress-fqdn: '*.dragonstone.tkg-aws-e2-lab.winterfell.live'
-  dex-fqdn: dex.dragonstone.tkg-aws-e2-lab.winterfell.live
+  pinniped-fqdn: pinniped.dragonstone.tkg-aws-e2-lab.winterfell.live
+  prometheus-fqdn: prometheus.dragonstone.tkg-aws-e2-lab.winterfell.live
+  grafana-fqdn: grafana.dragonstone.tkg-aws-e2-lab.winterfell.live
   controlplane-endpoint: 192.168.7.180 # only required for vsphere iaas
   metallb-start-ip: 192.168.7.200 # only required for vsphere iaas
   metallb-end-ip: 192.168.7.209 # only required for vsphere iaas
@@ -44,31 +51,29 @@ shared-services-cluster:
   worker-replicas: 2
   name: dorn
   ingress-fqdn: '*.dorn.tkg-aws-e2-lab.winterfell.live'
-  gangway-fqdn: gangway.dorn.tkg-aws-e2-lab.winterfell.live
   elasticsearch-fqdn: elasticsearch.dorn.tkg-aws-e2-lab.winterfell.live
   kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
+  prometheus-fqdn: prometheus.dorn.tkg-aws-e2-lab.winterfell.live
+  grafana-fqdn: grafana.dorn.tkg-aws-e2-lab.winterfell.live
   controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas
-  metallb-start-ip: 192.168.7.210 # only required for vsphere iaas
-  metallb-end-ip: 192.168.7.219 # only required for vsphere iaas
-  kubernetes-version: v1.19.1+vmware.2 # Explicitly set to v1.19.1 because v1.19.3 has an issue with TBS
+  kubernetes-version: v1.20.5---vmware.1-tkg.1 # To Explicitly set to v1.20.5---vmware.1-tkg.1 version (optional)
 workload-cluster:
   worker-replicas: 2
   name: highgarden
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
-  gangway-fqdn: gangway.highgarden.tkg-aws-e2-lab.winterfell.live
   prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live # Leave this blank if you choose not to expose prometheus
   grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
   controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas
-  metallb-start-ip: 192.168.7.220 # only required for vsphere iaas
-  metallb-end-ip: 192.168.7.229 # only required for vsphere iaas
 okta:
   auth-server-fqdn: dev-677945.okta.com
-  dex-app-client-id: REDACTED
-  dex-app-client-secret: REDACTED
+  tkg-app-client-id: REDACTED
+  tkg-app-client-secret: REDACTED
   harbor-app-client-id: REDACTED # if deploying harbor and using OIDC integration
   harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
-  concourse-app-client-id: REDACTED # if deploying harbor and using OIDC integration
-  concourse-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
+  concourse-app-client-id: REDACTED # if deploying concourse and using OIDC integration
+  concourse-app-client-secret: REDACTED # if deploying concourse and using OIDC integration
+  kubeapps-dex-client-id: REDACTED # if deploying kubeapps and using OIDC integration
+  kubeapps-dex-client-secret: REDACTED # if deploying kubeapps and using OIDC integration
 wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
@@ -78,6 +83,7 @@ velero:
   bucket: pa-dpfeffer-mgmt-velero
   region: us-east-2
 harbor:
+  admin-password: "VMware1!"
   harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
   notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
 #  blob-storage:
@@ -98,5 +104,17 @@ concourse:
   admin-password: REDACTED
 kubeapps:
   server-fqdn: kubeapps.highgarden.tkg-aws-e2-lab.winterfell.live
+  oidc-issuer-fqdn: dex.highgarden.tkg-aws-e2-lab.winterfell.live
 grafana:
   admin-password: REDACTED
+avi:
+  avi-enable: "true"
+  avi-ca-data: encodedlongstring
+  avi-cloud-name: Default-Cloud
+  avi-controller: 192.168.14.190
+  avi-data-network: VIP-VLAN15-PG
+  avi-data-network-cidr: 192.168.15.0/24
+  avi-labels: ""
+  avi-password: "VMware1!"
+  avi-service-engine-group: Default-Group
+  avi-username: admin

@@ -32,9 +32,9 @@ Based on the following https://argoproj.github.io/argo-cd/getting_started/
 $ kubectl create ns argocd
 $ helm repo add argo https://argoproj.github.io/argo-helm
 $ helm install argocd argo/argo-cd \
-  --values generated/$(yq r $PARAMS_YAML shared-services-cluster.name)/argocd/values.yaml \
+  --values generated/$(yq e .shared-services-cluster.name $PARAMS_YAML)/argocd/values.yaml \
   --namespace argocd
-$ kubectl apply -f generated/$(yq r $PARAMS_YAML shared-services-cluster.name)/argocd/httpproxy.yaml
+$ kubectl apply -f generated/$(yq e .shared-services-cluster.name $PARAMS_YAML)/argocd/httpproxy.yaml
 ```
 
 On a Linux or MAC Machine with network access to Kubernetes clusters,  download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest. 
@@ -57,20 +57,20 @@ $ argocd login $(yq r $PARAMS_YAML argocd.server-fqdn) \
 Add your workload Kubernetes cluster to the ArgoCD Controller. First we will create a service account in the workload cluster for argocd.  Then setup a kubeconfig context for that account.
 
 ```bash
-$ kubectl config use-context $(yq r $PARAMS_YAML workload-cluster.name)-admin@$(yq r $PARAMS_YAML workload-cluster.name)
+$ kubectl config use-context $(yq e .workload-cluster.name $PARAMS_YAML)-admin@$(yq e .workload-cluster.name $PARAMS_YAML)
 $ kubectl create ns argocd
 $ kubectl create serviceaccount argocd -n argocd
 $ kubectl create clusterrolebinding argocd --clusterrole=cluster-admin --serviceaccount=argocd:argocd
 $ export TOKEN_SECRET=$(kubectl get serviceaccount -n argocd argocd -o jsonpath='{.secrets[0].name}')
 $ export TOKEN=$(kubectl get secret -n argocd $TOKEN_SECRET -o jsonpath='{.data.token}' | base64 --decode)
-$ kubectl config set-credentials $(yq r $PARAMS_YAML workload-cluster.name)-argocd-token-user --token $TOKEN
-$ kubectl config set-context $(yq r $PARAMS_YAML workload-cluster.name)-argocd-token-user@$(yq r $PARAMS_YAML workload-cluster.name) \
-  --user $(yq r $PARAMS_YAML workload-cluster.name)-argocd-token-user \
-  --cluster $(yq r $PARAMS_YAML workload-cluster.name)
+$ kubectl config set-credentials $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user --token $TOKEN
+$ kubectl config set-context $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user@$(yq e .workload-cluster.name $PARAMS_YAML) \
+  --user $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user \
+  --cluster $(yq e .workload-cluster.name $PARAMS_YAML)
 # See the available configs
 $ argocd cluster add
 # Add the config setup with the service account you created
-$ argocd cluster add $(yq r $PARAMS_YAML workload-cluster.name)-argocd-token-user@$(yq r $PARAMS_YAML workload-cluster.name)
+$ argocd cluster add $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user@$(yq e .workload-cluster.name $PARAMS_YAML)
 ```
 
 ### Test ArgoCD Installation
@@ -82,7 +82,7 @@ $ kubectl create ns guestbook
 $ argocd app create guestbook \
   --repo https://github.com/argoproj/argocd-example-apps.git \
   --path guestbook \
-  --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq r $PARAMS_YAML workload-cluster.name)')].cluster.server}"` \
+  --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq e .workload-cluster.name $PARAMS_YAML)')].cluster.server}"` \
   --dest-namespace guestbook \
   --sync-policy automated
 
@@ -133,7 +133,7 @@ Deploy the Development version of the fortune Application. This version shares t
 $ argocd app create fortune-app-dev \
   --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git \
   --path argocd/fortune-teller/dev \
-  --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq r $PARAMS_YAML workload-cluster.name)')].cluster.server}"` \
+  --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq e .workload-cluster.name $PARAMS_YAML)')].cluster.server}"` \
   --dest-namespace fortune-app-development \
   --sync-policy automated
 
@@ -147,7 +147,7 @@ Deploy the Production version of the fortune Application. This version shares th
 $ argocd app create fortune-app-prod \
   --repo https://github.com/Pivotal-Field-Engineering/tkg-lab.git \
   --path argocd/fortune-teller/production \
-  --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq r $PARAMS_YAML workload-cluster.name)')].cluster.server}"` \
+  --dest-server `kubectl config view -o jsonpath="{.clusters[?(@.name=='$(yq e .workload-cluster.name $PARAMS_YAML)')].cluster.server}"` \
   --dest-namespace fortune-app-production \
   --sync-policy automated
 

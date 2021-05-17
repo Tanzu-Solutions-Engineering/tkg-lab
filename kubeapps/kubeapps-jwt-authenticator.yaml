@@ -1,0 +1,11 @@
+apiVersion: authentication.concierge.pinniped.dev/v1alpha1
+kind: JWTAuthenticator
+metadata:
+  name: kubeapps-jwt-authenticator
+  namespace: pinniped-concierge
+spec:
+  audience: kubeapps
+  claims:
+    groups: "groups"
+    username: "email"
+  issuer: # dynamically populated with oidc issuer url, e.g. https://dev-677945.okta.com

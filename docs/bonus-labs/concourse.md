@@ -28,39 +28,12 @@ okta:
 Once these are in place and correct, run the following to export the following into your shell:
 
 ```bash
-export TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
-export CONCOURSE_NAMESPACE=$(yq r $PARAMS_YAML concourse.namespace)
-export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq r $PARAMS_YAML concourse.tmc-workspace)
-export CLUSTER_NAME=$(yq r $PARAMS_YAML shared-services-cluster.name)
-export IAAS=$(yq r $PARAMS_YAML iaas)
-export VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
-```
-
-## Scale Shared Cluster and Taint Nodes
-Rather than creating a new cluster, which we normally would recommend for Concourse, to save on resources we can create a couple of worker nodes in our shared cluster and taint them.  What this does is enable us to use these new nodes exclusively for Concourse.  The Concourse web and worker pods will be given a toleration for the taint, and use node selectors to ensure that they are "pinned" to the new cluster worker nodes.  To do this, we will:
-- Scale the Shared Services cluster
-- Label the new nodes
-- Taint the labelled nodes to prevent any other workload from running there
-- Apply the toleration and node selector to the Concourse Helm chart
-
-First, create a pair of new worker nodes in the tkg cluster:
-
-```bash
-NEW_NODE_COUNT=$(($(yq r $PARAMS_YAML shared-services-cluster.worker-replicas) + 2))
-tkg scale cluster $CLUSTER_NAME -w $NEW_NODE_COUNT
-```
-After a few minutes, check to see which new nodes were created.  These will be the nodes that are the most recent in the AGE output of "kubectl get nodes".  Label these nodes using a space to separate the list of nodes in the command:
-
-```bash
-kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
-kubectl get nodes
-kubectl label nodes ip-10-0-0-57.us-east-2.compute.internal ip-10-0-0-105.us-east-2.compute.internal type=concourse
-```
-
-Now add the taint to the same nodes.  This will prevent other workloads from being scheduled on the new nodes.  Note that any DaemonSet may still have a pod running on these nodes because the taint was not added until after node creation.
-
-```bash
-kubectl taint nodes -l type=concourse type=concourse:PreferNoSchedule --overwrite
+export TMC_CLUSTER_GROUP=$(yq e .tmc.cluster-group $PARAMS_YAML)
+export CONCOURSE_NAMESPACE=$(yq e .concourse.namespace $PARAMS_YAML)
+export CONCOURSE_TMC_WORKSPACE=$TMC_CLUSTER_GROUP-$(yq e .concourse.tmc-workspace $PARAMS_YAML)
+export CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
+export IAAS=$(yq e .iaas $PARAMS_YAML)
+export VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 ```
 
 ## Create Concourse Namespace
@@ -75,7 +48,7 @@ tmc cluster namespace create -c $VMWARE_ID-$CLUSTER_NAME-$IAAS -n $CONCOURSE_NAM
 
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
-2. Choose Applications (top menu) > Add Application > Create New App > Web, Click Next.
+2. Choose Applications (Left menu) > Add Application > Create New App > Web, Click Next.
 
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Concourse`
@@ -92,9 +65,7 @@ okta:
   concourse-app-client-secret: MY_CLIENT_SECRET
 ```
 
-4. On the top left, Choose the arrow next to Developer Console and choose `Classic UI`
-
-5. Choose Applications (top menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
+5. Choose Applications (left menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
   - Groups claim type => `Filter`
   - Groups claim filter => **groups** Matches regex **.\***
 
@@ -102,6 +73,7 @@ okta:
  Prepare and deploy the YAML manifests for the related Concourse K8S objects.  Manifest will be output into `concourse/generated/` in case you want to inspect.
 
 ```bash
+kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 ./scripts/generate-and-apply-concourse-yaml.sh
 ```
 
@@ -129,8 +101,8 @@ kubectl get cert,ing -n $CONCOURSE_NAMESPACE
 2. Log in and save alias
 
 ```bash
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) login \
-  -c https://$(yq r $PARAMS_YAML concourse.fqdn) \
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) login \
+  -c https://$(yq e .concourse.fqdn $PARAMS_YAML) \
   -n main
 ```
 
@@ -138,7 +110,7 @@ fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) login \
 
 ## Create Sample Pipeline
 
-There are a number of ways to manage pipeline configuration values.  See notes at ...  In the sample pipeline we will place them in a Kubernetes secret.
+There are a number of ways to manage pipeline configuration values.  See notes at https://github.com/concourse/concourse-chart  In the sample pipeline we will place them in a Kubernetes secret.
 
 1. Create Kubernetes secret in the concourse_main namespace.
 
@@ -149,7 +121,7 @@ ytt -f concourse/common-secrets.yaml --ignore-unknown-comments | kapp deploy -n 
 2. Set the pipeline using fly cli
 
 ```bash
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) set-pipeline -p test-pipeline -c concourse/test-pipeline.yaml -n
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) unpause-pipeline -p test-pipeline
-fly -t $(yq r $PARAMS_YAML shared-services-cluster.name) trigger-job -j test-pipeline/hello-world --watch
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) set-pipeline -p test-pipeline -c concourse/test-pipeline.yaml -n
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) unpause-pipeline -p test-pipeline
+fly -t $(yq e .shared-services-cluster.name $PARAMS_YAML) trigger-job -j test-pipeline/hello-world --watch
 ```
