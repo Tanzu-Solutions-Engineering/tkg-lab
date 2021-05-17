@@ -2,10 +2,6 @@
 
 Setup a free Okta account: https://developer.okta.com/signup/
 
-Once logged in...
-
-You will need to go to the Admin interface.  If you are in the standard interface by default, choose green Admin button on the top right.
-
 ## Create Admin User
 
 Choose Directory (side menu) > People > Add Person:
@@ -18,17 +14,18 @@ Choose Directory (side menu) > People > Add Person:
 Choose Directory (side menu) > Groups and then > Add Group:
 - platform-team
 
-Click on platform-team group > Manage People: Then add alana to the platform-team. Save
+Click on `platform-team` group > Manage People: Then add `alana` to the `platform-team`. Save
 
 ## Create Application for TKG
 
-Choose Applications (side menu) > Application.  Then click Add Application button.  Then click Create New App button. Choose Web, OpenID Connect and Create button.
+Choose Applications (side menu) > Application.  Then click `Create App Integration` button.  Then selec `OIDC - OpenID Connect` radion option. For Application Type, choose `Web Application` radion button.  Then click `Next` button.
   - Give your app a name: TKG
-  - Login redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/callback 
-  - Logout redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/logout
+  - For Grant type, check Authorization Code and Refresh Token
+  - Sign-in redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/callback 
+  - Sign-out redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/logout
 > Note: Use your management-cluster.pinniped-fqdn domain as defined in your params.yaml
 
-Click Save button
+Click `Save` button
 
 ## Retrieve Client ID and Client Secret
 
