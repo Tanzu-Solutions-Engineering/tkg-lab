@@ -60,12 +60,13 @@ open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
 
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
-2. Choose Applications (side menu) > Application.  Then click Add Application button.  Then click Create New App button. Choose Web, OpenID Connect and Create button.
-
+2. Choose Applications (side menu) > Application.   Then click `Create App Integration` button.  Then selec `OIDC - OpenID Connect` radion option. For Application Type, choose `Web Application` radion button.  Then click `Next` button.
+  
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Harbor`
-  - Login redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/callback` #
-  - Logout redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/logout`
+  - For Grant type, check Authorization Code and Refresh Token
+  - Sign-in redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/callback` #
+  - Sign-out redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/logout`
 
 3. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file.
 
