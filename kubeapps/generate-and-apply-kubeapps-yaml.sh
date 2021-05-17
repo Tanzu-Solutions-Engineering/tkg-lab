@@ -38,4 +38,4 @@ kubectl apply -f generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yam
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
 kubectl apply -f generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
-helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml --version=5.3.4
