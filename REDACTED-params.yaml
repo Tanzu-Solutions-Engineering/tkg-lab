@@ -72,8 +72,8 @@ okta:
   harbor-app-client-secret: REDACTED # if deploying harbor and using OIDC integration
   concourse-app-client-id: REDACTED # if deploying concourse and using OIDC integration
   concourse-app-client-secret: REDACTED # if deploying concourse and using OIDC integration
-  kubeapps-dex-client-id: REDACTED # if deploying kubeapps and using OIDC integration
-  kubeapps-dex-client-secret: REDACTED # if deploying kubeapps and using OIDC integration
+  kubeapps-dex-app-client-id: REDACTED # if deploying kubeapps and using OIDC integration
+  kubeapps-dex-app-client-secret: REDACTED # if deploying kubeapps and using OIDC integration
 wavefront:
   api-key: REDACTED
   url: https://surf.wavefront.com
