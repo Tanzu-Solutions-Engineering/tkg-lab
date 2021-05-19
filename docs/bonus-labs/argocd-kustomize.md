@@ -1,6 +1,6 @@
 # ArgoCD and Kustomize
 
-In this lab, we will use ArgoCD to deploy and synchronize two different configurations for the same Application using  Kustomize overlays. ArgoCD will deploy and continuously reconcile our intended state of the applicaiton as represented by the Kustomize configuration and Kubernetes manifests stored in our Github repo with the Kubernetes API Server. 
+In this lab, we will use ArgoCD to deploy and synchronize two different configurations for the same Application using  Kustomize overlays. ArgoCD will deploy and continuously reconcile our intended state of the applicaiton as represented by the Kustomize configuration and Kubernetes manifests stored in our Github repo with the Kubernetes API Server.
 
 ## Set configuration parameters
 
@@ -37,7 +37,7 @@ $ helm install argocd argo/argo-cd \
 $ kubectl apply -f generated/$(yq e .shared-services-cluster.name $PARAMS_YAML)/argocd/httpproxy.yaml
 ```
 
-On a Linux or MAC Machine with network access to Kubernetes clusters,  download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest. 
+On a Linux or MAC Machine with network access to Kubernetes clusters,  download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest.
 
 ```bash
 # For linux, follow below.  For Max, customize where appropriate.  Also, check version.
@@ -47,11 +47,25 @@ $ mv argocd-linux-amd64 /usr/local/bin/argocd
 $ argocd --help
 ```
 
+### ArgoCD Validation Step
+
+1. All ArgoCD pods are in a running state:
+```bash
+kubectl get po -n argocd -o wide
+```
+
+2. Access the ArgoCD UI
+```bash
+open https://$(yq e .argocd.server-fqdn $PARAMS_YAML)
+```
+
+### Register Clusters in ArgoCD Controller
+
 Login with the cli
 ```bash
-$ argocd login $(yq r $PARAMS_YAML argocd.server-fqdn) \
+$ argocd login $(yq e .argocd.server-fqdn $PARAMS_YAML) \
   --username admin \
-  --password $(yq r $PARAMS_YAML argocd.password)
+  --password $(yq e .argocd.password $PARAMS_YAML)
 ```
 
 Add your workload Kubernetes cluster to the ArgoCD Controller. First we will create a service account in the workload cluster for argocd.  Then setup a kubeconfig context for that account.
@@ -87,7 +101,7 @@ $ argocd app create guestbook \
   --sync-policy automated
 
 application 'guestbook' created
-    
+
 $ argocd app list
 
   NAME       CLUSTER                      NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                 PATH       TARGET
@@ -108,14 +122,14 @@ $ echo $(yq r $PARAMS_YAML argocd.server-fqdn)
 ```
 
 1. In Chrome, navigate to the UI on address above
-2. Login with 
+2. Login with
     1. admin and the password you set earlier.
 3. Click on the guestbook app you created from the argocd CLI and investigate it.
 ![Image of App guestbook](../guestbook-app.png)
 
 ## Demonstrate Continuous Deployment
 
-In this example we will use ArgoCD CLI to deploy two different configurations for the same Application using the Kustomize overlays. 
+In this example we will use ArgoCD CLI to deploy two different configurations for the same Application using the Kustomize overlays.
 
 Create two different namespaces for the two different configurations of our application. this could easily be two different clusters as well.
 
