@@ -48,4 +48,8 @@ yq e -i '.AVI_USERNAME = env(AVI_USERNAME)' generated/$CLUSTER_NAME/cluster-conf
 yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
 
+
+# Setting the right BOM to use the TKG 1.3.1 path version with the CVE-2021-30465 patch
+export TKG_BOM_CUSTOM_IMAGE_TAG="v1.3.1-patch1"
+
 tanzu management-cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml -v 6 -y

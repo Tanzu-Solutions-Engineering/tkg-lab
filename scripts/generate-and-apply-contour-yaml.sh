@@ -25,6 +25,9 @@ cp tkg-extensions/extensions/ingress/contour/$IAAS/contour-data-values.yaml.exam
 # Not necessary for azure and aws, but it doesn't hurt
 yq e -i '.envoy.service.type = "LoadBalancer"' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
+# Setting the right Envoy tag to use the 1.3.1 image with the CVE-2021-28682, CVE-2021-28683 and CVE-2021-29258 patches.
+yq e -i '.envoy.image.tag = "v1.17.3_vmware.1"' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+
 # Add in the document seperator that yq removes
 add_yaml_doc_seperator generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
