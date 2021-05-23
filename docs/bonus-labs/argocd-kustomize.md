@@ -54,7 +54,7 @@ This script will add your workload Kubernetes cluster to the ArgoCD Controller. 
 ./scripts/register-cluster-argocd.sh
 ```
 
-### Test ArgoCD Installation
+## Test ArgoCD Installation
 
 Deploy ArgoCD guestbook example application
 
