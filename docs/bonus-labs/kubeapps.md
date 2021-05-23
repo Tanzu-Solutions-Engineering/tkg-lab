@@ -1,6 +1,6 @@
 # Install Kubeapps
 
-### Set environment variables
+## Set environment variables
 The following section should be added to or exist in your local params.yaml file:
 
 ```bash
@@ -9,7 +9,7 @@ kubeapps:
   oidc-issuer-fqdn: dex.<workload-cluster domain name>
 ```
 
-### Prepare Okta for Kubeapps Client
+## Prepare Okta for Kubeapps Client
 
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
@@ -35,7 +35,7 @@ Go to Sign On tab > Edit **OpenID Connect ID Token** section
   - Groups claim type => Filter
   - Groups claim filter => **groups** Matches regex **.\***
 
-### Prepare Manifests and Deploy Dex
+## Prepare Manifests and Deploy Dex
 
 Due to the way okta provides thin-tokens, if we directly integrated kubeapps with okta, we would not recieve group membership.  Dex has the workflow to retrieve the group
 membership and generate a new JWT token for kubeapps.  As such, we will deploy dex in the workload cluster to perform this mediation.
