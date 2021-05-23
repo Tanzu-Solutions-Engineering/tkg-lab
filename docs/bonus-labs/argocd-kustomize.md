@@ -1,6 +1,8 @@
 # ArgoCD and Kustomize
 
-In this lab, we will use ArgoCD to deploy and synchronize two different configurations for the same Application using  Kustomize overlays. ArgoCD will deploy and continuously reconcile our intended state of the applicaiton as represented by the Kustomize configuration and Kubernetes manifests stored in our Github repo with the Kubernetes API Server.
+In this lab, we will install ArgoCD in the Shared Services Cluster
+
+Also (optionally) we will use ArgoCD to deploy and synchronize two different configurations for the same Application using  Kustomize overlays. ArgoCD will deploy and continuously reconcile our intended state of the applicaiton as represented by the Kustomize configuration and Kubernetes manifests stored in our Github repo with the Kubernetes API Server.
 
 ## Set configuration parameters
 
@@ -12,42 +14,15 @@ argocd:
   password: REDACTED
 ```
 
-## Prepare Manifests for Argocd
+## Prepare Manifests and Install ArgoCD
 
-Prepare the YAML manifests for Argo CD K8S objects.  Manifests will be output into `generated/$SHARED_SERVICES_CLUSTER_NAME/argocd/` in case you want to inspect.
-
-```bash
-./scripts/generate-argocd-yaml.sh
-```
-
-## Install and configure ArgoCD
-
-### Prerequisites
-1. Configure or setup a Kubernetes Cloud Load Balancer such as MetalLB.
-
-### Install ArgoCD
-Based on the following https://argoproj.github.io/argo-cd/getting_started/
+ArgoCD installation will be based on the following: https://argoproj.github.io/argo-cd/getting_started/. Manifests will be output into `generated/$CLUSTER_NAME/argocd/` in case you want to inspect.
 
 ```bash
-$ kubectl create ns argocd
-$ helm repo add argo https://argoproj.github.io/argo-helm
-$ helm install argocd argo/argo-cd \
-  --values generated/$(yq e .shared-services-cluster.name $PARAMS_YAML)/argocd/values.yaml \
-  --namespace argocd
-$ kubectl apply -f generated/$(yq e .shared-services-cluster.name $PARAMS_YAML)/argocd/httpproxy.yaml
+./scripts/generate-and-apply-argocd-yaml.sh
 ```
 
-On a Linux or MAC Machine with network access to Kubernetes clusters,  download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest.
-
-```bash
-# For linux, follow below.  For Max, customize where appropriate.  Also, check version.
-$ wget https://github.com/argoproj/argo-cd/releases/download/v1.6.1/argocd-linux-amd64 .
-$ chmod +x argocd-linux-amd64
-$ mv argocd-linux-amd64 /usr/local/bin/argocd
-$ argocd --help
-```
-
-### ArgoCD Validation Step
+## Validation Step
 
 1. All ArgoCD pods are in a running state:
 ```bash
@@ -59,32 +34,24 @@ kubectl get po -n argocd -o wide
 open https://$(yq e .argocd.server-fqdn $PARAMS_YAML)
 ```
 
-### Register Clusters in ArgoCD Controller
+## Install ArgoCD CLI
 
-Login with the cli
+On a Linux or MAC Machine with network access to Kubernetes clusters,  download the latest ArgoCD CLI from https://github.com/argoproj/argo-cd/releases/latest.
+
 ```bash
-$ argocd login $(yq e .argocd.server-fqdn $PARAMS_YAML) \
-  --username admin \
-  --password $(yq e .argocd.password $PARAMS_YAML)
+# For linux, follow below.  For Max, customize where appropriate.  Also, check version.
+$ wget https://github.com/argoproj/argo-cd/releases/download/v1.6.1/argocd-linux-amd64 .
+$ chmod +x argocd-linux-amd64
+$ mv argocd-linux-amd64 /usr/local/bin/argocd
+$ argocd --help
 ```
 
-Add your workload Kubernetes cluster to the ArgoCD Controller. First we will create a service account in the workload cluster for argocd.  Then setup a kubeconfig context for that account.
+## Register Workload Cluster in ArgoCD Controller
+
+This script will add your workload Kubernetes cluster to the ArgoCD Controller. First we will create a service account in the workload cluster for argocd.  Then setup a kubeconfig context for that account. It assumes that you have successfully installed the ArgoCD CLI following the section above these lines.
 
 ```bash
-$ kubectl config use-context $(yq e .workload-cluster.name $PARAMS_YAML)-admin@$(yq e .workload-cluster.name $PARAMS_YAML)
-$ kubectl create ns argocd
-$ kubectl create serviceaccount argocd -n argocd
-$ kubectl create clusterrolebinding argocd --clusterrole=cluster-admin --serviceaccount=argocd:argocd
-$ export TOKEN_SECRET=$(kubectl get serviceaccount -n argocd argocd -o jsonpath='{.secrets[0].name}')
-$ export TOKEN=$(kubectl get secret -n argocd $TOKEN_SECRET -o jsonpath='{.data.token}' | base64 --decode)
-$ kubectl config set-credentials $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user --token $TOKEN
-$ kubectl config set-context $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user@$(yq e .workload-cluster.name $PARAMS_YAML) \
-  --user $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user \
-  --cluster $(yq e .workload-cluster.name $PARAMS_YAML)
-# See the available configs
-$ argocd cluster add
-# Add the config setup with the service account you created
-$ argocd cluster add $(yq e .workload-cluster.name $PARAMS_YAML)-argocd-token-user@$(yq e .workload-cluster.name $PARAMS_YAML)
+./scripts/register-cluster-argocd.sh
 ```
 
 ### Test ArgoCD Installation
