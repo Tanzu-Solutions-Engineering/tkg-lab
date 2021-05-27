@@ -14,3 +14,4 @@ local-config/*
 crashd/*
 !crashd/.gitkeep
 tkg-mgmt.diagnostics.tar.gz
+tkg-extensions-manifests*.tar.gz

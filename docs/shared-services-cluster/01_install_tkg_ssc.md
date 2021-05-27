@@ -36,6 +36,15 @@ All of the steps above can be accomplished by running the following script:
 
 >Note: You can view the cluster-config.yaml file generated for this cluster at `generated/$CLUSTER_NAME/cluster-config.yaml`.
 
+## Post Deployment Configuration
+
+At this point the shared services cluster is deployed. We will be capturing the kubeconfig for the shared services cluster and adding a few additional components. The following script will perform these actions.
+
+```bash
+./scripts/post-deploy-cluster.sh \
+  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
+```
+
 ## Go to Next Step
 
 [Attach Shared Services Cluster to TMC](02_attach_tmc_ssc.md)

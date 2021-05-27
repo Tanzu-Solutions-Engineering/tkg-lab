@@ -7,7 +7,7 @@ export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
 export AWS_ACCESS_KEY_ID=$(yq e .aws.access-key-id $PARAMS_YAML)
 export AWS_SECRET_ACCESS_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
 
-tanzu management-cluster permissions aws set
+#tanzu management-cluster permissions aws set
 
 TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
 SSH_KEY_FILE_NAME=$TKG_ENVIRONMENT_NAME-ssh.pem
