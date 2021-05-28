@@ -16,6 +16,8 @@ aws:
   access-key-id: REDACTED
   secret-access-key: REDACTED
   hosted-zone-id: Z00636703RP40GVIAWHLA # clear this value out to start, and script will generate a new zone for you
+  control-plane-machine-type: c5.xlarge # eg. c5.xlarge or m4.xlarge
+  node-machine-type: c5.xlarge # eg. c5.xlarge or m4.xlarge
 azure:
   environment: "AzurePublicCloud" # NOTE: Always "AzurePublicCloud"
   location: # eg. canadacentral.  az account list-locations -o table
