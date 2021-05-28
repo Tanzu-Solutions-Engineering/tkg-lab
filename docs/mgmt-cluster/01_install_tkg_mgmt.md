@@ -118,7 +118,7 @@ Deploying management clusters in various IaaS takes anywhere from 10-25 minutes.
 2. Validation Step. Check management cluster is provisioned, pods are running:
 
 ```bash
-tkg get management-clusters
+tanzu cluster list --include-management-cluster
 kubectl get pods -A
 ```
 
