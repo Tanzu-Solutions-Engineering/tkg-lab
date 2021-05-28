@@ -3,6 +3,7 @@ keys/*
 config.yaml
 .secrets
 tkg-extensions
+tkg-extensions-manifests*.gz
 acme_fitness_demo
 tmc.token
 sensitive/
@@ -14,3 +15,4 @@ local-config/*
 crashd/*
 !crashd/.gitkeep
 tkg-mgmt.diagnostics.tar.gz
+.envrc
