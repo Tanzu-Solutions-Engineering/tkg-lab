@@ -23,7 +23,7 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 ./scripts/01-prep-aws-objects.sh
 ```
 
-2. The documentation to [Deploy the Management Cluster to Amazon EC2 with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws-cli.html) explains that the `tanzu management-cluster create` cli command requires a configuration file that identifies the configuration values for your management cluster.  The script below will copy a template configuration file for AWS from this lab, and then replace the values with the specific configuration found in your `$PARAMS_YAML` file. Run this script to complete the deployment.
+2. The documentation to [Deploy the Management Cluster to Amazon EC2 with the CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws-cli.html) explains that the `tanzu management-cluster create` cli command requires a configuration file that identifies the configuration values for your management cluster.  While sane defaults have been chosen, make sure Tanzu supported machine types are selected to match those available in the region selected.  The tanzu UI displays the canonical list of supported machine types.  The script below will copy a template configuration file for AWS from this lab, and then replace the values with the specific configuration found in your `$PARAMS_YAML` file. Run this script to complete the deployment.
 
 ```bash
 ./scripts/02-deploy-aws-mgmt-cluster.sh
