@@ -102,7 +102,13 @@ okta:
 echo "https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)/oauth2/default"
 ```
   - OIDC Client ID: <okta.harbor-app-client-id from $PARAMS_YAML>
+```bash
+echo "$(yq e .okta.harbor-app-client-id $PARAMS_YAML)"
+```
   - OIDC Client Secret: <okta.harbor-app-client-secret from $PARAMS_YAML>
+```bash
+echo "$(yq e .okta.harbor-app-client-secret $PARAMS_YAML)"
+```
   - Group Claim Name: `groups`
   - OIDC Scope: `openid,profile,email,groups,offline_access`
   - Verify Certificate: `checked`
