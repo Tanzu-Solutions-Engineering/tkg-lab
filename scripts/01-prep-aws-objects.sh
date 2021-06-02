@@ -3,13 +3,13 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
-export AWS_REGION=$(yq r $PARAMS_YAML aws.region)
-export AWS_ACCESS_KEY_ID=$(yq r $PARAMS_YAML aws.access-key-id)
-export AWS_SECRET_ACCESS_KEY=$(yq r $PARAMS_YAML aws.secret-access-key)
+export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
+export AWS_ACCESS_KEY_ID=$(yq e .aws.access-key-id $PARAMS_YAML)
+export AWS_SECRET_ACCESS_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
 
-tkg config permissions aws
+tanzu management-cluster permissions aws set
 
-TKG_ENVIRONMENT_NAME=$(yq r $PARAMS_YAML environment-name)
+TKG_ENVIRONMENT_NAME=$(yq e .environment-name $PARAMS_YAML)
 SSH_KEY_FILE_NAME=$TKG_ENVIRONMENT_NAME-ssh.pem
 
 mkdir -p keys/

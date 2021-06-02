@@ -2,32 +2,45 @@
 
 Setup a free Okta account: https://developer.okta.com/signup/
 
-Once logged in...
+## Create Admin User
 
-Choose Directory (top menu) > People > Add Person:
+Choose Directory (side menu) > People > Add Person:
 - Set First Name, Last Name and Email: (e.g: Alana Smith, alana@winterfell.live)
 - Password Set by Admin, YOUR_PASSWORD
 - Uncheck user must change password on first login
 
+## Create Platform Team
 
-Choose Directory (top menu) > Groups from the top menu > Add Groups:
+Choose Directory (side menu) > Groups and then > Add Group:
 - platform-team
 
-Click on platform-team group > Manage People: Then add alana to the platform-team. Save
+Click on `platform-team` group > Manage People: Then add `alana` to the `platform-team`. Save
 
-Choose Applications (top menu) > Add Application > Create New App > Web, Click Next.
+## Create Application for TKG
+
+Choose Applications (side menu) > Application.  Then click `Create App Integration` button.  Then selec `OIDC - OpenID Connect` radion option. For Application Type, choose `Web Application` radion button.  Then click `Next` button.
   - Give your app a name: TKG
-  - Remove Base URL
-  - Login redirect URIs: https://dex.dragonstone.tkg-aws-e2-lab.winterfell.live/callback
-  - Logout redirect URIs: https://dex.dragonstone.tkg-aws-e2-lab.winterfell.live/logout
-  - Grant type allowed: Authorization Code
-> Note: Use your dex-fqdn domain as defined in your params.yaml
+  - For Grant type, check Authorization Code and Refresh Token
+  - Sign-in redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/callback 
+  - Sign-out redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/logout
+> Note: Use your management-cluster.pinniped-fqdn domain as defined in your params.yaml
 
-Click Done button
+Click `Save` button
 
-Capture ClientID and Client Secret
+## Retrieve Client ID and Client Secret
 
-Go to Security (top menu) > API > Authorization Servers > `default` authorization Server > Scopes tab > Add Scope
+Capture ClientID and Client Secret from Client Credentials card.  Capture Okta Domain from General Settings. You will need to put these into your params.yaml file.
+
+```yaml
+okta:
+  auth-server-fqdn: # Your Okta Domain
+  tkg-app-client-id: # Client Id
+  tkg-app-client-secret: # Client Secret
+```
+
+## Setup groups to be returned
+
+Go to Security (side menu) > API.  Choose Authorization Servers tab and select `default` authorization Server. Select Scopes tab and click Add Scope.
   - name=groups
   - mark include in public metadata
 
@@ -38,9 +51,7 @@ Click on Claims tab > Add Claim
   - Filter Matches regex => .*
   - Include in= The following scopes `groups`
 
-On the top left, Choose the arrow next to Developer Console and choose Classic UI
-
-Choose Applications (top menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
+Now choose Applications (side menu) > Applications > Pick your app > Sign On tab > Edit **OpenID Connect ID Token** section
   - Groups claim type => Filter
   - Groups claim filter => **groups** Matches regex **.\***
 

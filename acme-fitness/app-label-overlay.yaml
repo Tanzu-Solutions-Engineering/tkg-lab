@@ -9,3 +9,14 @@ metadata:
   labels:
     #@overlay/match missing_ok=True
     app: acmefit
+
+#! By adding this label to pods, the app will appear in TMC
+#@overlay/match by=overlay.subset({"kind": "Deployment"}), expects="1+"
+---
+spec:
+  template:
+    metadata:
+      #@overlay/match missing_ok=True
+      labels:
+        #@overlay/match missing_ok=True
+        app.kubernetes.io/part-of: acme-fitness

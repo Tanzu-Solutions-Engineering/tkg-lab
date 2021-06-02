@@ -9,11 +9,11 @@ if [ ! $# -eq 1 ]; then
 fi
 
 CLUSTER_NAME=$1
-ACME_FITNESS_CN=$(yq r $PARAMS_YAML acme-fitness.fqdn)
+export ACME_FITNESS_CN=$(yq e .acme-fitness.fqdn $PARAMS_YAML)
 
 mkdir -p generated/$CLUSTER_NAME/acme-fitness/
 cp acme-fitness/template/acme-fitness-frontend-ingress.yaml generated/$CLUSTER_NAME/acme-fitness/
 
-# contour-cluster-issuer.yaml
-yq write -d0 generated/$CLUSTER_NAME/acme-fitness/acme-fitness-frontend-ingress.yaml -i "spec.tls[0].hosts[0]" $ACME_FITNESS_CN  
-yq write -d0 generated/$CLUSTER_NAME/acme-fitness/acme-fitness-frontend-ingress.yaml -i "spec.rules[0].host" $ACME_FITNESS_CN  
+# Create the ingress to access acme fitness website
+yq e -i ".spec.tls[0].hosts[0] = env(ACME_FITNESS_CN)" generated/$CLUSTER_NAME/acme-fitness/acme-fitness-frontend-ingress.yaml 
+yq e -i ".spec.rules[0].host = env(ACME_FITNESS_CN)" generated/$CLUSTER_NAME/acme-fitness/acme-fitness-frontend-ingress.yaml  

@@ -9,21 +9,23 @@ if [ ! $# -eq 1 ]; then
 fi
 CLUSTER_NAME=$1
 
-TMC_ACME_FITNESS_WORKSPACE_NAME=$(yq r $PARAMS_YAML acme-fitness.tmc-workspace)
-VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
-IAAS=$(yq r $PARAMS_YAML iaas)
+IAAS=$(yq e .iaas $PARAMS_YAML)
+
+export TMC_ACME_FITNESS_WORKSPACE_NAME=$(yq e .acme-fitness.tmc-workspace $PARAMS_YAML)
+export VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
+export TMC_CLUSTER_NAME=$VMWARE_ID-$CLUSTER_NAME-$IAAS
 
 mkdir -p generated/$CLUSTER_NAME/tmc
 cp -r tmc/config/* generated/$CLUSTER_NAME/tmc/
 
 # acme-fitness-dev.yaml
-yq write -d0 generated/$CLUSTER_NAME/tmc/workspace/acme-fitness-dev.yaml -i "fullName.name" $TMC_ACME_FITNESS_WORKSPACE_NAME
-yq write -d0 generated/$CLUSTER_NAME/tmc/workspace/acme-fitness-dev.yaml -i "meta.labels.origin" $VMWARE_ID
+yq e -i ".fullName.name = env(TMC_ACME_FITNESS_WORKSPACE_NAME)" generated/$CLUSTER_NAME/tmc/workspace/acme-fitness-dev.yaml
+yq e -i ".meta.labels.origin = env(VMWARE_ID)" generated/$CLUSTER_NAME/tmc/workspace/acme-fitness-dev.yaml
 
 # tkg-wlc-acme-fitness.yaml
-yq write -d0 generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml -i "fullName.clusterName" $VMWARE_ID-$CLUSTER_NAME-$IAAS
-yq write -d0 generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml -i "meta.labels.origin" $VMWARE_ID
-yq write -d0 generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml -i "spec.workspaceName" $TMC_ACME_FITNESS_WORKSPACE_NAME
+yq e -i ".fullName.clusterName = env(TMC_CLUSTER_NAME)" generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml
+yq e -i ".meta.labels.origin = env(VMWARE_ID)"  generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml
+yq e -i ".spec.workspaceName = env(TMC_ACME_FITNESS_WORKSPACE_NAME)" generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml
 
 tmc workspace create -f generated/$CLUSTER_NAME/tmc/workspace/acme-fitness-dev.yaml
 tmc workspace iam add-binding $TMC_ACME_FITNESS_WORKSPACE_NAME --role workspace.edit --groups acme-fitness-devs

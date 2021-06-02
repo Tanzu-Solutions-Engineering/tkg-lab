@@ -2,7 +2,7 @@
 
 The following labs guide you through the steps to create the three clusters considered the baseline setup.
 
->Note: The labs depending on a master `params.yaml` file that is used for environment specific configuration data.  A sample `REDACTED-params.yaml` file is included at the root of this repo, named REDACTED-params.yaml.  It is recommended you copy this file and rename it to params.yaml and place it in the `local-config/` directory, and then start making your adjustments.  `local-config/` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
+>Note: The labs depend on a master `params.yaml` file that is used for environment specific configuration data.  A sample `REDACTED-params.yaml` file is included at the root of this repo, named REDACTED-params.yaml.  It is recommended you copy this file and rename it to params.yaml and place it in the `local-config/` directory, and then start making your adjustments.  `local-config/` is included in the `.gitignore` so your version won't be included in an any future commits you have to the repo.
 
 ## Setup Environment Variable for params.yaml
 
@@ -20,20 +20,19 @@ export PARAMS_YAML=local-config/params.yaml
 ### 4. [Configure Okta](../mgmt-cluster/04_okta_mgmt.md)
 ### 5. [Retrieve TKG Extensions](../mgmt-cluster/05_extensions_mgmt.md)
 ### 6. [Install Contour Ingress Controller](../mgmt-cluster/06_contour_mgmt.md)
-### 7. [Install Dex](../mgmt-cluster/07_dex_mgmt.md)
-### 8. [Install Tanzu Observability](../mgmt-cluster/08_to_mgmt.md)
+### 7. [Update Pinniped Configuration](../mgmt-cluster/07_update_pinniped_config_mgmt.md)
+### 8. [Add monitoring](../mgmt-cluster/08_monitoring_mgmt.md)
 
 ## Setup Shared Services Cluster
 ### 1. [Create new Shared Services Cluster](../shared-services-cluster/01_install_tkg_ssc.md)
 ### 2. [Attach Shared Services Cluster to TMC](../shared-services-cluster/02_attach_tmc_ssc.md)
 ### 3. [Set policy on Shared Services Cluster and Namespace](../shared-services-cluster/03_policy_ssc.md)
 ### 4. [Install Contour Ingress Controller](../shared-services-cluster/04_contour_ssc.md)
-### 5. [Install Gangway](../shared-services-cluster/05_gangway_ssc.md)
-### 6. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_ssc.md)
-### 7. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
-### 8. [Install Tanzu Observability](../shared-services-cluster/08_to_ssc.md)
-### 9. [Enable Data Protection and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
-### 10. [Install Harbor](../shared-services-cluster/10_harbor.md)
+### 5. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_ssc.md)
+### 6. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
+### 7. [Add monitoring to cluster](../shared-services-cluster/08_monitoring_ssc.md)
+### 8. [Enable Data Protection and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
+### 9. [Install Harbor](../shared-services-cluster/10_harbor.md)
 
 ## Finalize Management Cluster
 ### 1. [Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)

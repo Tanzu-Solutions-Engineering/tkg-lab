@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kibana
+  namespace: elasticsearch-kibana
+  labels:
+    app: kibana
+spec:
+  rules:
+  - host: logs.mgmt.tkg-vsp-lab.hyrulelab.com
+    http:
+      paths:
+      - backend:
+          serviceName: kibana
+          servicePort: 5601

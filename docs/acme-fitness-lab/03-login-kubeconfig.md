@@ -1,15 +1,23 @@
-# Log-in to workload cluster and setup kubeconfig
+# Log-in to workload cluster as developer and setup kubeconfig
 
-1. (Using Incognito Window) Login to the workload cluster at https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
-2. Click Sign In
-3. Log into okta as cody
-4. Give a secret question answer
-5. Download kubeconfig
-6. Attempt to access workload-cluster cluster with the new config
+## Log out of your alana context
+
+You may already have a session established as alana, the admin user.  If so, perform the following steps.
+
+1. Go to okta using your okta domain and if you are logged in, then perform a log out
+2. Delete your local tanzu pinniped session
 
 ```bash
-open https://$(yq r $PARAMS_YAML workload-cluster.gangway-fqdn)
-KUBECONFIG=~/Downloads/kubeconf.txt kubectl get pods -n acme-fitness
+rm -rf ~/.tanzu/pinnpied
+```
+
+## Login As Cody
+
+```bash
+tanzu cluster kubeconfig get $(yq e .workload-cluster.name $PARAMS_YAML)
+kubectl config use-context tanzu-cli-$(yq e .workload-cluster.name $PARAMS_YAML)@$(yq e .workload-cluster.name $PARAMS_YAML)
+# At login prompt, login with your development user: cody
+kubectl get pods -n acme-fitness
 ```
 
 >Note: If you get "No resources found in acme-fitness namespace." then you successfully logged in.  Meaning you have permission to get resources in this namespace.

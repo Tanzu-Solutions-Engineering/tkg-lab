@@ -8,9 +8,9 @@ if [ ! $# -eq 1 ]; then
   exit 1
 fi
 
-CLUSTER_NAME=$1
-DEX_FQDN=$(yq r $PARAMS_YAML management-cluster.dex-fqdn)
-KUBEAPPS_FQDN=$(yq r $PARAMS_YAML kubeapps.server-fqdn)
+export CLUSTER_NAME=$1
+export OIDC_ISSUER_URL=https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)
+export KUBEAPPS_FQDN=$(yq e .kubeapps.server-fqdn $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
@@ -19,17 +19,23 @@ echo "Beginning Kubeapps install..."
 mkdir -p generated/$CLUSTER_NAME/kubeapps
 
 # 01-namespace.yaml
-yq read kubeapps/01-namespace.yaml > generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
+
+cp kubeapps/01-namespace.yaml generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
+export ISSUER_URL_FLAG=" --oidc-issuer-url=$OIDC_ISSUER_URL"
 
 # kubeapps-values.yaml
-yq read kubeapps/kubeapps-values.yaml > generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
-yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "ingress.hostname" "$KUBEAPPS_FQDN"
-yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.clientID" "$CLUSTER_NAME"
-yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.additionalFlags"[+]  " --oidc-issuer-url=https://$DEX_FQDN" 
-yq write generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml -i "authProxy.additionalFlags"[+]  " --scope=openid email groups"
+cp kubeapps/kubeapps-values.yaml generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+yq e -i ".ingress.hostname = env(KUBEAPPS_FQDN)" generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+yq e -i '.authProxy.additionalFlags.[0] = env(ISSUER_URL_FLAG)' generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
 
+# jwt-authenticator
+cp kubeapps/kubeapps-jwt-authenticator.yaml generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
+yq e -i ".spec.issuer = env(OIDC_ISSUER_URL)" generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
+
+# TODO: Once TKG bumps pinniped to 0.6.0+ need to remove namespace from following resource
+kubectl apply -f generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
 kubectl apply -f generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
-helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml
+helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml --version=5.3.4

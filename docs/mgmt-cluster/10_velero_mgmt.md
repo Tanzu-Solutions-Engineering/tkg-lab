@@ -1,8 +1,12 @@
 # Install Velero and Setup Nightly Backup
 
+## Overview
+
+At this time the management cluster can not be managed by Tanzu Mission Control, and thus can't manage it's Data Protection as it does for our shared services cluster.  However, under TMC leverages velero under the covers, so we can take on the data protection configuration ourself.
+
 ## Install Velero client
 
-Download and install the Velero cli from TKG 1.2.1 at https://www.vmware.com/go/get-tkg.
+It is assumed you have already downloaded velero cli from [Enable Data Protection and Setup Nightly Backup for Shared Services Cluster](../shared-services-cluster/09_velero_ssc.md).
 
 ## Setup AWS as a target for backups
 
@@ -12,7 +16,7 @@ Store your credentials-velero file in `keys/` directory.
 
 Go to AWS console S3 service and create a bucket for cluster backups.
 
->Note: Do this step regardless if you are deploying TKG to vSphere or AWS.
+>Note: You will follow the process of using AWS for backups regardless of if your TKG clusters are deployed to Azure or vSphere.  Remember, this is just a lab, so we have simplified the variations.
 
 ## Set configuration parameters
 
@@ -28,7 +32,7 @@ veloreo.region: us-east-2
 Prepare the YAML manifests for the related velero K8S objects and then run the following script to install velero and configure a nightly backup.
 
 ```bash
-./scripts/velero.sh $(yq r $PARAMS_YAML management-cluster.name)
+./scripts/velero.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
 
 ## Validation Step

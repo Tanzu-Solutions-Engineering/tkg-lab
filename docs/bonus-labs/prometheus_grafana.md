@@ -26,8 +26,8 @@ Prepare the YAML manifests for the related prometheus k8s objects.  Manifests wi
 
 ```bash
 ./scripts/generate-and-apply-prometheus-yaml.sh \
-  $(yq r $PARAMS_YAML workload-cluster.name) \
-  $(yq r $PARAMS_YAML workload-cluster.prometheus-fqdn)
+  $(yq e .workload-cluster.name $PARAMS_YAML) \
+  $(yq e .workload-cluster.prometheus-fqdn $PARAMS_YAML)
 ```
 
 ## Prometheus Validation Step
@@ -39,7 +39,7 @@ Prepare the YAML manifests for the related prometheus k8s objects.  Manifests wi
 5. View results
 
 ```bash
-open https://$(yq r $PARAMS_YAML workload-cluster.prometheus-fqdn)
+open https://$(yq e .workload-cluster.prometheus-fqdn $PARAMS_YAML)
 ```
 
 ## Prepare Manifests and Deploy Grafana
@@ -48,8 +48,8 @@ Prepare the YAML manifests for the related grafana k8s objects.  Manifests will 
 
 ```bash
 ./scripts/generate-and-apply-grafana-yaml.sh \
-  $(yq r $PARAMS_YAML workload-cluster.name) \
-  $(yq r $PARAMS_YAML workload-cluster.grafana-fqdn)
+  $(yq e .workload-cluster.name $PARAMS_YAML) \
+  $(yq e .workload-cluster.grafana-fqdn $PARAMS_YAML)
 ```
 
 ## Grafana Validation Step
@@ -62,5 +62,5 @@ Prepare the YAML manifests for the related grafana k8s objects.  Manifests will 
 6. View the dashboard!
 
 ```bash
-open https://$(yq r $PARAMS_YAML workload-cluster.grafana-fqdn)
+open https://$(yq e .workload-cluster.grafana-fqdn $PARAMS_YAML)
 ```

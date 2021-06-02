@@ -1,0 +1,34 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+externalDns:
+  image:
+    repository: projects.registry.vmware.com/tkg
+  deployment:
+    annotations: {}
+    #@overlay/replace
+    args:
+    - --source=service
+    - --source=ingress
+    - --source=contour-httpproxy #! configure external-dns to read Contour HTTPProxy resources
+    - --domain-filter=my-zone.example.org #! zone where services are deployed
+    - --provider=google
+    - --policy=upsert-only #! would prevent ExternalDNS from deleting any records, omit to enable full synchronization
+    - --google-project=REPlACE_ME_WITH_GCP_PROJECT_ID
+    - --registry=txt
+    #@overlay/replace
+    env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /etc/secrets/service-account/credentials.json
+    #@overlay/replace
+    volumeMounts:
+    - name: google-service-account
+      mountPath: /etc/secrets/service-account/
+    #@overlay/replace
+    volumes:
+    - name: google-service-account
+      secret:
+        secretName: gcloud-dns-credentials
+        items:
+        - key: credentials.json
+          path: credentials.json

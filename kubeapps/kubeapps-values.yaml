@@ -1,4 +1,3 @@
-
 useHelm3: true
 allowNamespaceDiscovery: true
 ingress:
@@ -18,11 +17,24 @@ ingress:
 authProxy:
    enabled: true
    provider: oidc
-   clientSecret: FOO_SECRET
    cookieSecret: bm90LWdvb2Qtc2VjcmV0Cg==
-   #oauthLoginURI: /oauth2/start
-   #oauthLogoutURI: /oauth2/sign_out
-   additionalFlags:
+   clientID: kubeapps
+   clientSecret: FOO_SECRET
+
+# Pinniped Support
+# https://liveandletlearn.net/post/kubeapps-on-tanzu-kubernetes-grid-13-part-2/
+pinnipedProxy:
+  enabled: true
+  defaultAuthenticatorName: kubeapps-jwt-authenticator
+  image:
+    repository: bitnami/kubeapps-pinniped-proxy
+    # Explicitly request the version of pinniped-proxy which supports the pre 0.6.0 version of pinniped.
+    tag: 2.2.1-debian-10-r22 # TODO: Remove this when TKG bumps pinniped to 0.6.0+
+
+clusters:
+  - name: default
+    pinnipedConfig:
+      enable: true
 
 apprepository:
   initialRepos:

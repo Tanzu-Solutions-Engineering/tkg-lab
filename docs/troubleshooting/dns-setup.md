@@ -47,14 +47,13 @@ management-cluster:
   worker-replicas: 2
   name: tkg-mgmt
   ingress-fqdn: '*.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com'
-  dex-fqdn: dex.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com
+  pinniped-fqdn: pinniped.tkg-mgmt.tkg-vsphere-lab.arg-pivotal.com
   metallb-start-ip: 192.168.1.170
   metallb-end-ip: 192.168.1.175
 shared-services-cluster:
   worker-replicas: 2
   name: tkg-shared
   ingress-fqdn: '*.tkg-shared.tkg-vsphere-lab.arg-pivotal.com'
-  gangway-fqdn: gangway.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
   elasticsearch-fqdn: elasticsearch.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
   kibana-fqdn: logs.tkg-shared.tkg-vsphere-lab.arg-pivotal.com
   metallb-start-ip: 192.168.1.176
@@ -63,7 +62,6 @@ workload-cluster:
   worker-replicas: 2
   name: tkg-wlc
   ingress-fqdn: '*.tkg-wlc.tkg-vsphere-lab.arg-pivotal.com'
-  gangway-fqdn: gangway.tkg-wlc.tkg-vsphere-lab.arg-pivotal.com
   metallb-start-ip: 192.168.1.181
   metallb-end-ip: 192.168.1.185
 ...
