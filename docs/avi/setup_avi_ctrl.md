@@ -7,7 +7,7 @@ This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Contr
 To download the Controller binaries we can go to the same location where we download the rest of the TKG components [here](https://www.vmware.com/go/get-tkg).
 Look for `VMware NSX Advanced Load Balancer`, `GO TO DOWNLOADS` and `DOWNLOAD NOW`.
 That will take you to the Partner Connect Portal.  If don't already have an active session, you will need to log-in.
-You will be redirected to the AVI Portal. Once there go to Downloads and download current version (20.1.4 when this guide was created). Choose the VMware Controller OVA.
+You will be redirected to the AVI Portal. Once there go to Downloads and download current version (`20.1.5` when this guide was updated last). Choose the VMware Controller OVA.
 
 ## 2. Choose Topology
 
@@ -46,7 +46,7 @@ Management Network:
 - SE Pool Range: `192.168.14.191 - 192.168.14.199`
 
 Data Network:
-- VLAN: `TKG-VLAN15-PG`
+- VLAN: `VIP-VLAN15-PG`
 - CIDR: `192.168.15.0/24`
 - VIP Pool Range: `192.168.15.10 - 192.168.15.99`
 
@@ -57,19 +57,26 @@ This is the recommended approach for Production, with full separation.
 
 ## 3. Install Controller
 
+### 3.1 Deploy OVA
 Access vCenter and Deploy OVF Template selecting the Controller OVA you previously downloaded. Follow the instructions on screen to select Name and Folder/Location, Cluster or Resource Pool, Datastore and Network.
 
 For the Network select the right Management Network according to the network topology chosen. Configure Management Network details: Controller IP, Subnet, Gateway. Leave key `Sysadmin login authentication key` empty.
 
 <img src="avi-ova-setup.png" width="800"><br>
 
-## 4. Configure Controller
+### 3.2 Resize VM
+By default the AVI Controller VM is configured with 8 CPUs and 24 GB of RAM. We have confirmed that the needs of this lab require less resources and so this VM can be re-sized to the minimum allocation of CPU & Memory according to the documentation [here](https://avinetworks.com/docs/20.1/avi-controller-sizing/): 4 CPUs and 12 GB RAM.
 
+To make these changes, EDIT the Hardware settings of the VM before powering it on, change the CPUs from 8 to 4 and the Memory from 24 to 12.
+
+<img src="avi-ova-resize.png" width="800"><br>
+
+
+## 4. Configure Controller
 Power on the Controller VM you created in the previous step.
 Wait a couple of minutes (~5m) and access the Controller IP in the Browser. Wait until the Controller setup wizard screen.
 
 ### 4.1 Initial Controller Setup
-
 From the browser, follow the Controller Setup Wizard.
 
 Choose the admin username and password. Email is optional.
@@ -78,54 +85,77 @@ Choose the admin username and password. Email is optional.
 
 Choose the right DNS resolver and Search Domain (optional, if you do not use FQDN references for internal components) for your environment. Also choose a passphrase for the backups.
 
-<img src="avi-dns.png" width="400"><br>
-
-Choose the right NTP servers for your environment or leave the default ones if you have connectivity.
-
-<img src="avi-ntp.png" width="400"><br>
+<img src="avi-dns.png" width="800"><br>
 
 Choose None in the SMTP Setup
 
-<img src="avi-smtp.png" width="400"><br>
+<img src="avi-smtp.png" width="800"><br>
+
+In the Multi-Tenant screen leave all the defaults:
+
+<img src="avi-tenant.png" width="800"><br>
+
+Check the `Select Cloud After` checkbox at the bottom-right of the screen. Click `Save`.
+
+
+### 4.2 Orchestrator setup
+If you did not check the checkbox in the previous screen go to `Infrastructure > Clouds`. Then edit the `Default-Cloud`:
 
 Choose Orchestrator
 - Select VMware.
 
-<img src="avi-orchestrator.png" width="400"><br>
+<img src="avi-orchestrator.png" width="800"><br>
 
 Provide vCenter Credentials
 - Enter vSphere FQDN and credentials.
 - Select Write permissions.
-- Select `None` SDN Integration.
 
-<img src="avi-vc.png" width="400"><br>
+<img src="avi-vc.png" width="800"><br>
 
-Choose Datacenter and IP Address management.
-- Select Static IP Address management.
-- Leave both checkboxes unchecked.
+Choose Datacenter. You can leave all checkboxes unchecked for Static IP Address management and default settings.
 
-<img src="avi-datacenter.png" width="400"><br>
+<img src="avi-datacenter.png" width="800"><br>
 
 
 Configure Management Network
-
-Enter the information required as per the instructions below.
 - Select Management Network. Same network you chose when installing the AVI Controller OVA.
+- Select `Default-Group` for `Template Service Engine Group`.
 - You can choose `Static` or `DHCP`. In this lab we will chose `Static`, so the network range chosen should be outside of the DHCP range.
 - In `IP Subnet` enter the Management Network CIDR. Same network used for the Controller IP.
-- In `IP Address Pool` choose the available IP range within the CIDR. This range will be used to configure the Management Network NIC in the AVI Service Engines. Make sure this range does not overlap with the Controller IP. Also since we are selecting `Static` and since AVI Management Plane and TKG nodes will be in the same network then you need to make sure the DHCP range (needed by TKG) is limited to a specific part of this network to leave room for this `IP Address Pool`.
-- Enter the Management Network Gateway.
+- In `Add IP Static Address Pool` choose an available IP range within the CIDR. This range will be used to configure the Management Network NIC in the AVI Service Engines. Make sure this range does not overlap with the Controller IP. Also since we are selecting `Static` and since AVI Management Plane and TKG nodes will be in the same network then you need to make sure the DHCP range (needed by TKG) is limited to a specific part of this network to leave room for this `IP Address Pool`.
+- Enter the Management Network `Default Gateway`.
 
-<img src="avi-mgmt-net.png" width="400"><br>
+<img src="avi-mgmt-net.png" width="800"><br>
 
-Tenant Settings
-- Choose Multiple Tenants? Select `No`
+Click `Save`.
 
-<img src="avi-tenant.png" width="400"><br>
+### 4.3 Upgrade Controller to latest patch (Optional)
+To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.5.2p3` when this guide was updated last).
+
+Go to `Administration > Controller > Software`. Click on `Upload from Computer` and select the avi-patch `pkg` file.
+
+<img src="avi-software.png" width="800"><br>
+
+Go to `Administration > Controller > System Update`. Click on the checkbox next to the patch you just uploaded and click on the `Upgrade` button.
+
+<img src="avi-systemupdate.png" width="800"><br>
+
+On the pop-up window, leave settings as they are and click `Continue`. Wait for the upgrade to finish. The UI will eventually become inresponsive and you will have to log-in again.
+
+### 4.3 Switch to Essentials Tier (Optional)
+Go to `Administration > Settings > Licensing`. Click on the crank wheel next to the `Licensing` title. Select `Essentials License`. Click `Save`. Click `Continue`.
+
+<img src="avi-essentials.png" width="800"><br>
+
+In Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Routing` and create a `Static Route`, with:
+- Gateway Subnet: `0.0.0.0/0`
+- Next Hop: The Gateway of the VIP Network you are going to use
+
+<img src="avi-routes.png" width="800"><br>
 
 
 ### 4.2. Configure DNS Profile (Optional, only relevant for NSX ALB Enterprise)
-Already in the AVI UI, Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
+Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage DNS` type.
 - `Add DNS Service Domain` and enter a `Domain Name`. This will be the base subdomain to be used internally by AVI for the LB Services and Ingress. This is more critical for DNS and L7 capabilities (Enterprise License only) but better select a subdomain that can be managed.
@@ -134,7 +164,7 @@ Already in the AVI UI, Go to `Templates > Profiles > IPAM/DNS Profiles`. Create 
 - Click `Save`.
 
 ### 4.3. Configure IPAM Profile
-Already at `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
+Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage IPAM` type.
 - Leave `Allocate IP in VRF` unchecked.
@@ -173,7 +203,7 @@ Go to `Templates > Security > SSL/TLS Certificates` and create a `Controller Cer
 In the pop-up form, insert the following information:
 - Choose a distinctive name.
 - You can leave type = `Self Signed` unless you are using an existing CSR or importing the certificate.
-- Choose a distinctive Common Name. This can be the same as name since we are adding the IP or hostname as a SAN.
+- Choose a distinctive Common Name. This can be the Controller IP or hostname.
 - `Subject Alternate Name (SAN)` should be Controller IP or hostname
 <img src="avi-create-cert.png" width="800"><br>
 - Click `Save`.
