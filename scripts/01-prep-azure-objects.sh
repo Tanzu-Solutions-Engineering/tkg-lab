@@ -7,7 +7,7 @@ source "$TKG_LAB_SCRIPTS/set-env.sh"
 # Setup and preflight checks
 #
 
-# Get client id 
+# Get client id
 AZURE_CREDENTIALS_CONFIGURED=false
 export AZURE_CLIENT_ID=$(yq e .azure.client-id "$PARAMS_YAML")
 # NOTE: yq returns null string...
@@ -96,7 +96,12 @@ mkdir -p generated/$CLUSTER_NAME
 cp config-templates/azure-mc-config.yaml "$CLUSTER_CONFIG"
 
 echo "INFO: writing ssh key to tanzu cluster config file"
-export AZURE_SSH_PUBLIC_KEY_B64=$(base64 < "$tkg_key_file".pub | tr -d '\r\n')
+if [ `uname -s` = 'Darwin' ];
+then
+	export AZURE_SSH_PUBLIC_KEY_B64=$(base64 < "$tkg_key_file".pub | tr -d '\r\n')
+else
+  export AZURE_SSH_PUBLIC_KEY_B64=$(base64 -w 0 < "$tkg_key_file".pub | tr -d '\r\n')
+fi
 yq e -i '.AZURE_SSH_PUBLIC_KEY_B64 = env(AZURE_SSH_PUBLIC_KEY_B64)' "$CLUSTER_CONFIG"
 
 # done
