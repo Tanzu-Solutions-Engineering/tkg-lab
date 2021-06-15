@@ -224,7 +224,14 @@ Click the `Copy to clipboard` button for the cert and save it to `keys/nsx-alb-c
 
 Base64 encode the certificate so that the lab can correctly prepare the TKG Management Cluster configuration file.
 
+On Mac:
 ```bash
 export NSX_ALB_CONTROLLER_ENCODED_CERT=`cat keys/nsx-alb-controller.cert | base64`
+yq e -i '.avi.avi-ca-data = env(NSX_ALB_CONTROLLER_ENCODED_CERT)' $PARAMS_YAML
+```
+
+On Linux:
+```bash
+export NSX_ALB_CONTROLLER_ENCODED_CERT=`cat keys/nsx-alb-controller.cert | base64 -w 0`
 yq e -i '.avi.avi-ca-data = env(NSX_ALB_CONTROLLER_ENCODED_CERT)' $PARAMS_YAML
 ```
