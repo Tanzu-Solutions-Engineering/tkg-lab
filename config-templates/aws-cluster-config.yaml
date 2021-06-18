@@ -8,8 +8,8 @@ WORKER_MACHINE_COUNT: # Added by scripts
 
 INFRASTRUCTURE_PROVIDER: aws
 CLUSTER_PLAN: dev # default is blank
-CONTROL_PLANE_MACHINE_TYPE: c5.xlarge # t3.large
-NODE_MACHINE_TYPE: c5.xlarge # t3.xlarge
+CONTROL_PLANE_MACHINE_TYPE: # Added by scripts
+NODE_MACHINE_TYPE: # Added by scripts
 
 TKG_HTTP_PROXY_ENABLED: "false" # default is blank
 ENABLE_MHC: "true" # default is blank

@@ -14,6 +14,8 @@ export OIDC_ISSUER_URL=https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)
 export OIDC_CLIENT_ID=$(yq e .okta.tkg-app-client-id $PARAMS_YAML)
 export OIDC_CLIENT_SECRET=$(yq e .okta.tkg-app-client-secret $PARAMS_YAML)
 export WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
+export AWS_CONTROL_PLANE_MACHINE_TYPE=$(yq e .aws.control-plane-machine-type $PARAMS_YAML)
+export AWS_NODE_MACHINE_TYPE=$(yq e .aws.node-machine-type $PARAMS_YAML)
 
 yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml
 yq e -i '.AWS_REGION = env(REGION)' generated/$CLUSTER/cluster-config.yaml
@@ -22,5 +24,7 @@ yq e -i '.OIDC_IDENTITY_PROVIDER_ISSUER_URL = env(OIDC_ISSUER_URL)' generated/$C
 yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_ID = env(OIDC_CLIENT_ID)' generated/$CLUSTER/cluster-config.yaml
 yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_SECRET = env(OIDC_CLIENT_SECRET)' generated/$CLUSTER/cluster-config.yaml
 yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
+yq e -i '.CONTROL_PLANE_MACHINE_TYPE = env(AWS_CONTROL_PLANE_MACHINE_TYPE)' generated/$CLUSTER/cluster-config.yaml
+yq e -i '.NODE_MACHINE_TYPE = env(AWS_NODE_MACHINE_TYPE)' generated/$CLUSTER/cluster-config.yaml
 
 tanzu management-cluster create --file=generated/$CLUSTER/cluster-config.yaml -v 6
