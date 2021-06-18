@@ -83,7 +83,7 @@ Choose the admin username and password. Email is optional.
 
 <img src="avi-admin-user.png" width="400"><br>
 
-Choose the right DNS resolver and Search Domain (optional, if you do not use FQDN references for internal components) for your environment. Also choose a passphrase for the backups.
+Choose the right DNS resolver.  Choose Search Domain (optional, if you do not use FQDN references for internal components) for your environment. Also choose a passphrase for the backups.
 
 <img src="avi-dns.png" width="800"><br>
 
