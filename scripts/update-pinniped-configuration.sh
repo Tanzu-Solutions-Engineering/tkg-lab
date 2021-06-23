@@ -36,7 +36,12 @@ done
 kubectl get secret $CLUSTER_NAME-pinniped-addon -n tkg-system -ojsonpath="{.data.values\.yaml}" | base64 --decode > generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
 
 export PINNIPED_SVC_ENDPOINT=https://$PINNIPED_CN
-export CA_BUNDLE=`cat keys/letsencrypt-ca.pem | base64`
+if [ `uname -s` = 'Darwin' ];
+then
+	export CA_BUNDLE=`cat keys/letsencrypt-ca.pem | base64`
+else
+	export CA_BUNDLE=`cat keys/letsencrypt-ca.pem | base64 -w 0`
+fi
 
 yq e -i '.custom_tls_secret = "custom-auth-cert-tls"' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
 # yq e -i '.custom_cluster_issuer = "letsencrypt-contour-cluster-issuer"' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
@@ -47,7 +52,7 @@ yq e -i '.custom_tls_secret = "custom-auth-cert-tls"' generated/$CLUSTER_NAME/pi
 add_yaml_doc_seperator generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
 
 # Deleting the existing job.  I will be recreated when the pinniped-addon secret is updated below.  And then gives us a chance to wait until job is competed
-kubectl delete job pinniped-post-deploy-job -n pinniped-supervisor 
+kubectl delete job pinniped-post-deploy-job -n pinniped-supervisor
 
 kubectl create secret generic $CLUSTER_NAME-pinniped-addon --from-file=values.yaml=generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml -n tkg-system -o yaml --type=tkg.tanzu.vmware.com/addon --dry-run=client | kubectl apply -f-
 kubectl annotate secret $CLUSTER_NAME-pinniped-addon --overwrite -n tkg-system tkg.tanzu.vmware.com/addon-type=authentication/pinniped

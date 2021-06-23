@@ -1,5 +1,5 @@
 # To be changed by scripts based on params.yaml
-AVI_CA_DATA: #"changeme"
+AVI_CA_DATA_B64: #"changeme"
 AVI_CLOUD_NAME: #Default-Cloud
 AVI_CONTROLLER: #192.168.14.190
 AVI_DATA_NETWORK: #VIP-VLAN15-PG

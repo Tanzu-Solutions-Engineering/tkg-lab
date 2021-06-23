@@ -10,4 +10,4 @@ server:
     domain: ARGOCD_CN
     issuer:
       name: letsencrypt-contour-cluster-issuer
-      kind: ClusterIssuer    
+      kind: ClusterIssuer

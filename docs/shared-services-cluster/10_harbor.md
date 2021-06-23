@@ -66,7 +66,13 @@ open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
   - Give your app a name: `Harbor`
   - For Grant type, check Authorization Code and Refresh Token
   - Sign-in redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/callback` #
+```bash
+echo "https://$(yq e .harbor.harbor-cn $PARAMS_YAML)/c/oidc/callback"
+```
   - Sign-out redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/logout`
+```bash
+echo "https://$(yq e .harbor.harbor-cn $PARAMS_YAML)/c/oidc/logout"
+```
 
 3. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file.
 
@@ -92,8 +98,17 @@ okta:
   - Auth Mode: `OIDC`
   - OIDC Provider Name: `Okta`
   - OIDC Endpoint: `https://<okta.auth-server-fqdn from $PARAMS_YAML>/oauth2/default`
+```bash
+echo "https://$(yq e .okta.auth-server-fqdn $PARAMS_YAML)/oauth2/default"
+```
   - OIDC Client ID: <okta.harbor-app-client-id from $PARAMS_YAML>
+```bash
+echo "$(yq e .okta.harbor-app-client-id $PARAMS_YAML)"
+```
   - OIDC Client Secret: <okta.harbor-app-client-secret from $PARAMS_YAML>
+```bash
+echo "$(yq e .okta.harbor-app-client-secret $PARAMS_YAML)"
+```
   - Group Claim Name: `groups`
   - OIDC Scope: `openid,profile,email,groups,offline_access`
   - Verify Certificate: `checked`

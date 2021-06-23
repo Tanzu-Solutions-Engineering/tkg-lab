@@ -32,7 +32,13 @@ export GRAFANA_CERT_KEY=$(kubectl get secret grafana-cert-tls -n tanzu-system-mo
 
 cp tkg-extensions/extensions/monitoring/grafana/grafana-data-values.yaml.example generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 
-export ADMIN_PASSWORD=$(echo -n $GRAFANA_PASSWORD | base64)
+if [ `uname -s` = 'Darwin' ];
+then
+  export ADMIN_PASSWORD=$(echo -n $GRAFANA_PASSWORD | base64)
+else
+	export ADMIN_PASSWORD=$(echo -n $GRAFANA_PASSWORD | base64 -w 0)
+fi
+
 yq e -i ".monitoring.grafana.secret.admin_password = env(ADMIN_PASSWORD)" generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 yq e -i ".monitoring.grafana.ingress.virtual_host_fqdn = env(GRAFANA_FQDN)" generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml -i
 yq e -i '.monitoring.grafana.ingress.tlsCertificate."tls.crt" = strenv(GRAFANA_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
@@ -51,5 +57,4 @@ kubectl apply -f tkg-extensions/extensions/monitoring/grafana/grafana-extension.
 while kubectl get app grafana -n tanzu-system-monitoring | grep grafana | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo grafana extension is not yet ready
 	sleep 5s
-done   
-
+done
