@@ -1,14 +1,10 @@
 # Install Contour on management cluster
 
-## Deploy MetalLB (only for vSphere installations and until AVI AKO is installed in the mgmt cluster!!)
-Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
+## Deploy AKO (only for vSphere installations and until AVI AKO is installed in the mgmt cluster!!)
 Run the script passing the range as parameters. Example:
 
 ```bash
-./scripts/deploy-metallb.sh \
-  $(yq e .management-cluster.name $PARAMS_YAML) \
-  $(yq e .management-cluster.metallb-start-ip $PARAMS_YAML) \
-  $(yq e .management-cluster.metallb-end-ip $PARAMS_YAML)
+./scripts/deploy-ako.sh $(yq e .management-cluster.name $PARAMS_YAML)
 ```
 
 ## Deploy Contour

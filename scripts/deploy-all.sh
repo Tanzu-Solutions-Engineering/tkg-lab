@@ -17,10 +17,7 @@ $TKG_LAB_SCRIPTS/retrieve-lets-encrypt-ca-cert.sh
 # Management Step 6
 if [ "$IAAS" = "vsphere" ];
 then
-  $TKG_LAB_SCRIPTS/deploy-metallb.sh \
-    $(yq e .management-cluster.name $PARAMS_YAML) \
-    $(yq e .management-cluster.metallb-start-ip $PARAMS_YAML) \
-    $(yq e .management-cluster.metallb-end-ip $PARAMS_YAML)
+  $TKG_LAB_SCRIPTS/deploy-ako.sh $(yq e .management-cluster.name $PARAMS_YAML)
 fi
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
