@@ -120,3 +120,7 @@ avi:
   avi-password: "VMware1!"
   avi-service-engine-group: Default-Group
   avi-username: admin
+dockerhub:
+  username: REDACTED # Your dockerhub username
+  password: REDACTED # Your dockerhub password
+  email: REDACTED # Your dockerhub email
