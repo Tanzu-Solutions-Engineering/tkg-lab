@@ -18,6 +18,9 @@ yq e -i ".spec.rules[0].host = env(KIBANA_CN)" generated/$CLUSTER_NAME/ek/05-kib
 
 kubectl apply -f generated/$CLUSTER_NAME/ek/
 
+# Add image pull secret with dockerhub creds
+$TKG_LAB_SCRIPTS/add-dockerhub-pull-secret.sh elasticsearch-kibana
+
 #Wait for pod to be ready
 while kubectl get po -n elasticsearch-kibana elasticsearch-0 | grep Running ; [ $? -ne 0 ]; do
 	echo Elasticsearch is not yet ready

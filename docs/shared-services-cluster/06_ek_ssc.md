@@ -17,6 +17,15 @@ shared-services-cluster.kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
 
 ## Prepare Manifests and Deploy Elasticsearch and Kibana
 
+Elasticsearch and kibana images are pulled from Docker Hub.  Ensure your credentials are in the `params.yaml` file in order to avoid rate limit errors.
+
+```yaml
+dockerhub:
+  username: REDACTED # Your dockerhub username
+  password: REDACTED # Your dockerhub password
+  email: REDACTED # Your dockerhub email
+```
+
 Prepare the YAML manifests for the related elasticsearch and kibana K8S objects.  Manifests will be output into `generated/$SHARED_SERVICES_CLUSTER_NAME/elasticsearch-kibana/` in case you want to inspect.
 
 ```bash

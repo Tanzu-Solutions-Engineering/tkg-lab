@@ -2,6 +2,16 @@
 
 ## Deploy MetalLB (only for vSphere installations and until AVI AKO is installed in the mgmt cluster!!)
 Secure a routable range of IPs to be the VIP/Float pool for LoadBalancers.
+
+MetalLB images are pulled from Docker Hub.  Ensure your credentials are in the `params.yaml` file in order to avoid rate limit errors.
+
+```yaml
+dockerhub:
+  username: REDACTED # Your dockerhub username
+  password: REDACTED # Your dockerhub password
+  email: REDACTED # Your dockerhub email
+```
+
 Run the script passing the range as parameters. Example:
 
 ```bash
