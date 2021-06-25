@@ -19,7 +19,7 @@ else
 
   kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-  mkdir -p generated/$CLUSTER_NAME/ako/
+  mkdir -p generated/$CLUSTER_NAME/avi/
 
   DATA_NETWORK_CIDR=$(yq e .avi.avi-data-network-cidr $PARAMS_YAML)
   export DATA_NETWORK_SUBNET=`echo $DATA_NETWORK_CIDR | cut -d'/' -f 1`
@@ -30,23 +30,23 @@ else
   export NSX_ALB_PASSWORD=$(yq e .avi.avi-password $PARAMS_YAML)
   export NSX_ALB_CA=$(yq e .avi.avi-ca-data $PARAMS_YAML | base64 --decode)
 
-  cp nsxalb/values-template.yaml generated/$CLUSTER_NAME/ako/values.yaml
+  cp avi/values-template.yaml generated/$CLUSTER_NAME/avi/values.yaml
 
-  yq e -i ".AKOSettings.clusterName = env(CLUSTER_NAME)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".NetworkSettings.subnetIP = env(DATA_NETWORK_SUBNET)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".NetworkSettings.subnetPrefix = env(DATA_NETWORK_PREFIX)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".NetworkSettings.networkName = env(DATA_NETWORK)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".ControllerSettings.controllerHost = env(CONTROLLER_HOST)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".avicredentials.username = env(NSX_ALB_USERNAME)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".avicredentials.password = env(NSX_ALB_PASSWORD)" generated/$CLUSTER_NAME/ako/values.yaml
-  yq e -i ".avicredentials.certificateAuthorityData = strenv(NSX_ALB_CA)" generated/$CLUSTER_NAME/ako/values.yaml
+  yq e -i ".AKOSettings.clusterName = env(CLUSTER_NAME)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".NetworkSettings.subnetIP = env(DATA_NETWORK_SUBNET)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".NetworkSettings.subnetPrefix = env(DATA_NETWORK_PREFIX)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".NetworkSettings.networkName = env(DATA_NETWORK)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".ControllerSettings.controllerHost = env(CONTROLLER_HOST)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".avicredentials.username = env(NSX_ALB_USERNAME)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".avicredentials.password = env(NSX_ALB_PASSWORD)" generated/$CLUSTER_NAME/avi/values.yaml
+  yq e -i ".avicredentials.certificateAuthorityData = strenv(NSX_ALB_CA)" generated/$CLUSTER_NAME/avi/values.yaml
 
-  kubectl apply -f nsxalb/namespace.yaml
+  kubectl apply -f avi/namespace.yaml
 
   helm repo add ako https://avinetworks.github.io/avi-helm-charts/charts/stable/ako
   helm repo update
 
-  helm template ako --namespace avi-system ako/ako -f generated/$CLUSTER_NAME/ako/values.yaml --skip-tests | 
-    ytt -f - -f nsxalb/image-overlay.yaml --ignore-unknown-comments | kubectl apply -f -
+  helm template ako --namespace avi-system ako/ako -f generated/$CLUSTER_NAME/avi/values.yaml --skip-tests | 
+    ytt -f - -f avi/image-overlay.yaml --ignore-unknown-comments | kubectl apply -f -
 
 fi
