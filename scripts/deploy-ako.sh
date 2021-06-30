@@ -43,10 +43,18 @@ else
 
   kubectl apply -f avi/namespace.yaml
 
-  helm repo add ako https://avinetworks.github.io/avi-helm-charts/charts/stable/ako
+  helm repo add ako https://projects.registry.vmware.com/chartrepo/ako
+  
   helm repo update
 
-  helm template ako --namespace avi-system ako/ako -f generated/$CLUSTER_NAME/avi/values.yaml --skip-tests | 
-    ytt -f - -f avi/image-overlay.yaml --ignore-unknown-comments | kubectl apply -f -
+  helm template ako ako/ako \
+    --namespace avi-system \
+    --values generated/$CLUSTER_NAME/avi/values.yaml \
+    --version 1.3.4 \
+    --skip-tests \
+    --include-crds | 
+    ytt -f - -f avi/image-overlay.yaml --ignore-unknown-comments > generated/$CLUSTER_NAME/avi/manifests.yaml
+  
+  kubectl apply -f generated/$CLUSTER_NAME/avi/manifests.yaml
 
 fi
