@@ -47,6 +47,7 @@ else
   
   helm repo update
 
+  # Explicitly pinning the release to 1.3.4 to align with TKG 1.3.1 which uses ako 1.3.x
   helm template ako ako/ako \
     --namespace avi-system \
     --values generated/$CLUSTER_NAME/avi/values.yaml \
