@@ -5,6 +5,9 @@ NetworkSettings:
   subnetPrefix: $DATA_NETWORK_PREFIX
   networkName: $DATA_NETWORK
   enableRHI: ""
+L7Settings:
+  defaultIngController: "false"
+  serviceType: NodePort
 ControllerSettings:
   controllerHost: $CONTROLLER_HOST
   controllerVersion: "20.1.6" # The controller API version
