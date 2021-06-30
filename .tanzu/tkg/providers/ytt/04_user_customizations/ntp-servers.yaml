@@ -1,0 +1,35 @@
+#! Purpose: In the event your NTP server information is not communicated to the nodes via DHCP Option 42
+#!  you can manually set desired ntp servers.
+#! Implement: Set the CUSTOM_NTP_SERVERS parameter as an environment variable or in cluster config.
+#!  For multiple servers seperate with comma.
+#!     CUSTOM_NTP_SERVERS: "122.123.134.12,time.google.com"
+#! Test: You can validate using by ssh'ing onto the cluster nodes
+#!     $ chronyc sources
+#!     $ cat /etc/chrony/chrony.conf
+#! Notes: As of 6/25/2021, this only works with ubuntu.  Photon is not leveraging chronyc
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ if data.values.CUSTOM_NTP_SERVERS != None:
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
+---
+spec:
+  #@overlay/match-child-defaults missing_ok=True
+  kubeadmConfigSpec:
+    ntp:
+      enabled: true
+      servers: #@ data.values.CUSTOM_NTP_SERVERS.split(",")
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="1+"
+---
+spec:
+  template:
+    #@overlay/match-child-defaults missing_ok=True
+    spec:
+      ntp:
+        enabled: true
+        servers: #@ data.values.CUSTOM_NTP_SERVERS.split(",")
+
+#@ end
