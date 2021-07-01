@@ -27,11 +27,11 @@ spec:
         path: /etc/ssl/certs/tkg-custom-ca.pem
     #@overlay/match missing_ok=True
     preKubeadmCommands:
-      #@ if data.values.NODE_OS == "photon":
+      #@ if data.values.OS_NAME == "photon":
       #@overlay/append
       - '! which rehash_ca_certificates.sh 2>/dev/null || rehash_ca_certificates.sh'
       #@ end
-      #@ if data.values.NODE_OS == "ubuntu":
+      #@ if data.values.OS_NAME == "ubuntu":
       #@overlay/append
       - '! which update-ca-certificates 2>/dev/null || (mv /etc/ssl/certs/tkg-custom-ca.pem /usr/local/share/ca-certificates/tkg-custom-ca.crt && update-ca-certificates)'
       #@ end
@@ -51,11 +51,11 @@ spec:
           path: /etc/ssl/certs/tkg-custom-ca.pem
       #@overlay/match missing_ok=True
       preKubeadmCommands:
-        #@ if data.values.NODE_OS == "photon":
+        #@ if data.values.OS_NAME == "photon":
         #@overlay/append
         - '! which rehash_ca_certificates.sh 2>/dev/null || rehash_ca_certificates.sh'
         #@ end
-        #@ if data.values.NODE_OS == "ubuntu":
+        #@ if data.values.OS_NAME == "ubuntu":
         #@overlay/append
         - '! which update-ca-certificates 2>/dev/null || (mv /etc/ssl/certs/tkg-custom-ca.pem /usr/local/share/ca-certificates/tkg-custom-ca.crt && update-ca-certificates)'
         #@ end
