@@ -18,7 +18,7 @@ kubeapps:
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Kubeapps`
   - For Grant type, check Authorization Code and Refresh Token
-  - Sign-in redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/c/oidc/callback` 
+  - Sign-in redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/callback` 
 ```bash
 echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/callback"
 ```
