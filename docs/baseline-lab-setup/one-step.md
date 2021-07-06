@@ -15,6 +15,14 @@ export PARAMS_YAML=local-config/params.yaml
 
 Ensure that your copy of `params.yaml` indicates your IaaS as `aws`, `azure` or `vsphere` appropriately.
 
+## Ensure TKG extensions are available
+
+Ensure TKG extensions are available as specified in https://github.com/Tanzu-Solutions-Engineering/tkg-lab/blob/main/docs/mgmt-cluster/05_extensions_mgmt.md
+
+## Ensure credentials-velero file is in keys directory
+
+Ensure the credentials-velero file is in keys directory as per https://github.com/KeithRichardLee/tkg-lab/blob/main/docs/mgmt-cluster/10_velero_mgmt.md
+
 ## Azure Only - Configure the Azure CLI and Accept the TKG Azure Base Image License
 
 Ensure the `az` CLI is installed and configured. The deploy all script will use `az` to deploy TKG.
