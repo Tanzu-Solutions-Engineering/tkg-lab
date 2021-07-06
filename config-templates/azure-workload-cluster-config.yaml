@@ -5,6 +5,9 @@ AZURE_LOCATION:
 AZURE_SUBSCRIPTION_ID: 
 AZURE_TENANT_ID: 
 
+AZURE_CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling azure.control-plane-machine-type in params.yaml 
+AZURE_NODE_MACHINE_TYPE:  # Added by scripts by pulling azure.node-machine-type in params.yaml
+
 CLUSTER_PLAN: dev
 ENABLE_AUDIT_LOGGING: true
 ENABLE_DEFAULT_STORAGE_CLASS: true
