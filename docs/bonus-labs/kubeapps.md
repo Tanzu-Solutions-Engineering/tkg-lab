@@ -17,10 +17,15 @@ kubeapps:
 
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Kubeapps`
-  - Remove Base URL
-  - Login redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/callback`
-  - Logout redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/logout`
-  - Grant type allowed: `Authorization Code`
+  - For Grant type, check Authorization Code and Refresh Token
+  - Sign-in redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/c/oidc/callback` 
+```bash
+echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/callback"
+```
+  - Sign-out redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/logout`
+```bash
+echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/logout"
+```
 
 4. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file
 ```bash
@@ -30,9 +35,8 @@ okta:
   kubeapps-dex-app-client-secret: <your kubeapps okta client secret>
 ```
 
-5. Add groups claim
-Go to Sign On tab > Edit **OpenID Connect ID Token** section
-  - Groups claim type => Filter
+5. Choose Sign On tab > Edit **OpenID Connect ID Token** section
+  - Groups claim type => `Filter`
   - Groups claim filter => **groups** Matches regex **.\***
 
 ## Prepare Manifests and Deploy Dex
