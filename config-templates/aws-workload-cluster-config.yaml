@@ -6,8 +6,8 @@ AWS_PUBLIC_SUBNET_ID:  # Added by scripts
 AWS_PRIVATE_SUBNET_ID:  # Added by scripts
 WORKER_MACHINE_COUNT: # Added by scripts
 
-CONTROL_PLANE_MACHINE_TYPE: c5.xlarge # t3.large
-NODE_MACHINE_TYPE: c5.xlarge # t3.xlarge
+CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling aws.control-plane-machine-type in params.yaml 
+NODE_MACHINE_TYPE: # Added by scripts by pulling aws.node-machine-type in params.yaml
 
 CLUSTER_PLAN: dev # default is blank
 TKG_HTTP_PROXY_ENABLED: "false" # default is blank
