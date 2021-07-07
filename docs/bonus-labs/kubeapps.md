@@ -17,7 +17,7 @@ kubeapps:
 
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Kubeapps`
-  - For Grant type, check Authorization Code and Refresh Token
+  - For Grant type, check Authorization Code
   - Sign-in redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/callback` 
 ```bash
 echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/callback"
@@ -30,7 +30,6 @@ echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/logout"
 4. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file
 ```bash
 okta:
-  auth-server-fqdn: <your okta endpoint>
   kubeapps-dex-app-client-id: <your kubeapps okta client id>
   kubeapps-dex-app-client-secret: <your kubeapps okta client secret>
 ```
