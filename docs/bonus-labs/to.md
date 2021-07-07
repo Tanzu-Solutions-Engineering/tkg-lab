@@ -34,6 +34,3 @@ kubectl get all -n tanzu-observability-saas
 
 2. Test it out.  Choose Actions->Tanzu Observability by Wavefront->Open Tanzu Observability by Wavefront.  A new browser tab will open directly on the Kubernetes Cluster Dashboard.  Your cluster will be named as named $CLUSTER_NAME.attached.attached
 
-## Go to Next Step
-
-[Create new Shared Services Cluster](../shared-services-cluster/01_install_tkg_ssc.md)
