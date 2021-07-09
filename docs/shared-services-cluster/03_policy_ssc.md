@@ -1,4 +1,4 @@
-# Set policy on Workload Cluster and Namespace
+# Set policy on Shared Services Cluster
 
 ## Setup Access Policy for platform-team to have cluster.admin role
 
@@ -18,4 +18,4 @@
 
 ## Go to Next Step
 
-[Install Contour Ingress Controller](04_contour_ssc.md)
+[Install Contour on Shared Services Cluster](04_contour_ssc.md)

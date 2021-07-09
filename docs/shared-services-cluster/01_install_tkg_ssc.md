@@ -1,6 +1,6 @@
-# Create new workload cluster
+# Create new Shared Services Cluster
 
-Here we will deploy a new workload cluster for use as the shared services cluster.  The shared services cluster in our opinionated deployment is a special purpose workload cluster where common services are deployed.  All workload clusters will have similar steps for initial setup.
+Here we will deploy a new workload cluster for use as the Shared Services cluster.  The shared services cluster in our opinionated deployment is a special purpose workload cluster where common services are deployed.  All workload clusters will have similar steps for initial setup.
 
 Here we are pulling the following values from the `params.yaml` file.  See examples
 

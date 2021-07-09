@@ -1,4 +1,4 @@
-# Install fluent bit
+# Install FluentBit on Shared Services Cluster
 
 ## Set configuration parameters
 

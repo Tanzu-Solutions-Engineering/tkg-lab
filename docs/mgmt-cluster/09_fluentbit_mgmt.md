@@ -1,4 +1,4 @@
-# Install fluent bit
+# Install FluentBit on Management Cluster
 
 **You must complete the [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_scc.md) lab prior to this lab.**
 
@@ -32,4 +32,4 @@ Click the Discover icon at the top of the left menu bar.  You can start searchin
 
 ## Go to Next Step
 
-[Enable Data Protection and Setup Nightly Backup](10_velero_mgmt.md)
+[Install Velero and Setup Nightly Backup on Management Cluster](10_velero_mgmt.md)

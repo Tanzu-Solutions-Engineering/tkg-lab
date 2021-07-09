@@ -61,11 +61,11 @@ open https://$(yq e .harbor.harbor-cn $PARAMS_YAML)
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
 2. Choose Applications (side menu) > Application.   Then click `Create App Integration` button.  Then select `OIDC - OpenID Connect` radio option. For Application Type, choose `Web Application` radio button.  Then click `Next` button.
-  
+
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Harbor`
   - For Grant type, check Authorization Code and Refresh Token
-  - Sign-in redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/callback` 
+  - Sign-in redirect URIs: `https://<harbor.harbor-cn from $PARAMS_YAML>/c/oidc/callback`
 ```bash
 echo "https://$(yq e .harbor.harbor-cn $PARAMS_YAML)/c/oidc/callback"
 ```
@@ -155,4 +155,4 @@ docker login https://$(yq e .harbor.harbor-cn $PARAMS_YAML) -u alana
 
 At this point the shared services cluster is complete.  Go back and complete the management cluster setup tasks.
 
-[Install FluentBit](../mgmt-cluster/09_fluentbit_mgmt.md)
+[Install FluentBit on Management Cluster](../mgmt-cluster/09_fluentbit_mgmt.md)
