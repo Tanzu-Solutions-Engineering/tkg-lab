@@ -1,4 +1,4 @@
-# Overview
+# Configure DNS and Prep Certificate Signing
 
 We can use any DNS provider that is publicly available.  This is required because any certificate that is generated will use cert-manager and Let's Encrypt, with an HTTP01 or a DNS01 challenge, depending on the environment's connectivity. To learn more about the different challenges go [here](https://letsencrypt.org/docs/challenge-types/).
 

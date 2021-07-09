@@ -1,4 +1,4 @@
-# Create workload cluster
+# Create new Workload Cluster
 
 The example workload cluster leverages common components that were used to create the shared services cluster:
 

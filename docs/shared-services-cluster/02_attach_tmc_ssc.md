@@ -1,4 +1,4 @@
-# Attach the new Shared Services Cluster to TMC
+# Attach Shared Services Cluster to TMC
 
 We want to have all kubernetes cluster under TMC management.  As such, execute the following script to attach your cluster to TMC.
 

@@ -24,4 +24,4 @@ Also make sure to install the Carvel tools bundled in the TKG artifact.
 
 ## Go to Next Step
 
-[Install Contour Ingress Controller](06_contour_mgmt.md)
+[Install Contour on Management Cluster](06_contour_mgmt.md)

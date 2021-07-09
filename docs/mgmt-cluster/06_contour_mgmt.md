@@ -1,4 +1,4 @@
-# Install Contour on management cluster
+# Install Contour on Management Cluster
 
 ## Deploy AKO (only for vSphere installations and until AVI AKO is installed in the mgmt cluster!!)
 Run the script passing the range as parameters. Example:
@@ -85,4 +85,4 @@ Look for the status to be Ready: True
 
 ## Go to Next Step
 
-[Install Monitoring](07_update_pinniped_config_mgmt.md)
+[Update Pinniped Config](07_update_pinniped_config_mgmt.md)
