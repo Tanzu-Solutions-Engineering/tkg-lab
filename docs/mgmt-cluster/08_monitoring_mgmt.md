@@ -14,9 +14,9 @@ The scripts to prepare and execute the YAML to deploy prometheus and grafana dep
 
 ```yaml
 # Leave prometheus-fqdn blank if you choose not to expose it, there is no auth
-management-cluster.prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live
+management-cluster.prometheus-fqdn: prometheus.dragonstone.tkg-vsphere-lab.winterfell.live
 # Grafana has auth
-management-cluster.grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
+management-cluster.grafana-fqdn: grafana.dragonstone.tkg-vsphere-lab.winterfell.live
 grafana.admin-password: REDACTED
 ```
 
