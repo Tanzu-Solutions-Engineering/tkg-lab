@@ -1,0 +1,26 @@
+#! Purpose: In the event your search domain information is not communicated to the nodes via DHCP Option 15
+#!  you can manually set desired search domains.
+#! Implement: Set the CUSTOM_SEARCH_DOMAIN parameter as an environment variable or in cluster config.
+#!  For multiple servers seperate with comma.
+#!     CUSTOM_SEARCH_DOMAIN: "acme.com,acme.org"
+#! Test: You can validate using by ssh'ing onto the cluster nodes
+#!     $ resolvectl status
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ if data.values.CUSTOM_SEARCH_DOMAIN != None:
+
+#@overlay/match by=overlay.subset({"kind":"VSphereMachineTemplate"})
+---
+spec:
+  template:
+    spec:
+      network:
+        devices:
+        #@overlay/match by=overlay.all, expects="1+"
+        -
+          #@overlay/match missing_ok=True
+          searchDomains: #@ data.values.CUSTOM_SEARCH_DOMAIN.split(",")
+
+#@ end

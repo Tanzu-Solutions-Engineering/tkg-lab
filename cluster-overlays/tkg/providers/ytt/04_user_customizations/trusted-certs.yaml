@@ -1,0 +1,63 @@
+#! Purpose: In the event you need additional custom CA certificates,
+#!  so containerd and other tools trust these CA certificates.
+#!  It works when using Photon or Ubuntu as the TKG node template on all TKG infrastructure providers.
+#! Implement: Set the CUSTOM_TRUSTED_CERTS_B64 parameter as an environment variable or in cluster config.
+#!  For multiple CAs, put them together in a file and then base64 the total content
+#!     CUSTOM_TRUSTED_CERTS_B64: cmVndWxhcg==
+#! Test: You can validate using by ssh'ing onto the cluster nodes
+#!     $ ??
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:base64", "base64")
+
+#@ if data.values.CUSTOM_TRUSTED_CERTS_B64 != None:
+
+#! Trust your custom CA certificates on all Control Plane nodes.
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
+---
+spec:
+  kubeadmConfigSpec:
+    #@overlay/match missing_ok=True
+    files:
+      #@overlay/append
+      - content: #@ base64.decode(data.values.CUSTOM_TRUSTED_CERTS_B64) 
+        owner: root:root
+        permissions: "0644"
+        path: /etc/ssl/certs/tkg-custom-ca.pem
+    #@overlay/match missing_ok=True
+    preKubeadmCommands:
+      #@ if data.values.OS_NAME == "photon":
+      #@overlay/append
+      - '! which rehash_ca_certificates.sh 2>/dev/null || rehash_ca_certificates.sh'
+      #@ end
+      #@ if data.values.OS_NAME == "ubuntu":
+      #@overlay/append
+      - '! which update-ca-certificates 2>/dev/null || (mv /etc/ssl/certs/tkg-custom-ca.pem /usr/local/share/ca-certificates/tkg-custom-ca.crt && update-ca-certificates)'
+      #@ end
+
+#! Trust your custom CA certificates on all worker nodes.
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"})
+---
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      files:
+        #@overlay/append
+        - content: #@ base64.decode(data.values.CUSTOM_TRUSTED_CERTS_B64) 
+          owner: root:root
+          permissions: "0644"
+          path: /etc/ssl/certs/tkg-custom-ca.pem
+      #@overlay/match missing_ok=True
+      preKubeadmCommands:
+        #@ if data.values.OS_NAME == "photon":
+        #@overlay/append
+        - '! which rehash_ca_certificates.sh 2>/dev/null || rehash_ca_certificates.sh'
+        #@ end
+        #@ if data.values.OS_NAME == "ubuntu":
+        #@overlay/append
+        - '! which update-ca-certificates 2>/dev/null || (mv /etc/ssl/certs/tkg-custom-ca.pem /usr/local/share/ca-certificates/tkg-custom-ca.crt && update-ca-certificates)'
+        #@ end
+
+#@ end
