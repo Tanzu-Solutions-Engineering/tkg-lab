@@ -1,4 +1,4 @@
-# Install fluent bit
+# Install FluentBit on Shared Services Cluster
 
 ## Set configuration parameters
 
@@ -45,4 +45,4 @@ open http://$(yq e .shared-services-cluster.kibana-fqdn $PARAMS_YAML)
 
 ## Go to Next Step
 
-[Install Tanzu Observability](08_monitoring_ssc.md)
+[Add Prometheus and Grafana to Shared Services Cluster](08_monitoring_ssc.md)

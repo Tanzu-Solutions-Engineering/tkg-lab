@@ -18,7 +18,7 @@ Click on `platform-team` group > Manage People: Then add `alana` to the `platfor
 
 ## Create Application for TKG
 
-Choose Applications (side menu) > Application.  Then click `Create App Integration` button.  Then selec `OIDC - OpenID Connect` radion option. For Application Type, choose `Web Application` radion button.  Then click `Next` button.
+Choose Applications (side menu) > Applications.  Then click `Create App Integration` button.  Then select `OIDC - OpenID Connect` radio option. For Application Type, choose `Web Application` radio button.  Then click `Next` button.
   - Give your app a name: TKG
   - For Grant type, check Authorization Code and Refresh Token
   - Sign-in redirect URIs: https://pinniped.<your-management-cluster-name>.<your-environment-name>.<your-subdomain>/callback 

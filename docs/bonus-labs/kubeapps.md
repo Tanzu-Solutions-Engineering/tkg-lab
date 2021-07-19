@@ -13,26 +13,29 @@ kubeapps:
 
 1. Log into your Okta account you created as part of the [Okta Setup Lab](../mgmt-cluster/04_okta_mgmt.md).  The URL should be in your `params.yaml` file under okta.auth-server-fqdn.
 
-2. Choose Applications (Left menu) > Add Application > Create New App > Web, Click Next.
+2. Choose Applications (side menu) > Applications. Then click Create App Integration button. Then select OIDC - OpenID Connect radio option. For Application Type, choose Web Application radio button. Then click Next button.
 
 3. Complete the form as follows, and then click Done.
   - Give your app a name: `Kubeapps`
-  - Remove Base URL
-  - Login redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/callback`
-  - Logout redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/logout`
-  - Grant type allowed: `Authorization Code`
+  - For Grant type, check Authorization Code
+  - Sign-in redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/callback` 
+```bash
+echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/callback"
+```
+  - Sign-out redirect URIs: `https://<kubeapps.oidc-issuer-fqdn from $PARAMS_YAML>/logout`
+```bash
+echo "https://$(yq e .kubeapps.oidc-issuer-fqdn $PARAMS_YAML)/logout"
+```
 
 4. Capture `Client ID` and `Client Secret` for and put it in your $PARAMS_YAML file
 ```bash
 okta:
-  auth-server-fqdn: <your okta endpoint>
   kubeapps-dex-app-client-id: <your kubeapps okta client id>
   kubeapps-dex-app-client-secret: <your kubeapps okta client secret>
 ```
 
-5. Add groups claim
-Go to Sign On tab > Edit **OpenID Connect ID Token** section
-  - Groups claim type => Filter
+5. Choose Sign On tab > Edit **OpenID Connect ID Token** section
+  - Groups claim type => `Filter`
   - Groups claim filter => **groups** Matches regex **.\***
 
 ## Prepare Manifests and Deploy Dex

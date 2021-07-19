@@ -1,8 +1,8 @@
 AZURE_CLIENT_ID:
 AZURE_CLIENT_SECRET: 
-AZURE_CONTROL_PLANE_MACHINE_TYPE: 
+AZURE_CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling azure.control-plane-machine-type in params.yaml 
 AZURE_LOCATION: 
-AZURE_NODE_MACHINE_TYPE: 
+AZURE_NODE_MACHINE_TYPE:  # Added by scripts by pulling azure.node-machine-type in params.yaml
 AZURE_SSH_PUBLIC_KEY_B64: 
 AZURE_SUBSCRIPTION_ID: 
 AZURE_TENANT_ID:

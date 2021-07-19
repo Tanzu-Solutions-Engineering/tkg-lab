@@ -1,0 +1,24 @@
+#! Purpose: In the event you need to manually override the default 1500 mtu settings for your node.
+#! Implement: Set the CUSTOM_MTU parameter as an environment variable or in cluster config.
+#!     CUSTOM_MTU: 1300
+#! Test: You can validate using by ssh'ing onto the cluster nodes
+#!     $ ip addr
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ if data.values.CUSTOM_MTU != None:
+
+#@overlay/match by=overlay.subset({"kind":"VSphereMachineTemplate"})
+---
+spec:
+  template:
+    spec:
+      network:
+        devices:
+        #@overlay/match by=overlay.all, expects="1+"
+        -
+          #@overlay/match missing_ok=True
+          nameservers: #@ data.values.CUSTOM_MTU
+
+#@ end

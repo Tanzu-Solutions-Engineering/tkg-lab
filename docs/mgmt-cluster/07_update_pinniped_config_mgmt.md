@@ -22,4 +22,4 @@ kubectl get oidcidentityprovider -n pinniped-supervisor -oyaml
 
 ## Go to Next Step
 
-[Install Monitoring](08_monitoring_mgmt.md)
+[Add Prometheus and Grafana to Management Cluster](08_monitoring_mgmt.md)

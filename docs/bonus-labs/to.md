@@ -16,12 +16,12 @@ wavefront:
 
 ## Configuration through Tanzu Mission Control (TMC)
 
-TMC allows you to directly integrate with Tanzu Observability for clusters under management.  This is a new feature for TMC and is only available through the UI.  CLI integration is targeted for Q2 2021.  As such,w e don't have have a scripted option.
+TMC allows you to directly integrate with Tanzu Observability for clusters under management.  This is a new feature for TMC and is only available through the UI.  CLI integration is targeted for Q2 2021.  As such, we don't have have a scripted option.
 
 1. Log-in to TMC
 2. Select your cluster from the cluster list
 3. Choose Actions->Tanzu Observability by Wavefront->Add...
-4. Add dialog.  For `Wavefront API URL` enter the result of `echo $(yq r $PARAMS_YAML wavefront.url)`.  For `Wavefront API token` enter the result of `echo $(yq r $PARAMS_YAML wavefront.api-key)` and then choose `Enable` button.
+4. Add dialog. Either select existing TO credential from drop down or setup a new credential. To setup a new credentrial; for `Tanzu Observability URL` enter the result of `echo $(yq r $PARAMS_YAML wavefront.url)`.  For `Tanzu Observability API token` enter the result of `echo $(yq r $PARAMS_YAML wavefront.api-key)` and then click `CONFIRM` button.
 5. It should take about 2 minutes to complete enablement of the cluster, and then a little more to see the data flowing in Tanzu Observability.
 
 **Validation**
@@ -34,6 +34,3 @@ kubectl get all -n tanzu-observability-saas
 
 2. Test it out.  Choose Actions->Tanzu Observability by Wavefront->Open Tanzu Observability by Wavefront.  A new browser tab will open directly on the Kubernetes Cluster Dashboard.  Your cluster will be named as named $CLUSTER_NAME.attached.attached
 
-## Go to Next Step
-
-[Create new Shared Services Cluster](../shared-services-cluster/01_install_tkg_ssc.md)

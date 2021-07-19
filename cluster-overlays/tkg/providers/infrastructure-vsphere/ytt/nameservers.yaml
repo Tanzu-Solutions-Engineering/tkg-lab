@@ -1,0 +1,54 @@
+#! Purpose: In the event your nameserver information is not communicated to the nodes via DHCP Option 5
+#!  you can manually set desired nameservers.
+#! Implement: Set the CUSTOM_NAMESERVERS parameter as an environment variable or in cluster config.
+#!  For multiple servers seperate with comma.
+#!     CUSTOM_NAMESERVERS: "8.8.8.8,name.google.com"
+#! Test: You can validate using by ssh'ing onto the cluster nodes
+#!     $ resolvectl status
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ if data.values.CUSTOM_NAMESERVERS != None:
+
+#@overlay/match by=overlay.subset({"kind":"VSphereMachineTemplate"})
+---
+spec:
+  template:
+    spec:
+      network:
+        devices:
+        #@overlay/match by=overlay.all, expects="1+"
+        -
+          #@overlay/match missing_ok=True
+          nameservers: #@ data.values.CUSTOM_NAMESERVERS.split(",")
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
+---
+spec:
+  kubeadmConfigSpec:
+    preKubeadmCommands:
+    #! disable dns from being emitted by dhcp client
+    #@overlay/append
+    - echo '[DHCPv4]' >> /etc/systemd/network/10-id0.network
+    #@overlay/append
+    - echo 'UseDNS=no' >> /etc/systemd/network/10-id0.network
+    #@overlay/append
+    - '/usr/bin/systemctl restart systemd-networkd 2>/dev/null'
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"})
+---
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      preKubeadmCommands:
+      #! disable dns from being emitted by dhcp client
+      #@overlay/append
+      - echo '[DHCPv4]' >> /etc/systemd/network/10-id0.network
+      #@overlay/append
+      - echo 'UseDNS=no' >> /etc/systemd/network/10-id0.network
+      #@overlay/append
+      - '/usr/bin/systemctl restart systemd-networkd 2>/dev/null'
+
+#@ end
