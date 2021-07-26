@@ -4,8 +4,9 @@
 #! Implement: Set the CUSTOM_TRUSTED_CERTS_B64 parameter as an environment variable or in cluster config.
 #!  For multiple CAs, put them together in a file and then base64 the total content
 #!     CUSTOM_TRUSTED_CERTS_B64: cmVndWxhcg==
-#! Test: You can validate using by ssh'ing onto the cluster nodes
-#!     $ ??
+#! Test: You can validate using by ssh'ing onto the cluster nodes and then attempt to curl a target endpoint
+#!   You will see that the SSL session is successfully negotiated.
+#!     $ curl -v https://<endpoint_protected_by_ssl_signed_by_ca>
 
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
