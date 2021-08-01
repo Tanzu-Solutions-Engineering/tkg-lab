@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+        image: docker.io/bitnami/elasticsearch:7.2.1
         resources:
             limits:
               cpu: 1000m
@@ -49,7 +49,7 @@ spec:
             value: "-Xms512m -Xmx512m"
       initContainers:
       - name: fix-permissions
-        image: busybox
+        image: docker.io/bitnami/bitnami-shell:10-debian-10-r138
         command: ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
         securityContext:
           privileged: true
@@ -57,12 +57,12 @@ spec:
         - name: data
           mountPath: /usr/share/elasticsearch/data
       - name: increase-vm-max-map
-        image: busybox
+        image: docker.io/bitnami/bitnami-shell:10-debian-10-r138
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
       - name: increase-fd-ulimit
-        image: busybox
+        image: docker.io/bitnami/bitnami-shell:10-debian-10-r138
         command: ["sh", "-c", "ulimit -n 65536"]
         securityContext:
           privileged: true
