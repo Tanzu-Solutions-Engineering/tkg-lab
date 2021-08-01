@@ -3,6 +3,18 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
+get_cluster_type () {
+  if [ `yq e .management-cluster.name $PARAMS_YAML` = $1 ]; then
+    echo "managment-cluster"
+  fi
+  if [ `yq e .shared-services-cluster.name $PARAMS_YAML` = $1 ]; then
+    echo "shared-services-cluster"
+  fi
+  if [ `yq e .workload-cluster.name $PARAMS_YAML` = $1 ]; then
+    echo "workload-cluster"
+  fi
+}
+
 IAAS=$(yq e .iaas $PARAMS_YAML)
 export VSPHERE_CONTROLPLANE_ENDPOINT=$3
 export KUBERNETES_VERSION=$4
@@ -112,6 +124,14 @@ else
     export NODE_VERSION="20.04"
   fi
 
+  # Determine the cluster type based upon the name passed in (funciton defined above) and then check to see if it has autscaler enabled
+  CLUSTER_TYPE="$(get_cluster_type $CLUSTER)"
+
+  # Default to false if the no value has been set
+  export AUTOSCALER_ENABLED=$(yq e '.'$CLUSTER_TYPE'.worker-autoscaler-enabled // false' $PARAMS_YAML)
+  # Default to worker-replas value if no max has been set
+  export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
+  
   # Write vars into cluster-config file
   yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_CONTROL_PLANE_ENDPOINT = env(VSPHERE_CONTROLPLANE_ENDPOINT)' generated/$CLUSTER/cluster-config.yaml
@@ -125,7 +145,10 @@ else
   yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER/cluster-config.yaml
-
+  yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
+  
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
 
