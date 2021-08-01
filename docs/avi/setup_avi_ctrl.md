@@ -129,7 +129,24 @@ Configure Management Network
 
 Click `Save`.
 
-### 4.3 Upgrade Controller to latest patch (Optional)
+### 4.3 Set Scope for Service Engines to Specific vSphere Clusters
+
+The NSX ALB Controller will create service engines on vSphere clusters for which it has permissions.  In the event you are using an administrative vSphere user account with multiple clustesr, that means these service engines could be created anywhere and perhaps different SEs in a single SE Group will be created in different clusters.  
+
+You can set the scope for a given SE Group to constrain the SE creation to specific clusters or hosts.  This may particularly be useful if a single vSphere cluster is designated to support Tanzu.
+
+Go to `Infrastructure > Service Engine Group`. Then edit the `Default-Cloud`:
+
+Choose `Advanced` tab of the resulting dialog.
+
+In the `Host & Data Store Scope` section, select your desired vSphere cluster.
+
+<img src="se-group-cluster-designation.png" width="800"><br>
+
+Click `Save`.
+
+
+### 4.4 Upgrade Controller to latest patch (Optional)
 To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.5.2p3` when this guide was updated last).
 
 Go to `Administration > Controller > Software`. Click on `Upload from Computer` and select the avi-patch `pkg` file.
@@ -142,7 +159,7 @@ Go to `Administration > Controller > System Update`. Click on the checkbox next 
 
 On the pop-up window, leave settings as they are and click `Continue`. Wait for the upgrade to finish. The UI will eventually become inresponsive and you will have to log-in again.
 
-### 4.3 Switch to Essentials Tier (Optional)
+### 4.5 Switch to Essentials Tier (Optional)
 Go to `Administration > Settings > Licensing`. Click on the crank wheel next to the `Licensing` title. Select `Essentials License`. Click `Save`. Click `Continue`.
 
 <img src="avi-essentials.png" width="800"><br>
@@ -154,7 +171,7 @@ In Essentials Tier we don't have `auto-gateway` so we need to create a Default G
 <img src="avi-routes.png" width="800"><br>
 
 
-### 4.2. Configure DNS Profile (Optional, only relevant for NSX ALB Enterprise)
+### 4.6. Configure DNS Profile (Optional, only relevant for NSX ALB Enterprise)
 Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage DNS` type.
@@ -163,7 +180,7 @@ Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 
 - Click `Save`.
 
-### 4.3. Configure IPAM Profile
+### 4.7. Configure IPAM Profile
 Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage IPAM` type.
@@ -173,7 +190,7 @@ Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
 
 - Click `Save`.
 
-### 4.4. Add Profiles to Cloud
+### 4.8. Add Profiles to Cloud
 Go to `Infrastructure > Clouds` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
 
 In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` (if NSX ALB Enterprise) Profiles we just created.
@@ -181,7 +198,7 @@ In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` a
 Click `Save`.
 
 
-### 4.5. Create VIP Pool (Only for 2 network configuration, skip for flat network)
+### 4.9. Create VIP Pool (Only for 2 network configuration, skip for flat network)
 Go to `Infrastructure > Networks` and Edit the network you chose in the `IPAM Profile` configuration.
 
 Click on `Add subnet`:
@@ -195,7 +212,7 @@ You should see now both Management and Data networks ready with the respective r
 <img src="avi-net-ready.png"><br>
 
 
-### 4.6. Create Custom Certificate for Controller
+### 4.10. Create Custom Certificate for Controller
 
 The default certificate configured in the Controller doesn't contain IP SAN and because of that the AKO Operator will fail to communicate with the Controller. To fix this we need to generate and configure a new certificate.
 
