@@ -252,3 +252,13 @@ On Linux:
 export NSX_ALB_CONTROLLER_ENCODED_CERT=`cat keys/nsx-alb-controller.cert | base64 -w 0`
 yq e -i '.avi.avi-ca-data = env(NSX_ALB_CONTROLLER_ENCODED_CERT)' $PARAMS_YAML
 ```
+
+### 4.11. Extend UI Session Timeout (Optional)
+
+The NSX ALB Controller UI has a 15 minute session timeout.  This may be too quick for efficent activity for POCs.  You can extend the UI session timeout as a user preference.
+
+Click the `AVI` icon in the top right corner of the NSX ALB Controller UI and choose `My Account`.
+
+Set your desired session timeout in the `Controller Settings` section of the `Edit My Account` dialog.
+
+<img src="session-timeout.png" width="800"><br>
