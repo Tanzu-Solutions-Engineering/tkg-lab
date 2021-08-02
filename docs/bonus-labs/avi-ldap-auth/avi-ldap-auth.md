@@ -8,15 +8,15 @@ In this bonus lab, we will configure the LDAP Interface for Okta and then config
 
 ## Configure Okta for LDAP Integration
 
-- Setup the configuration
-- Create a bind account
-- Testing
+- Create Sevice Bind User
+- Enbale LDAP Permissions
+- Test Access
 
 ### 1. Create Sevice Bind User
 
 A bind user is an account that is used for the client (NSX ALB) to initially access the LDAP interface for queries.
 
-Access Okto using your account owner account.
+Access Okta using your account owner account.
 
 Choose Directory (side menu) > People > Add Person:
 - Set First Name, Last Name and Email: (e.g: service bind, servicebind@winterfell.live)
@@ -31,7 +31,7 @@ Choose Security (side menu) > Administrators > Add Administrator:
 
 ### 2. Enbale LDAP Permissions
 
-Access Okto using your account owner account.  Then following the [Enable the LDAP interface](https://help.okta.com/en/prod/Content/Topics/Directory/LDAP-interface-enable.htm) docs.  Note down the important settings provided.
+Access Okta using your account owner account.  Then following the [Enable the LDAP interface](https://help.okta.com/en/prod/Content/Topics/Directory/LDAP-interface-enable.htm) docs.  Note down the important settings provided.
 
 | Settings | Value |
 | ------ | ----- |
@@ -152,7 +152,7 @@ Choose `Remote` Authenticaiton and select your newly created Auth Profile.
 
 <img src="assign-auth-profile.png" width="800">
 
-### 3. Tenant Role Mapping
+### 3. Create Role Mapping for Admin Permissions
 
 Now map the `platform-team` group to super user access.
 
