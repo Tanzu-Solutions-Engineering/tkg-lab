@@ -121,3 +121,4 @@ The following labs additional labs can be run on the base lab configuration.
 #### [Apply Image Registry Policy with TMC](docs/bonus-labs/tmc_image_policy.md)
 #### [Restore Backup with Velero](docs/bonus-labs/velero_restore.md)
 #### [ArgoCD w Kustomize](docs/bonus-labs/argocd-kustomize.md)
+#### [Configure NSX ALB Auth with Okta LDAP](docs/bonus-labs/avi-ldap-auth/avi-ldap-auth.md)
