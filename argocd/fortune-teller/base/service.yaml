@@ -12,5 +12,3 @@ spec:
   selector:
     app: fortune-app
   type: ClusterIP
-  selector:
-    app: fortune-app
