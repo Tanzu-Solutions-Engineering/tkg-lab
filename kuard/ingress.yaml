@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kuard
+  labels:
+    app: kuard
+spec:
+  rules:
+  - host: kuard.platform-sandbox-1.tanzu-poc.company.com
+    http:
+      paths:
+      - backend:
+          serviceName: kuard
+          servicePort: 8080
