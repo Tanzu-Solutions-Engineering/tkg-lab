@@ -4,7 +4,7 @@ Tanzu Kubernetes Grid supports cluster autoscaling leveragin the Cluster API pro
 
 ## Lab Configuration Parameters
 
-You may have noticed the following keys in `params.yaml` that direct the use of cluster autoscaling for the shared services cluster and workload clsuter.
+You may have noticed the following keys in `params.yaml` that direct the use of cluster autoscaling for the shared services cluster and workload cluster.
 
 General purpose information on how cluster autoscaler works can be found in the upstream [FAQ](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md).
 
@@ -19,10 +19,13 @@ workload-cluster.worker-replicas-max: 3
 
 ## Run the Exercises
 
+For this lab, we will use the shared services cluster to exercise the capability, however you could equally run the commands on the workload cluster.
+
 The following series of commands demonstrate cluster autoscaling...
 
 ```bash
 
+# Choosing to use shared services cluster for the command sequence
 DEMO_CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
 WILD_CARD_FQDN=$(yq e .shared-services-cluster.ingress-fqdn $PARAMS_YAML)
 
