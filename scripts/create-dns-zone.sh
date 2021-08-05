@@ -30,8 +30,12 @@ else
   if [ -z "$AWS_HOSTED_ZONE_ID" ];then
     echo "AWS hosted zone id not found in cofiguration file.  Assuming it needs to be created."
     export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
-    export AWS_ACCESS_KEY_ID=$(yq e .aws.access-key-id $PARAMS_YAML)
-    export AWS_SECRET_ACCESS_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
+    if [-z "$AWS_ACCESS_KEY_ID" ]; then
+      export AWS_ACCESS_KEY_ID=$(yq e .aws.access-key-id $PARAMS_YAML)
+    fi
+    if [-z "$AWS_SECRET_ACCESS_KEY" ]; then
+      export AWS_SECRET_ACCESS_KEY=$(yq e .aws.secret-access-key $PARAMS_YAML)
+    fi
     export AWS_HOSTED_ZONE_ID=$(aws route53 create-hosted-zone --name $LAB_SUBDOMAIN --caller-reference "$LAB_SUBDOMAIN-`date`" --output json | jq .HostedZone.Id -r | cut -d'/' -f 3)
     yq e -i '.aws.hosted-zone-id = env(AWS_HOSTED_ZONE_ID)' $PARAMS_YAML
   else
