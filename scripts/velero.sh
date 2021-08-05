@@ -32,9 +32,12 @@ elif [ -z "$AWS_SESSION_TOKEN" ];
 then
     echo "Using Credentials File for S3 Access"
     velero install \
+<<<<<<< HEAD
 else
   velero install \
       --image=projects-stg.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
+=======
+      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
       --plugins projects.registry.vmware.com/tkg/velero/velero-plugin-for-aws:v1.2.1_vmware.1 \
       --bucket $VELERO_BUCKET \
@@ -45,7 +48,7 @@ else
 # For cloudgate use case don't need a secret since the IAM role on the cluster node will be used for access.
    echo "Using IAM Profile for S3 Access"
    velero install \
-      --image=projects-stg.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
+      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
       --plugins velero/velero-plugin-for-aws:v1.1.0 \
       --bucket $VELERO_BUCKET \

@@ -64,6 +64,17 @@ else # Using AWS Route53
     mv generated/$CLUSTER_NAME/external-dns/external-dns-data-values-fixed.yaml generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   fi
 
+  # Perform special processing to handle Cloudgate use case where session tokens are used 
+  if [ -z "$AWS_SESSION_TOKEN" ]; then
+    echo "Using Existing Extension."
+  else
+    echo "removing AWS Credentials from Extension"
+    # Remove Secret reference from data-values for the external dns extension. 
+    sed -n -e :a -e '1,12!{P;N;D;};N;ba' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml > generated/$CLUSTER_NAME/external-dns/external-dns-data-values-fixed.yaml
+    rm generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+    mv generated/$CLUSTER_NAME/external-dns/external-dns-data-values-fixed.yaml generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  fi
+
   kubectl create secret generic route53-credentials \
     --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
     --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
