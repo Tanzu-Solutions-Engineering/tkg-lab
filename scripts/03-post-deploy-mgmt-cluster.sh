@@ -7,9 +7,33 @@ MANAGEMENT_CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
 WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
+
+
+
 tanzu cluster scale $MANAGEMENT_CLUSTER_NAME -n tkg-system -w $WORKER_REPLICAS
 
 kubectl config use-context $MANAGEMENT_CLUSTER_NAME-admin@$MANAGEMENT_CLUSTER_NAME
+
+#Patch the management cluster when Cloud gate session tokens are being used.
+
+if [ -z "$AWS_SESSION_TOKEN" ]; 
+then
+    echo "Management Cluster Setup Complete"
+else
+
+    # External DNS Extension needs to be able to access AWS API via IAM Instance Role
+    aws iam attach-role-policy --role-name nodes.tkg.cloud.vmware.com --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess
+   
+    # Velere needs to be able to access AWS API via IAM Instance Role
+    aws iam attach-role-policy --role-name nodes.tkg.cloud.vmware.com --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+    # Path the deployment so it will run on the control plane
+    # remove AWS Credentials TKG installer adds to the capa secret
+    kubectl patch secret capa-manager-bootstrap-credentials  --patch "$(cat cloudgate/capa-secret.yaml)" -n capa-system
+
+    #ensure capa controller runs on the control-plane.  This node will have IAM permissions to access AWS
+    kubectl patch deployment capa-controller-manager  --patch "$(cat cloudgate/capa-system.yaml)" -n capa-system
+fi
 
 # We have found that after the tanzu cli reports that the managmement cluster is created, there are additional initialation of system pods.  In order 
 # to ensure that the cluster is fully initilized, we will wait for the pinniped-supervisor job to be completed.
