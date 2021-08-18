@@ -16,7 +16,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/external-dns
 
-kubectl apply -f tkg-extensions/extensions/service-discovery/external-dns/namespace-role.yaml
+kubectl create namespace tanzu-system-service-discovery --dry-run=client --output yaml | kubectl apply -f -
 
 if [ "$DNS_PROVIDER" = "gcloud-dns" ];
 then
@@ -48,14 +48,12 @@ then
 
 else # Using AWS Route53
 
-  cp tkg-extensions/extensions/service-discovery/external-dns/external-dns-data-values-aws-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  cp tkg-extensions-mods-examples/external-dns/external-dns-data-values.yaml generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
   export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML)
   export HOSTED_ZONE_ID=--txt-owner-id=$(yq e .aws.hosted-zone-id $PARAMS_YAML)
-  yq e -i '.externalDns.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-  yq e -i '.externalDns.deployment.args[9] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-
-  add_yaml_doc_seperator generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[6] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
   kubectl create secret generic route53-credentials \
     --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
@@ -63,45 +61,25 @@ else # Using AWS Route53
     -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
 fi
 
-# Using the following "apply" syntax to allow for script to be rerun
-kubectl create secret generic external-dns-data-values \
-  --from-file=values.yaml=generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
-  -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
-
-kubectl apply -f tkg-extensions/extensions/service-discovery/external-dns/external-dns-extension.yaml
-
-while kubectl get app external-dns -n tanzu-system-service-discovery | grep external-dns | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-  echo External-Dns extension is not yet ready
-  sleep 5s
-done
-
-
+tanzu package install external-dns \
+    --package-name external-dns.tanzu.vmware.com \
+    --version 0.8.0+vmware.1-tkg.1-rc.2 \
+    --namespace tanzu-kapp \
+    --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
 # Now update the contour extension to include external dns annotation
 yq e -i '.tkg_lab.ingress_fqdn = strenv(INGRESS_FQDN)' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
-# Add in the document seperator that yq removes
-add_yaml_doc_seperator generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+kubectl create secret generic contour-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/ingress/contour/contour-overlay.yaml | kubectl apply -f-
 
-# Update contour secret with custom configuration for ingress
-kubectl create secret generic contour-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress -o yaml --dry-run=client | kubectl apply -f-
+# must annotate the packageinstall referring to the secret above
+kubectl annotate PackageInstall contour \
+	-n tanzu-kapp \
+	ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=contour-overlay \
+	--overwrite=true
 
-# Generate the modified contour extension
-ytt \
-  -f tkg-extensions/extensions/ingress/contour/contour-extension.yaml \
-  -f tkg-extensions-mods-examples/ingress/contour/contour-extension-overlay.yaml \
-  --ignore-unknown-comments \
-  > generated/$CLUSTER_NAME/contour/contour-extension.yaml
+tanzu package installed update contour \
+    --namespace tanzu-kapp \
+    --version 1.17.1+vmware.1-tkg.1-rc.2 \
+    --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
-# Create configmap with the overlay
-kubectl create configmap contour-overlay -n tanzu-system-ingress -o yaml --dry-run=client \
-  --from-file=contour-overlay.yaml=tkg-extensions-mods-examples/ingress/contour/contour-overlay.yaml | kubectl apply -f-
-
-# Update Contour using modifified Extension
-kubectl apply -f generated/$CLUSTER_NAME/contour/contour-extension.yaml
-
-# Wait until reconcile succeeds
-while kubectl get app contour -n tanzu-system-ingress | grep contour | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-  echo contour extension is not yet ready
-  sleep 5
-done
