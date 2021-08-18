@@ -1,0 +1,33 @@
+---
+
+# The namespace in which to deploy ExternalDNS.
+namespace: tanzu-system-service-discovery
+
+# Deployment related configuration
+deployment:
+  args:
+    - --source=service
+    - --source=ingress
+    - --source=contour-httpproxy # Provide this to enable Contour HTTPProxy support. Must have Contour installed or external-dns will fail.
+    - --domain-filter=external-dns-test.<< DOMAIN >> # will make ExternalDNS see only the hosted zones matching provided domain, omit to process all available hosted zones
+    - --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
+    - --registry=txt
+    - --txt-owner-id=<< HOSTED ZONE ID >>
+    - --txt-prefix=txt # disambiguates TXT records from CNAME records
+    - --provider=aws
+    - --aws-zone-type=public # only look at public hosted zones (valid values are public, private or no value for both)
+    - --aws-prefer-cname
+  env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: route53-credentials
+          key: aws_access_key_id
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: route53-credentials
+          key: aws_secret_access_key
+  securityContext: {}
+  volumeMounts: []
+  volumes: []
