@@ -115,9 +115,11 @@ The following labs additional labs can be run on the base lab configuration.
 
 #### [Deploy Advanced Observability with Tanzu Observability](docs/bonus-labs/to.md)
 #### [Deploy Kubeapps to Workload Cluster](docs/bonus-labs/kubeapps.md)
+#### [Cluster Autoscaling](docs/bonus-labs/cluster-autoscaling.md)
 #### [Deploy Gitlab to Shared Services Cluster](docs/bonus-labs/gitlab.md)
 #### [Deploy Concourse to Shared Services Cluster](docs/bonus-labs/concourse.md)
 #### [Wavefront Tracing with Acme-Fitness App](docs/bonus-labs/jaeger_tracing.md)
 #### [Apply Image Registry Policy with TMC](docs/bonus-labs/tmc_image_policy.md)
 #### [Restore Backup with Velero](docs/bonus-labs/velero_restore.md)
 #### [ArgoCD w Kustomize](docs/bonus-labs/argocd-kustomize.md)
+#### [Configure NSX ALB Auth with Okta LDAP](docs/bonus-labs/avi-ldap-auth/avi-ldap-auth.md)
