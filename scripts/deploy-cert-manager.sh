@@ -12,4 +12,7 @@ CLUSTER_NAME=$1
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-kapp deploy -a cert-manager -n tanzu-kapp -y -f tkg-extensions/cert-manager/
+tanzu package install cert-manager \
+    --package-name cert-manager.tanzu.vmware.com \
+    --version 1.1.0+vmware.1-tkg.2-rc.2 \
+    --namespace tanzu-kapp

@@ -44,11 +44,9 @@ then
   yq e -i '.externalDns.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   yq e -i '.externalDns.deployment.args[6] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
-  add_yaml_doc_seperator generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-
 else # Using AWS Route53
 
-  cp tkg-extensions-mods-examples/external-dns/external-dns-data-values.yaml generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  cp tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-data-values-aws-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
   export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML)
   export HOSTED_ZONE_ID=--txt-owner-id=$(yq e .aws.hosted-zone-id $PARAMS_YAML)

@@ -29,7 +29,7 @@ export NOTARY_CN="notary."$HARBOR_CN
 mkdir -p generated/$SHAREDSVC_CLUSTER_NAME/harbor
 
 # Create a namespace for the Harbor service on the shared services cluster.
-kubectl apply -f tkg-extensions/extensions/registry/harbor/namespace-role.yaml
+kubectl create namespace tanzu-system-registry --dry-run=client --output yaml | kubectl apply -f -
 
 # Create certificate 02-certs.yaml
 cp tkg-extensions-mods-examples/registry/harbor/02-certs.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
@@ -48,68 +48,35 @@ export HARBOR_CERT_KEY=$(kubectl get secret harbor-cert-tls -n tanzu-system-regi
 export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 
 # Prepare Harbor custom configuration
-cp tkg-extensions/extensions/registry/harbor/harbor-data-values.yaml.example generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+image_url=$(kubectl -n tanzu-package-repo-global get packages harbor.tanzu.vmware.com.2.2.3+vmware.1-tkg.1-rc.2 -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
+imgpkg pull -b $image_url -o /tmp/harbor-package-2.2.3
+cp /tmp/harbor-package-2.2.3/config/values.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+
+# Remove all comments
+sed -i 's/#.*$//g' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+
+# HACK: Comment out lines 48-50 because they incorrectly add --- to the third row.
+sed -i '48,50 s/^/#/' /tmp/harbor-package-2.2.3/config/scripts/generate-passwords.sh
+
 # Run script to generate passwords
-bash tkg-extensions/registry/harbor/scripts/generate-passwords.sh generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+bash /tmp/harbor-package-2.2.3/config/scripts/generate-passwords.sh generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+
 # Specify settings in harbor-data-values.yaml
-export CLAIR_ENABLED=false
 export HARBOR_ADMIN_PASSWORD=$(yq e ".harbor.admin-password" $PARAMS_YAML)
 yq e -i ".hostname = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i '.clair.enabled = env(CLAIR_ENABLED)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.crt" = strenv(HARBOR_CERT_CRT)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.key" = strenv(HARBOR_CERT_KEY)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-yq e -i '.ca = "letsencrypt"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 # Enhance PVC to 30GB for TBS use cases. Comment this row if 10GB is enough for you
 yq e -i '.persistence.persistentVolumeClaim.registry.size = "30Gi"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.harborAdminPassword = env(HARBOR_ADMIN_PASSWORD)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
-# Check for Blob storage type
-# TODO: COME BACK AND CONERT THIS TO YQ 4
-HARBOR_BLOB_STORAGE_TYPE=$(yq e .harbor.blob-storage.type $PARAMS_YAML)
-if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
-  yq d generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.persistentVolumeClaim"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.type" "s3"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.s3.regionendpoint" "$(yq r $PARAMS_YAML harbor.blob-storage.regionendpoint)"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.s3.region" "$(yq r $PARAMS_YAML harbor.blob-storage.region)"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.s3.accesskey" "$(yq r $PARAMS_YAML harbor.blob-storage.access-key-id)"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.s3.secretkey" "$(yq r $PARAMS_YAML harbor.blob-storage.secret-access-key)"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.s3.bucket" "$(yq r $PARAMS_YAML harbor.blob-storage.bucket)"
-  yq write generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml -i "persistence.imageChartStorage.s3.secure" "$(yq r $PARAMS_YAML harbor.blob-storage.secure)"
-fi
-
-# Add in the document seperator that yq removes
-add_yaml_doc_seperator generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-
-# Create a Kubernetes secret named harbor-data-values with the values that you set in harbor-data-values.yaml.
-# Using the following "apply" syntax to allow for re-run
-kubectl create secret generic harbor-data-values -n tanzu-system-registry -o yaml --dry-run=client \
-  --from-file=values.yaml=generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml | kubectl apply -f -
-
-# Put the Let's Encrypt CA certificate into a configmap to add to trusted certifcates
-ytt -f overlay/trust-certificate/configmap.yaml -f overlay/trust-certificate/values.yaml --ignore-unknown-comments \
-  --data-value certificate="$(cat keys/letsencrypt-ca.pem)" \
-  --data-value ca=letsencrypt | kubectl apply -f - -n tanzu-system-registry
-
-# Add overlay to use let's encrypt cluster issuer and trust Let's Encrypt
-kubectl create configmap harbor-overlay -n tanzu-system-registry -o yaml --dry-run=client \
-  --from-file=overlay-s3-pvc-fix.yaml=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml \
-  --from-file=trust-letsencrypt.yaml=overlay/trust-certificate/overlay.yaml | kubectl apply -f-
-
-# Generate the modified harbor extension
-ytt \
-  -f tkg-extensions/extensions/registry/harbor/harbor-extension.yaml \
-  -f tkg-extensions-mods-examples/registry/harbor/harbor-extension-overlay.yaml \
-  --ignore-unknown-comments \
-  > generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-extension.yaml
-
-# Update Harbor using modifified Extension
-kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-extension.yaml
-
-while kubectl get app harbor -n tanzu-system-registry | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-	echo Harbor extension is not yet ready
-	sleep 5s
-done
+# # Create Harbor using modifified Extension
+# tanzu package install harbor \
+#     --package-name harbor.tanzu.vmware.com \
+#     --version 2.2.3+vmware.1-tkg.1-rc.2 \
+#     --namespace tanzu-kapp \
+#     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it
 
