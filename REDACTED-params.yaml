@@ -46,7 +46,7 @@ management-cluster:
   pinniped-fqdn: pinniped.dragonstone.tkg-aws-e2-lab.winterfell.live
   prometheus-fqdn: prometheus.dragonstone.tkg-aws-e2-lab.winterfell.live
   grafana-fqdn: grafana.dragonstone.tkg-aws-e2-lab.winterfell.live
-  controlplane-endpoint: 192.168.7.180 # only required for vsphere iaas
+  controlplane-endpoint: 192.168.7.180 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
 shared-services-cluster:
   worker-replicas: 2
   worker-replicas-max: 4
@@ -57,7 +57,7 @@ shared-services-cluster:
   kibana-fqdn: logs.dorn.tkg-aws-e2-lab.winterfell.live
   prometheus-fqdn: prometheus.dorn.tkg-aws-e2-lab.winterfell.live
   grafana-fqdn: grafana.dorn.tkg-aws-e2-lab.winterfell.live
-  controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas
+  controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
   kubernetes-version: v1.20.5---vmware.1-tkg.1 # To Explicitly set to v1.20.5---vmware.1-tkg.1 version (optional)
 workload-cluster:
   worker-replicas: 1
@@ -67,7 +67,7 @@ workload-cluster:
   ingress-fqdn: '*.highgarden.tkg-aws-e2-lab.winterfell.live'
   prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live # Leave this blank if you choose not to expose prometheus
   grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
-  controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas
+  controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
 okta:
   auth-server-fqdn: dev-677945.okta.com
   tkg-app-client-id: REDACTED
@@ -112,12 +112,13 @@ kubeapps:
 grafana:
   admin-password: REDACTED
 avi:
-  avi-enable: "true"
   avi-ca-data: encodedlongstring
   avi-cloud-name: Default-Cloud
   avi-controller: 192.168.14.190
   avi-data-network: VIP-VLAN15-PG
   avi-data-network-cidr: 192.168.15.0/24
+  avi-management-cluster-vip-network: VIP-VLAN15-PG
+  avi-management-cluster-vip-network-cidr: 192.168.15.0/24
   avi-labels: ""
   avi-password: "VMware1!"
   avi-service-engine-group: Default-Group

@@ -65,10 +65,9 @@ az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot
 
 First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.3.1 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.20.5 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
 
-- Photon v3 Kubernetes v1.20.5 OVA (our scripts will only use this version)
-- Photon v3 Kubernetes v1.19.9 OVA
-- Photon v3 Kubernetes v1.18.17 OVA
-- Photon v3 Kubernetes v1.17.16 OVA
+- Photon v3 Kubernetes v1.21.2 OVA (our scripts will only use this version)
+- Photon v3 Kubernetes v1.20.8 OVA
+- Photon v3 Kubernetes v1.19.12 OVA
 
 Then you can follow the manual steps in the documentation or use the following script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at `keys/tkg_rsa` and `keys/tkg_rsa.pub`.
 
@@ -83,7 +82,6 @@ You'll need to install [govc](https://github.com/vmware/govmomi/tree/master/govc
 Make sure you install and set up the AVI Controller by following this [instructions](../avi/setup_avi_ctrl.md).
 
 Configure all AVI properties in your `params.yaml` file. For these properties you can leave the default values if you followed the provided AVI Controller Setup instructions.
-- `avi-enable: "true"`
 - `avi-cloud-name: Default-Cloud`
 - `avi-service-engine-group: Default-Group`
 - `avi-username: admin`
@@ -93,9 +91,13 @@ Configure the network information according to your network topology choice and 
 - `avi-controller: 192.168.14.190`
 - `avi-data-network: VIP-VLAN15-PG`
 - `avi-data-network-cidr: 192.168.15.0/24`
+- `avi-management-cluster-vip-network: VIP-VLAN15-PG`
+- `avi-management-cluster-vip-network-cidr: 192.168.15.0/24`
+Set also the control-plane endpoint within the avi-management-cluster-vip-network-cidr:
+- `controlplane-endpoint: 192.168.15.20`
 Set the admin password
 - `avi-password: "REDACTED"`
-You can leave labels empty to ensure AVI is used from every clusters
+You can leave labels empty to ensure AVI is used from every cluster
 - `avi-labels: ""`
 
 
