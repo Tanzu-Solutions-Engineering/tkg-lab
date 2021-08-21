@@ -1,12 +1,12 @@
 AZURE_CLIENT_ID:
-AZURE_CLIENT_SECRET: 
-AZURE_CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling azure.control-plane-machine-type in params.yaml 
-AZURE_LOCATION: 
+AZURE_CLIENT_SECRET:
+AZURE_CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling azure.control-plane-machine-type in params.yaml
+AZURE_LOCATION:
 AZURE_NODE_MACHINE_TYPE:  # Added by scripts by pulling azure.node-machine-type in params.yaml
-AZURE_SSH_PUBLIC_KEY_B64: 
-AZURE_SUBSCRIPTION_ID: 
+AZURE_SSH_PUBLIC_KEY_B64:
+AZURE_SUBSCRIPTION_ID:
 AZURE_TENANT_ID:
-CLUSTER_NAME: 
+CLUSTER_NAME:
 
 # Defaults
 IDENTITY_MANAGEMENT_TYPE: oidc
@@ -17,5 +17,6 @@ OIDC_IDENTITY_PROVIDER_USERNAME_CLAIM: email
 INFRASTRUCTURE_PROVIDER: azure
 CLUSTER_PLAN: dev
 TKG_HTTP_PROXY_ENABLED: "false"
+ENABLE_AUDIT_LOGGING: "true"
 ENABLE_CEIP_PARTICIPATION: "false"
 ENABLE_MHC: "true"

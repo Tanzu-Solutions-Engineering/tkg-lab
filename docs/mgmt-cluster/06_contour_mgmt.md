@@ -1,12 +1,5 @@
 # Install Contour on Management Cluster
 
-## Deploy AKO (only for vSphere installations and until AVI AKO is installed in the mgmt cluster!!)
-Run the script passing the range as parameters. Example:
-
-```bash
-./scripts/deploy-ako.sh $(yq e .management-cluster.name $PARAMS_YAML)
-```
-
 ## Deploy Contour
 
 Apply Contour configuration. We explicitly configure contour to use service type=LoadBalancer for Envoy.  Use this script to apply yamls.
