@@ -30,8 +30,8 @@ then
     gcloud projects add-iam-policy-binding $GCLOUD_PROJECT \
       --role='roles/dns.admin' \
       --member='serviceAccount:external-dns@'$GCLOUD_PROJECT'.iam.gserviceaccount.com'
-      gcloud iam service-accounts keys create keys/gcloud-dns-credentials.json \
-        --iam-account 'external-dns@'$GCLOUD_PROJECT'.iam.gserviceaccount.com'
+    gcloud iam service-accounts keys create keys/gcloud-dns-credentials.json \
+      --iam-account 'external-dns@'$GCLOUD_PROJECT'.iam.gserviceaccount.com'
   fi
   kubectl -n tanzu-system-service-discovery create secret \
     generic gcloud-dns-credentials \
@@ -41,8 +41,8 @@ then
 
   export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML)
   export PROJECT_ID=--google-project=$(yq e .gcloud.project $PARAMS_YAML)
-  yq e -i '.externalDns.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-  yq e -i '.externalDns.deployment.args[6] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[6] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
 else # Using AWS Route53
 
@@ -91,4 +91,3 @@ tanzu package installed update contour \
     --namespace tanzu-kapp \
     --version 1.17.1+vmware.1-tkg.1-rc.2 \
     --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-
