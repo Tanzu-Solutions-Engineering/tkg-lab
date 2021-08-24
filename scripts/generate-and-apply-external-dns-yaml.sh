@@ -34,7 +34,8 @@ then
   fi
   kubectl -n tanzu-system-service-discovery create secret \
     generic gcloud-dns-credentials \
-    --from-file=credentials.json=keys/gcloud-dns-credentials.json
+    --from-file=credentials.json=keys/gcloud-dns-credentials.json \
+    -o yaml --dry-run=client | kubectl apply -f-
 
   cp tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-data-values-google-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
@@ -60,6 +61,6 @@ fi
 
 tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
-    --version 0.8.0+vmware.1-tkg.1-rc.2 \
+    --version 0.8.0+vmware.1-tkg.1-rc.3 \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
