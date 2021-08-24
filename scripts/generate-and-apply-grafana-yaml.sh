@@ -39,6 +39,7 @@ else
 fi
 
 yq e ".grafana.secret.admin_password = env(ADMIN_PASSWORD)" --null-input > generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
+yq e -i '.grafana.service.type = "ClusterIP"' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 yq e -i ".ingress.virtual_host_fqdn = env(GRAFANA_FQDN)" generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml -i
 yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(GRAFANA_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 yq e -i '.ingress.tlsCertificate."tls.key" = strenv(GRAFANA_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
