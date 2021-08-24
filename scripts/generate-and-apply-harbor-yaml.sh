@@ -48,15 +48,9 @@ export HARBOR_CERT_KEY=$(kubectl get secret harbor-cert-tls -n tanzu-system-regi
 export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 
 # Prepare Harbor custom configuration
-image_url=$(kubectl -n tanzu-package-repo-global get packages harbor.tanzu.vmware.com.2.2.3+vmware.1-tkg.1-rc.2 -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
+image_url=$(kubectl -n tanzu-package-repo-global get packages harbor.tanzu.vmware.com.2.2.3+vmware.1-tkg.1-rc.3 -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
 imgpkg pull -b $image_url -o /tmp/harbor-package-2.2.3
 cp /tmp/harbor-package-2.2.3/config/values.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-
-# Remove all comments
-sed -i 's/#.*$//g' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
-
-# HACK: Comment out lines 48-50 because they incorrectly add --- to the third row.
-sed -i '48,50 s/^/#/' /tmp/harbor-package-2.2.3/config/scripts/generate-passwords.sh
 
 # Run script to generate passwords
 bash /tmp/harbor-package-2.2.3/config/scripts/generate-passwords.sh generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
@@ -71,12 +65,15 @@ yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC
 yq e -i '.persistence.persistentVolumeClaim.registry.size = "30Gi"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.harborAdminPassword = env(HARBOR_ADMIN_PASSWORD)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
-# # Create Harbor using modifified Extension
-# tanzu package install harbor \
-#     --package-name harbor.tanzu.vmware.com \
-#     --version 2.2.3+vmware.1-tkg.1-rc.2 \
-#     --namespace tanzu-kapp \
-#     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+# # Remove all comments
+yq -i eval '... comments=""' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+
+# Create Harbor using modifified Extension
+tanzu package install harbor \
+    --package-name harbor.tanzu.vmware.com \
+    --version 2.2.3+vmware.1-tkg.1-rc.3 \
+    --namespace tanzu-kapp \
+    --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it
 
