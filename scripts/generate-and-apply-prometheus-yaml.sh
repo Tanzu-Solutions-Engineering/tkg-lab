@@ -33,13 +33,12 @@ export PROMETHEUS_CERT_KEY=$(kubectl get secret prometheus-cert-tls -n tanzu-sys
 export TRUE_VALUE=true
 yq e ".ingress.enabled = env(TRUE_VALUE)" --null-input > generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 yq e -i ".ingress.virtual_host_fqdn = env(PROMETHEUS_FQDN)" generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
-yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml 
-yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml 
+yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 
 # Apply Monitoring
 tanzu package install prometheus \
     --package-name prometheus.tanzu.vmware.com \
-    --version 2.27.0+vmware.1-tkg.1-rc.2 \
+    --version 2.27.0+vmware.1-tkg.1-rc.3 \
     --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml 
-
+    --values-file generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml

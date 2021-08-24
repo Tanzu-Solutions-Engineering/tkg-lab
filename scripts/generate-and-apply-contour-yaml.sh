@@ -21,7 +21,7 @@ yq e '.envoy.service.type = "LoadBalancer"' --null-input > generated/$CLUSTER_NA
 # Double check the version number form above list command and update below as necessary
 tanzu package install contour \
     --package-name contour.tanzu.vmware.com \
-    --version 1.17.1+vmware.1-tkg.1-rc.2 \
+    --version 1.17.1+vmware.1-tkg.1-rc.3 \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 

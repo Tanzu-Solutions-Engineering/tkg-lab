@@ -47,6 +47,6 @@ yq e -i '.ingress.tlsCertificate."tls.key" = strenv(GRAFANA_CERT_KEY)' generated
 # Apply Monitoring
 tanzu package install grafana \
     --package-name grafana.tanzu.vmware.com \
-    --version 7.5.7+vmware.1-tkg.1-rc.2 \
+    --version 7.5.7+vmware.1-tkg.1-rc.3 \
     --namespace tanzu-kapp \
 	--values-file generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
