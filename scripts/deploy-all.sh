@@ -20,9 +20,7 @@ then
   $TKG_LAB_SCRIPTS/deploy-ako.sh $(yq e .management-cluster.name $PARAMS_YAML)
 fi
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
-$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
-  $(yq e .management-cluster.name $PARAMS_YAML) \
-  $(yq e .management-cluster.ingress-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
 # Management Step 7
 $TKG_LAB_SCRIPTS/update-pinniped-configuration.sh
