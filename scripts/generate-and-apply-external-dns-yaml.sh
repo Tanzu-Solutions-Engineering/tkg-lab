@@ -3,13 +3,12 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
-if [ ! $# -eq 2 ]; then
-  echo "Must supply cluster_name and ingress-fqdn as args"
+if [ ! $# -eq 1 ]; then
+  echo "Must supply cluster_name as arg"
   exit 1
 fi
 
 CLUSTER_NAME=$1
-export INGRESS_FQDN=$2
 DNS_PROVIDER=$(yq e .dns.provider $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
@@ -64,19 +63,3 @@ tanzu package install external-dns \
     --version 0.8.0+vmware.1-tkg.1-rc.2 \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-
-# Now update the contour extension to include external dns annotation
-yq e -i '.tkg_lab.ingress_fqdn = strenv(INGRESS_FQDN)' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-
-kubectl create secret generic contour-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/ingress/contour/contour-overlay.yaml | kubectl apply -f-
-
-# must annotate the packageinstall referring to the secret above
-kubectl annotate PackageInstall contour \
-	-n tanzu-kapp \
-	ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=contour-overlay \
-	--overwrite=true
-
-tanzu package installed update contour \
-    --namespace tanzu-kapp \
-    --version 1.17.1+vmware.1-tkg.1-rc.2 \
-    --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml

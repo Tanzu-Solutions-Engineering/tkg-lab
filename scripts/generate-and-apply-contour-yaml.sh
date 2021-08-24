@@ -4,12 +4,11 @@ TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 source $TKG_LAB_SCRIPTS/set-env.sh
 
 if [ ! $# -eq 1 ]; then
-  echo "Must supply cluster_name as args"
+  echo "Must supply cluster_name as arg"
   exit 1
 fi
 
 CLUSTER_NAME=$1
-
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME

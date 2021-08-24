@@ -53,9 +53,7 @@ gcloud:
 For any DNS provider, execute the script below to deploy `external-dns` and to apply the annotation.
 
 ```bash
-./scripts/generate-and-apply-external-dns-yaml.sh \
-  $(yq e .management-cluster.name $PARAMS_YAML) \
-  $(yq e .management-cluster.ingress-fqdn $PARAMS_YAML)
+./scripts/generate-and-apply-external-dns-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML) 
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests
