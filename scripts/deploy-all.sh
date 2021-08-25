@@ -45,9 +45,7 @@ $TKG_LAB_SCRIPTS/tmc-policy.sh \
 # Shared Services Step 4
 $TKG_LAB_SCRIPTS/deploy-cert-manager.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
-$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh \
-  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
-  $(yq e .shared-services-cluster.ingress-fqdn $PARAMS_YAML)
+$TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 6
 $TKG_LAB_SCRIPTS/generate-and-apply-elasticsearch-kibana-yaml.sh

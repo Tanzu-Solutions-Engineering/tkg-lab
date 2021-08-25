@@ -31,9 +31,7 @@ Just as we did for the management cluster, we will leverage [external-dns](https
 Execute the script below to deploy `external-dns` and to apply the annotation to the envoy service.
 
 ```bash
-./scripts/generate-and-apply-external-dns-yaml.sh \
-  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
-  $(yq e .shared-services-cluster.ingress-fqdn $PARAMS_YAML)
+./scripts/generate-and-apply-external-dns-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests
