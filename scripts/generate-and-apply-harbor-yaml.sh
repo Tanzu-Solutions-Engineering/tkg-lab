@@ -69,9 +69,10 @@ yq e -i '.harborAdminPassword = env(HARBOR_ADMIN_PASSWORD)' generated/$SHAREDSVC
 yq -i eval '... comments=""' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
 # Create Harbor using modifified Extension
+VERSION=$(tanzu package available list harbor.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
 tanzu package install harbor \
     --package-name harbor.tanzu.vmware.com \
-    --version 2.2.3+vmware.1-tkg.1-rc.3 \
+    --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 

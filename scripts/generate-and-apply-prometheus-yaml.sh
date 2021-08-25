@@ -37,8 +37,9 @@ yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' genera
 yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 
 # Apply Monitoring
+VERSION=$(tanzu package available list prometheus.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
 tanzu package install prometheus \
     --package-name prometheus.tanzu.vmware.com \
-    --version 2.27.0+vmware.1-tkg.1-rc.3 \
+    --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml

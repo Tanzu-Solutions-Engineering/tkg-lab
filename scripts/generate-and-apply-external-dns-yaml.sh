@@ -70,8 +70,9 @@ else # Using AWS Route53
     -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
 fi
 
+VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
 tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
-    --version 0.8.0+vmware.1-tkg.1-rc.3 \
+    --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
