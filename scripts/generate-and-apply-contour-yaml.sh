@@ -19,9 +19,10 @@ mkdir -p generated/$CLUSTER_NAME/contour/
 yq e '.envoy.service.type = "LoadBalancer"' --null-input > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
 # Double check the version number form above list command and update below as necessary
+VERSION=$(tanzu package available list contour.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
 tanzu package install contour \
     --package-name contour.tanzu.vmware.com \
-    --version 1.17.1+vmware.1-tkg.1-rc.3 \
+    --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 

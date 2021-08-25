@@ -61,8 +61,9 @@ EOF
 yq e ".fluent_bit.config.outputs = strenv(CONFIG_OUTPUTS)" --null-input > generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 yq e -i ".fluent_bit.config.filters = strenv(CONFIG_FILTERS)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
+VERSION=$(tanzu package available list fluent-bit.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
 tanzu package install fluent-bit \
     --package-name fluent-bit.tanzu.vmware.com \
-    --version 1.7.5+vmware.1-tkg.1-rc.2 \
+    --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
