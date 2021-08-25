@@ -14,5 +14,5 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 tanzu package install cert-manager \
     --package-name cert-manager.tanzu.vmware.com \
-    --version 1.1.0+vmware.1-tkg.2-rc.2 \
+    --version 1.1.0+vmware.1-tkg.2-rc.3 \
     --namespace tanzu-kapp
