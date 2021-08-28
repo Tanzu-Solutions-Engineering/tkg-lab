@@ -11,3 +11,4 @@ AZURE_NODE_MACHINE_TYPE:  # Added by scripts by pulling azure.node-machine-type 
 CLUSTER_PLAN: dev
 ENABLE_AUDIT_LOGGING: true
 ENABLE_DEFAULT_STORAGE_CLASS: true
+IDENTITY_MANAGEMENT_TYPE: oidc
