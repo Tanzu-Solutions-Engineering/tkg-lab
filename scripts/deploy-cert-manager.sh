@@ -12,7 +12,9 @@ CLUSTER_NAME=$1
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
+VERSION=$(tanzu package available list cert-manager.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+
 tanzu package install cert-manager \
     --package-name cert-manager.tanzu.vmware.com \
-    --version 1.1.0+vmware.1-tkg.2-rc.3 \
+    --version $VERSION \
     --namespace tanzu-kapp
