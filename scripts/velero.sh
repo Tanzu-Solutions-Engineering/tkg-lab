@@ -65,8 +65,8 @@ if [ "$IAAS" = "vsphere" ];
 then
   velero schedule create daily-$CLUSTER_NAME-cluster-backup \
     --schedule "0 7 * * *" \
-    --volume-snapshot-locations vsl-vsphere
+    --volume-snapshot-locations default
 else
   velero schedule create daily-$CLUSTER_NAME-cluster-backup \
-    --schedule "0 7 * * *" 
+    --schedule "0 7 * * *"
 fi
