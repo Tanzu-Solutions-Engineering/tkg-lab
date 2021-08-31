@@ -49,12 +49,12 @@ then
 
 else # Using AWS Route53
 
-  cp tkg-extensions/extensions/service-discovery/external-dns/external-dns-data-values-aws-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  cp tkg-extensions/extensions/service-discovery/external-dns/external-dns-data-values-aws.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
   export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML)
   export HOSTED_ZONE_ID=--txt-owner-id=$(yq e .aws.hosted-zone-id $PARAMS_YAML)
-  yq e -i '.externalDns.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-  yq e -i '.externalDns.deployment.args[9] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.externalDns.deployment.args[2] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.externalDns.deployment.args[8] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
   add_yaml_doc_seperator generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 

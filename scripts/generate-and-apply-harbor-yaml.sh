@@ -10,11 +10,16 @@ fi
 MGMT_CLUSTER_NAME=$1
 SHAREDSVC_CLUSTER_NAME=$2
 
+
+export KUBECONFIG=""
+
 # Identifying Shared Services Cluster at TKG level
 kubectl config use-context $MGMT_CLUSTER_NAME-admin@$MGMT_CLUSTER_NAME
 kubectl label cluster.cluster.x-k8s.io/$SHAREDSVC_CLUSTER_NAME cluster-role.tkg.tanzu.vmware.com/tanzu-services="" --overwrite=true
-tanzu login --server $MGMT_CLUSTER_NAME
-tanzu cluster list --include-management-cluster
+# tanzu login --server $MGMT_CLUSTER_NAME
+# tanzu cluster list --include-management-cluster
+
+export KUBECONFIG=keys/$SHAREDSVC_CLUSTER_NAME.kubeconfig
 
 # Install Harbor in Shared Services Cluster
 kubectl config use-context $SHAREDSVC_CLUSTER_NAME-admin@$SHAREDSVC_CLUSTER_NAME
@@ -24,7 +29,7 @@ echo "Beginning Harbor install..."
 
 export HARBOR_CN=$(yq e .harbor.harbor-cn $PARAMS_YAML)
 
-export NOTARY_CN="notary."$HARBOR_CN
+export NOTARY_CN=$(yq e .harbor.notary-cn $PARAMS_YAML)
 
 mkdir -p generated/$SHAREDSVC_CLUSTER_NAME/harbor
 

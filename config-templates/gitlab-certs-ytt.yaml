@@ -1,0 +1,47 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: gitlab-cert
+  namespace: gitlab
+spec:
+  commonName: #@ data.values.gitlab["web-domain"]
+  dnsNames:
+  - #@ data.values.gitlab["web-domain"]
+  secretName: gitlab-gitlab-tls
+  issuerRef:
+    name: letsencrypt-contour-cluster-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: gitlab-registry-cert
+  namespace: gitlab
+spec:
+  commonName: #@ data.values.gitlab["registry-domain"]
+  dnsNames:
+  - #@ data.values.gitlab["registry-domain"]
+  secretName: gitlab-registry-tls
+  issuerRef:
+    name: letsencrypt-contour-cluster-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: gitlab-minio-cert
+  namespace: gitlab
+spec:
+  commonName: #@ data.values.gitlab["minio-domain"]
+  dnsNames:
+  - #@ data.values.gitlab["minio-domain"]
+  secretName: gitlab-minio-tls
+  issuerRef:
+    name: letsencrypt-contour-cluster-issuer
+    kind: ClusterIssuer

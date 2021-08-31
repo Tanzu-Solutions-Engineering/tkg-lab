@@ -3,19 +3,14 @@
 TKG_LAB_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $TKG_LAB_SCRIPTS/set-env.sh
 
-export MANAGEMENT_CLUSTER_NAME=$(yq r $PARAMS_YAML management-cluster.name)
+export MANAGEMENT_CLUSTER_NAME=$(yq e .management-cluster.name $PARAMS_YAML)
+export IAAS=$(yq e .iaas $PARAMS_YAML)
+export VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
+export TMC_CLUSTER_GROUP=$(yq e .tmc.cluster-group $PARAMS_YAML)
+export TMC_API_TOKEN=$(yq e .tmc.api-token $PARAMS_YAML)
 
-IAAS=$(yq r $PARAMS_YAML iaas)
-VMWARE_ID=$(yq r $PARAMS_YAML vmware-id)
-TMC_CLUSTER_GROUP=$(yq r $PARAMS_YAML tmc.cluster-group)
 
-
-if tmc system context current | grep -q IDToken; then
-  echo "Currently logged into TMC."
-else
-  echo "Please login to tmc before you continue."
-  exit 1
-fi
+tmc login --no-configure --name $(yq e .tmc.context-name $PARAMS_YAML)
 
 if tmc clustergroup list | grep -q $TMC_CLUSTER_GROUP; then
   echo "Cluster group $TMC_CLUSTER_GROUP found."
@@ -27,7 +22,7 @@ fi
 EXPECTED_CONTEXT=$MANAGEMENT_CLUSTER_NAME-admin@$MANAGEMENT_CLUSTER_NAME 
 kubectl config use-context $EXPECTED_CONTEXT --kubeconfig $HOME/.kube-tkg/config
 
-tmc managementcluster register $VMWARE_ID-$MANAGEMENT_CLUSTER_NAME-$IAAS \
+tmc managementcluster register $MANAGEMENT_CLUSTER_NAME \
   --default-cluster-group $TMC_CLUSTER_GROUP \
   --kubeconfig $HOME/.kube-tkg/config \
   --kubernetes-provider-type 'TKG' 

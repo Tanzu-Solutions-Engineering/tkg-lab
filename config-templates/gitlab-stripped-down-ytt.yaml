@@ -1,0 +1,71 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+
+
+gitlab:
+  gitlab-shell:
+    minReplicas: 1
+    maxReplicas: 1
+  sidekiq:
+    minReplicas: 1
+    maxReplicas: 1
+  task-runner:
+    enabled: true
+  webservice:
+    minReplicas: 1
+    maxReplicas: 1
+    ingress:
+      tls:
+        secretName: gitlab-gitlab-tls
+gitlab-runner:
+  install: false
+minio:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  ingress:
+    tls:
+      secretName: gitlab-minio-tls      
+nginx-ingress:
+  controller:
+    minAvailable: 0
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+  defaultBackend:
+    minAvailable: 0
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 5m
+        memory: 5Mi
+prometheus:
+  install: false
+redis:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+registry:
+  hpa:
+    minReplicas: 1
+    maxReplicas: 1
+  ingress:
+    tls:
+      secretName: gitlab-registry-tls    
+certmanager:
+  install: false
+global:
+  hosts:
+    domain: #@ data.values.gitlab["base-domain"]
+  ingress:
+    configureCertmanager: false
+  annotations:
+    kubernetes.io/tls-acme: true
+    cert-manager.io/cluster-issuer: letsencrypt-contour-cluster-issuer

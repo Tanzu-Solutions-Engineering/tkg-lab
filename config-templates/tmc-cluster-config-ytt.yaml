@@ -1,0 +1,57 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+
+#! params = yaml.decode(data.read("stdin.yml"))
+
+fullName:
+  managementClusterName: #@ data.values["management-cluster"].name
+  name: #@ data.values.CLUSTER_NAME
+  provisionerName: #@ data.values.tmc.provisioner
+meta:
+  labels: null
+spec:
+  clusterGroupName: #@ data.values.tmc["cluster-group"]
+  tkgVsphere:
+    distribution:
+      version: #@ data.values.VERSION
+      workspace:
+        datacenter: #@ data.values.vsphere.datacenter
+        datastore: #@ data.values.vsphere.datastore
+        folder: #@ data.values.vsphere["template-folder"]
+        network: #@ data.values.vsphere.network
+        resourcePool: #@ data.values.vsphere["resource-pool"]
+    settings:
+      network:
+        controlPlaneEndpoint: #@ data.values.CONTROL_PLANE_ENDPOINT
+        pods:
+          cidrBlocks:
+          - 172.20.0.0/16
+        services:
+          cidrBlocks:
+          - 10.96.0.0/16
+      security:
+        sshKey: #@ data.values.SSH_KEY
+    topology:
+      controlPlane:
+        vmConfig:
+          cpu: "4"
+          diskGib: "25"
+          memoryMib: "8192"
+      nodePools:
+      - info:
+          description: default description for the nodepool
+          name: default-node-pool
+        spec:
+          tkgVsphere:
+            vmConfig:
+              cpu: "8"
+              diskGib: "60"
+              memoryMib: "16384"
+          workerNodeCount: #@ data.values.WORKER_REPLICAS
+type:
+  kind: Cluster
+  package: vmware.tanzu.manage.v1alpha1.cluster
+  version: v1alpha1
