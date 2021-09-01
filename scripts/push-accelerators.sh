@@ -34,7 +34,10 @@ do
     git init --initial-branch=main
     git add .
     git commit -m 'init' || sleep 0
-    git remote add gl ${ACCELERATOR_URI}${proj}.git
+    # multiple runs, this remote might already exist
+    if [[ -z $(git remote | grep gl) ]]; then
+      git remote add gl ${ACCELERATOR_URI}${proj}.git
+    fi
     git push -u gl main
     kubectl apply -f ./k8s/k8s-accelerator-deployment.yaml
   popd
