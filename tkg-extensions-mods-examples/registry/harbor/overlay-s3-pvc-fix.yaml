@@ -1,24 +1,13 @@
-#@ load("/values.star", "values")
-#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@ kind = kind_overlays
-#@ registry_metadata = overlay.subset({"metadata": {"name": "harbor-registry"}})
-
-#@ registry = values.persistence.persistentVolumeClaim.registry
-#@ storage = values.persistence.imageChartStorage
-
-#@ def pvc_required(x, y, z):
-#@  return not registry.existingClaim and storage.type == "filesystem"
-#@ end
-
-#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, registry_metadata), overlay.not_op(pvc_required)),expects="0+"
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name":"harbor-registry"}}),expects="1+"
 ---
 spec:
   template:
     spec:
       volumes:
         #@overlay/match by="name"
-        #@overlay/replace 
+        #@overlay/replace
         - name: registry-data
           emptyDir: {}
