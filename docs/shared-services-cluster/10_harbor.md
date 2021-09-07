@@ -5,18 +5,19 @@ The following section should be added to or exist in your local params.yaml file
 
 ```yaml
 harbor:
-  harbor-cn: harbor.<shared-cluster domain name>
   admin-password: FOO
+  harbor-cn: harbor.<shared-cluster domain name>
 ```
-> NOTE: TKG 1.3 Extensions force the Notary FQDN to be "notary."+harbor-cn
+> NOTE: Since TKG 1.3 the Notary FQDN is forced to be "notary."+harbor-cn
 
 ### S3 Backing for Harbor
 The default settings for Harbor use PVCs behind the registry pods for blob storage.  Persistent Volume performance can be slow in home labs, or environments with poor storage or networking performance.  You can opt in to using S3 compatible storage as the backing for Harbor, and this can dramatically increase the performance in these environments.
 
 To use S3 blob storage for images managed by Harbor, you can use the following settings in your params.yaml file:
-
+> NOTE: There is a known problem with the first TKG 1.4 that prevents this from working fine when S3 storage is configured. This will be updated as soon as there is a fix.
 ```yaml
 harbor:
+  admin-password: FOO
   harbor-cn: harbor.<shared-cluster domain name>
   blob-storage:
     type: s3 # Default is PVC, and can optionally be S3/MinIO

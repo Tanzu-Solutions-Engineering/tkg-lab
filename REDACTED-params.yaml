@@ -89,7 +89,6 @@ velero:
 harbor:
   admin-password: "VMware1!"
   harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
-  notary-cn: notary.dorn.tkg-aws-e2-lab.winterfell.live
 #  blob-storage:
 #    type: s3 # Default is PVC, and can optionally be S3/MinIO
 #    regionendpoint: http://minio.server:9000 # Not required for AWS S3
