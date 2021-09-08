@@ -10,7 +10,10 @@ $TKG_LAB_SCRIPTS/01-prep-$IAAS-objects.sh
 $TKG_LAB_SCRIPTS/02-deploy-$IAAS-mgmt-cluster.sh
 $TKG_LAB_SCRIPTS/03-post-deploy-mgmt-cluster.sh
 # Management Step 2
-# TMC Attach NOOP
+if [ "$IAAS" != "aws" ];
+then
+  $TKG_LAB_SCRIPTS/tmc-register-mc.sh
+fi
 # Management Step 3
 $TKG_LAB_SCRIPTS/create-dns-zone.sh
 $TKG_LAB_SCRIPTS/retrieve-lets-encrypt-ca-cert.sh
@@ -21,7 +24,6 @@ $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .management-cl
 # Management Step 7
 $TKG_LAB_SCRIPTS/update-pinniped-configuration.sh
 # Management Step 8
-# $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq e .management-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-prometheus-yaml.sh \
   $(yq e .management-cluster.name $PARAMS_YAML) \
   $(yq e .management-cluster.prometheus-fqdn $PARAMS_YAML)
@@ -29,7 +31,7 @@ $TKG_LAB_SCRIPTS/generate-and-apply-grafana-yaml.sh \
   $(yq e .management-cluster.name $PARAMS_YAML) \
   $(yq e .management-cluster.grafana-fqdn $PARAMS_YAML)
 
-# # Shared Services Step 1
+# Shared Services Step 1
 $TKG_LAB_SCRIPTS/deploy-workload-cluster.sh \
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) \
@@ -52,7 +54,6 @@ $TKG_LAB_SCRIPTS/generate-and-apply-elasticsearch-kibana-yaml.sh
 # Shared Services Step 7
 $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 8
-# $TKG_LAB_SCRIPTS/deploy-wavefront.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-prometheus-yaml.sh \
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.prometheus-fqdn $PARAMS_YAML)
