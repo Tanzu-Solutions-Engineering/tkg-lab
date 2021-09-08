@@ -18,4 +18,6 @@ while tanzu cluster list | grep deleting ; [ $? -eq 0 ]; do
 	sleep 5s
 done   
 
+tmc managementcluster deregister $(yq e .management-cluster.name $PARAMS_YAML) --force
+
 tanzu management-cluster delete -y
