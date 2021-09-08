@@ -33,8 +33,7 @@ mkdir -p generated/$CLUSTER_NAME/tmc
 
 tmc managementcluster register $CLUSTER_NAME \
   --default-cluster-group $TMC_CLUSTER_GROUP \
-  --kubernetes-provider-type TKG \
-  --output generated/$CLUSTER_NAME/tmc/mc-register-manifest.yaml
+  --kubernetes-provider-type TKG
 
 TMC_REGISTRATION_URL=$(tmc managementcluster get $CLUSTER_NAME | yq e .status.registrationUrl -)
 
