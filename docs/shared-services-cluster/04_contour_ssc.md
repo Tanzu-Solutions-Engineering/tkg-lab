@@ -2,7 +2,7 @@
 
 ## Deploy Cert Manager
 
-Our solution leverages cert manager to generate valid ssl certs.  Cert-manager was deployed automatically into the management cluster, however it an optional component for workload clusters.  Use this script to deploy cert manager into the cluster using TKG Extensions.
+Our solution leverages cert manager to generate valid ssl certs.  Cert-manager was deployed automatically into the management cluster, however it an optional component for workload clusters.  Use this script to deploy cert manager into the cluster using TKG packages.
 
 ```bash
 ./scripts/deploy-cert-manager.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)

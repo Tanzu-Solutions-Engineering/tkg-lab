@@ -2,7 +2,7 @@
 
 ## Overview
 
-Tanzu offers essential cluster monitoring with Prometheus and Grafana through TKG extensions.  When deployed to a cluster, you have metrics collection and storage, alerting, and dashboards.
+Tanzu offers essential cluster monitoring with Prometheus and Grafana through TKG packages.  When deployed to a cluster, you have metrics collection and storage, alerting, and dashboards.
 
 >Note: This is an in-cluster service.  Using this approach, you would have to deploy Prometheus and Grafana to each cluster with individual storage and dashboards for each cluster.  Alternatively, Tanzu Observability provides multi-cluster observability and is part of the Tanzu Advanced offering.
 

@@ -57,4 +57,4 @@ Now choose Applications (side menu) > Applications > Pick your app > Sign On tab
 
 ## Go to Next Step
 
-[Retrieve TKG Extensions](05_extensions_mgmt.md)
+[Install Contour on Management Cluster](06_contour_mgmt.md)

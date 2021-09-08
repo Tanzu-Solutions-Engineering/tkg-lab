@@ -3,9 +3,9 @@
 ![TKG Lab Base Diagram](docs/tkg-lab-base.png)
 ![TKG Lab Deployment Diagram](docs/tkg-deployment.png)
 
-In this lab, we will deploy Tanzu Kubernetes Grid to vSphere, AWS, or Azure.  We will additionally deploy TKG extensions for ingress, logging, metrics, and container registry services.
+In this lab, we will deploy Tanzu Kubernetes Grid to vSphere, AWS, or Azure.  We will additionally deploy TKG packages for ingress, logging, metrics, service discovery and container registry services.
 
-OSS Signed and Supported Extensions:
+OSS Signed and Supported Packages:
 
 - **Contour** for ingress
 - **Fluent-bit** for logging
@@ -32,7 +32,7 @@ Additional OSS components not supported by VMware
 
 ## Goals and Audience
 
-The following demo is for Tanzu field team members to see how various components of Tanzu and OSS ecosystem come together to build a modern application platform.  We will highlight two different roles of the platform team and the application team's dev ops role.  This could be delivered as a presentation and demo.  Or it could be extended to include having the audience actually deploy the full solution on their own using their cloud resources. The latter would be for SE’s and likely require a full day.
+The following demo is for Tanzu field team members to see how various components of Tanzu and OSS ecosystem come together to build a modern application platform.  We will highlight two different roles of the platform team and the application team's devops role.  This could be delivered as a presentation and demo.  Or it could be extended to include having the audience actually deploy the full solution on their own using thier cloud resources. The latter would be for SE’s and likely require a full day.
 
 What we do have is a combination of open source and proprietary components, with a bias towards providing VMware built/signed OSS components by default, with flexibility to swap components and flexible integrations.
 
@@ -42,7 +42,7 @@ VMware commercial products included are: TKG, TO and TMC.
 
 ## Scenario Business Context
 
-The acme corporation is looking to grow its business by improving their customer engagement channels and quickly testing various marketing and sales campaigns.  Their current business model and methods can not keep pace with this anticipated growth.  They recognize that software will play a critical role in this business transformation.  Their development and ops engineers have chosen microservices and kubernetes as foundational components to their new delivery model.  They have engaged as a partner to help them with their ambitious goals.
+The acme corporation is looking to grow its business by improving their customer engagement channels and quickly testing various marketing and sales campaigns.  Their current business model and methods can not keep pace with this anticipated growth.  They recognize that software will play a critical role in this business transformation.  Their development and ops engineers have chosen microservices and Kubernetes as foundational components to their new delivery model.  They have engaged as a partner to help them with their ambitious goals.
 
 ## App Team
 
@@ -69,9 +69,9 @@ DEMO: With this information, let’s go explore and make use of the platform…
 
 - Retrieve kubeconfig with tanzu cli
 - Update ingress definition based upon base domain and deploy application (acme-fitness)
-- Test access to the app as an end user (convoy)
-- View application logs (kibana, elastic search, fluent-bit)
-- View application metrics (tanzu observability)
+- Test access to the app as an end user (contour)
+- View application logs (kibana, elasticsearch, fluent-bit)
+- View application metrics (prometheus and grafana or tanzu observability)
 - View backup configuration (velero)
 - Browse overall platform data, observability, and policy (tmc)
 
@@ -81,10 +81,10 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 
 - kubectl
 - tmc
-- tanzu v1.3.1
-- velero
+- tanzu v1.4.0
+- velero v1.6.2
 - helm v3
-- [yq v4.x+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
+- [yq v4.12+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
 - kind (helpful, but not required)
 - ytt, kapp, imgpkg, kbld (bundled with tkg)
 
@@ -92,7 +92,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 
 There are are few options to setup the foundation lab setup of three clusters: management cluster, shared services cluster, and workload cluster.
 
-1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  Best really learning how each cluster is setup and the extensions and integration configured for the lab.  The guidance includes options for AWS and vSphere.
+1. [Step by Step Guide](docs/baseline-lab-setup/step-by-step.md) - Provides instructional guidance for each step, along with validation actions.  This is the best option for really learning how each cluster is setup and develop experience with the enterprise packages and integrations configured for the lab.
 2. [One Step Scripted Deployment](docs/baseline-lab-setup/one-step.md) - This method assumes you have done any required manual steps.  There is one script that will deploy all clusters and perform integrations.  It is best to use this after you have already completed the step by step guide, as any specific configuration issue you may would have been worked out in that process previously.
 
 ## Acme Fitness Lab

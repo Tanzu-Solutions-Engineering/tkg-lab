@@ -31,7 +31,7 @@ harbor:
 
 Since this storage is external to the process, you will need to clean it up if you decide to tear down your environment.
 
-## Prepare Manifests and Deploy Harbor Extension
+## Prepare Manifests and Deploy Harbor Package
 Harbor Registry will be installed in the shared services cluster, as it is going to be available to all users.  Prepare and deploy the YAML manifests for the related Harbor K8S objects.  Manifest will be output into `generated/$SHAREDSVC_CLUSTER_NAME/harbor` in case you want to inspect.
 
 ```bash

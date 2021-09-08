@@ -31,9 +31,9 @@ If Azure:
 az network lb list
 ```
 
-## Setup DNS for Wildcard Domain Contour Ingress
+## Setup DNS Management
 
-We will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates using the [Service Discovery with External DNS TKG Extension](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-extensions-external-dns.html).  Then by applying an annotation containing the wildcard domain for the ingress to the `envoy` service, `external-dns` will observe the change and make the desired updates within the DNS Provider: Route53 (default) or Google Cloud DNS depending on the configuration of `dns.provider`.  
+We will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates using the user-managed package associated with TKG [Service Discovery with ExternalDNS](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-external-dns.html).  Any HTTPProxy, Ingress, or Service with annotations, `external-dns` will observe the change and make the desired updates within the DNS Provider: Route53 (default) or Google Cloud DNS depending on the configuration of `dns.provider`.  
 
 If we are leveraging Route53, we require access to AWS.  See [external-dns docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) for minimum access required for the AWS account you are using.  If necessary, set the policy and assign to the user for the access key.  So regardless of TKG IaaS, ensure the following are set in `params.yaml`:
 
@@ -58,7 +58,7 @@ For any DNS provider, execute the script below to deploy `external-dns` and to a
 
 ## Prepare and Apply Cluster Issuer Manifests
 
-Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/mgmt/tkg-extensions-mods/ingress/contour/generated/` in case you want to inspect. It is assumed that if you IaaS is AWS or Azure, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment. If using the `dns` challenge, this script assumes Route 53 DNS by default unless `dns.provider` is set to `gcloud-dns`.
+Prepare the YAML manifests for the contour cluster issuer.  Manifest will be output into `clusters/$CLUSTER_NAME/contour/generated/` in case you want to inspect. It is assumed that if you IaaS is AWS or Azure, then you will use the `http` challenge type and if your IaaS is vSphere, you will use the `dns` challenge type as a non-interfacing environment. If using the `dns` challenge, this script assumes Route 53 DNS by default unless `dns.provider` is set to `gcloud-dns`.
 
 ```bash
 ./scripts/generate-and-apply-cluster-issuer-yaml.sh $(yq e .management-cluster.name $PARAMS_YAML)
