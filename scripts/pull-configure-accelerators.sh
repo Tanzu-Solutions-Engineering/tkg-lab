@@ -46,6 +46,8 @@ ACCEL_FQDN=$(yq e .app-accelerator.fqdn $PARAMS_YAML)
 ACCEL_URL=https://${ACCEL_FQDN}/api/accelerators/zip?name=
 APP_PARAMS_JSON=${TKG_LAB_SCRIPTS}/../../app-params.json
 
+rm -rf ${WORKDIR}/*
+
 # curl -vv "https://app-accelerator.ss.rhe2e.k10s.io/api/accelerators/zip?name=catalog-accelerator" -X POST --data "@catalog-request.json" -o test.zip
 
 for accel in shopping-cart-accelerator catalog-accelerator frontend-accelerator image-cache-accelerator knative-shim-accelerator loadgen-accelerator order-accelerator payment-accelerator

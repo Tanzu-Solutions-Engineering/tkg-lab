@@ -30,20 +30,25 @@ do
     
     DESTINATION_GIT=${APP_URI_PREFIX}${proj}
     IMAGE_REPO=${HARBOR_FQDN}/${HARBOR_ACME_PROJECT_NAME}/${proj}:0.0.1
-
-    ytt -f ./k8s/kp-image.yaml --data-value destinationGit=${DESTINATION_GIT} --data-value imageRepo=${IMAGE_REPO} --data-value projectName=${proj}
+    if [[ -f ./k8s/kp-image.yaml ]]; then
+      ytt -f ./k8s/kp-image.yaml --data-value destinationGit=${DESTINATION_GIT} --data-value imageRepo=${IMAGE_REPO} --data-value projectName=${proj} \
+        | kubectl apply -f-
+    fi
     
   popd
 done
 
 
-# for proj in ${FRONTEND_PROJECT} ${IMAGECACHE_PROJECT} ${KNATIVE_SHIM_PROJECT} ${CART_PROJECT} ${CATALOG_PROJECT} ${ORDER_PROJECT} ${PAYMENT_PROJECT} ${LOADGEN_PROJECT}
-# do
-#   RESULT=$(kubectl get image -n acme-build ${proj} -o json | jq -r '.status.conditions[] | select(.type == "Ready").status')
-#   while [ $RESULT != "True" ]
-#   do 
-#     sleep 3
-#     RESULT=$(kubectl get image -n acme-build ${proj} -o json | jq -r '.status.conditions[] | select(.type == "Ready").status')
-#   done
-
-# done
+for proj in ${FRONTEND_PROJECT} ${IMAGECACHE_PROJECT} ${KNATIVE_SHIM_PROJECT} ${CART_PROJECT} ${CATALOG_PROJECT} ${ORDER_PROJECT} ${PAYMENT_PROJECT} ${LOADGEN_PROJECT}
+do
+  pushd ${TKG_LAB_SCRIPTS}/../../workdir/${proj}
+    if [[ -f ./k8s/kp-image.yaml ]]; then
+      RESULT=$(kubectl get image -n acme-build ${proj} -o json | jq -r '.status.conditions[] | select(.type == "Ready").status')
+      while [ $RESULT != "True" ]
+      do 
+        sleep 3
+        RESULT=$(kubectl get image -n acme-build ${proj} -o json | jq -r '.status.conditions[] | select(.type == "Ready").status')
+      done
+    fi
+  popd
+done
