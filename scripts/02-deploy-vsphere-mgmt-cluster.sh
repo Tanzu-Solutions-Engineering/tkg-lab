@@ -50,10 +50,4 @@ yq e -i '.AVI_USERNAME = env(AVI_USERNAME)' generated/$CLUSTER_NAME/cluster-conf
 yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
 
-
-# Setting the vars for RC2
-export TANZU_CLI_NO_INIT=true
-export TKG_CUSTOM_IMAGE_REPOSITORY=projects-stg.registry.vmware.com/tkg
-export TKG_CUSTOM_COMPATIBILITY_IMAGE_PATH=v1.4.0-rc.2/tkg-compatibility
-
 tanzu management-cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml -v 6 -y
