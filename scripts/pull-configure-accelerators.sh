@@ -55,3 +55,4 @@ do
   curl -vv ${ACCEL_URL}${accel} -X POST --data "${options}" -o ${WORKDIR}/${projName}.zip
   unzip -o ${WORKDIR}/${projName}.zip -d ${WORKDIR}
 done
+rm ${WORKDIR}/*.zip

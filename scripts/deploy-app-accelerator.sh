@@ -40,3 +40,22 @@ kubectl apply -f generated/$CLUSTER_NAME/app-accelerator/app-accelerator-cert.ya
 kubectl apply -f generated/$CLUSTER_NAME/app-accelerator/app-accelerator-httpproxy.yaml
 
 
+kubectl patch deploy -n accelerator-system acc-engine --type=json -p='[{ "op": "replace", "path": "/spec/template/spec/containers/0/resources/limits/memory", "value": "4G" }, { "op": "replace", "path": "/spec/template/spec/containers/0/resources/requests/memory", "value": "4G" }, { "op":"add", "path": "/spec/template/spec/containers/0/env", "value": [{ "name": "JAVA_TOOL_OPTIONS", "value": "-XX:MaxDirectMemorySize=1G"}]  } ]'
+
+
+# don't want to move on until the accelerator is reachable.  First wait for the cert to come back, then check the actual endpoint
+RESULT=$(kubectl get certificate -n accelerator-system app-accelerator-cert -o json | jq -r '.status.conditions[] | select(.type == "Ready").status')
+while [ $RESULT != "True" ]
+do 
+sleep 5
+RESULT=$(kubectl get certificate -n accelerator-system app-accelerator-cert -o json | jq -r '.status.conditions[] | select(.type == "Ready").status')
+done
+
+ACCELERATOR_HOSTNAME=$(yq e .app-accelerator.fqdn $PARAMS_YAML)
+URL=https://${ACCELERATOR_HOSTNAME}
+RESULT=$(curl -ILSso /dev/null -w '%{response_code}' $URL | head -n 1 | cut -d$' ' -f2)
+while [ $RESULT != "200" ]
+do 
+sleep 5
+RESULT=$(curl -ILSso /dev/null -w '%{response_code}' $URL | head -n 1 | cut -d$' ' -f2)
+done

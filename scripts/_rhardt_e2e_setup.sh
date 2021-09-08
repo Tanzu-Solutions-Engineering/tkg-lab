@@ -30,10 +30,13 @@ DEPLOY_WORKLOAD_TSM_GNS=false
 DEPLOY_WORKLOAD_APPS=false
 DEPLOY_WORKLOAD_KN=false
 CREATE_SS_GITLAB_TMC_WORKSPACE=false
-DEPLOY_SS_GITLAB=true
-DEPLOY_APP_ACCELERATOR=true
+DEPLOY_SS_GITLAB=false
+DEPLOY_APP_ACCELERATOR=false
 DEPLOY_ARGOCD=false
-PUSH_ACCELERATORS=true
+PUSH_ACCELERATORS=false
+PULL_ACCELERATORS=false
+PUSH_ACCELERATORS_TO_APP_REPOS=false
+PREPARE_ACME_IMAGES=false
 
 
 
@@ -276,9 +279,37 @@ else
     echo "Skipping ArgoCD Install"
 fi
 
+# push the local accelerators to the pre-configured gitlab projects
 if  $PUSH_ACCELERATORS ; then
     export KUBECONFIG=${TKG_LAB_SCRIPTS}/../keys/$(yq e .shared-services-cluster.name $PARAMS_YAML).kubeconfig
     $TKG_LAB_SCRIPTS/push-accelerators.sh
 else
     echo "Skipping Push Accelerators"
+fi
+
+# pull down the accelerators into a working directory, supplying any necessary parameters.
+if  $PULL_ACCELERATORS ; then
+    export KUBECONFIG=${TKG_LAB_SCRIPTS}/../keys/$(yq e .shared-services-cluster.name $PARAMS_YAML).kubeconfig
+    $TKG_LAB_SCRIPTS/pull-configure-accelerators.sh
+else
+    echo "Skipping Pull Accelerators"
+fi
+
+# push the configured accelerators as apps to pre-configured gitlab repos
+if  $PUSH_ACCELERATORS_TO_APP_REPOS ; then
+    export KUBECONFIG=${TKG_LAB_SCRIPTS}/../keys/$(yq e .shared-services-cluster.name $PARAMS_YAML).kubeconfig
+    $TKG_LAB_SCRIPTS/push-accelerators-to-app-repos.sh
+else
+    echo "Skipping Push Accelerators to app repos"
+fi
+
+
+
+
+if  $PREPARE_ACME_IMAGES ; then
+    export KUBECONFIG=${TKG_LAB_SCRIPTS}/../keys/$(yq e .shared-services-cluster.name $PARAMS_YAML).kubeconfig
+    $TKG_LAB_SCRIPTS/prepare-tbs-proj-ns.sh
+    $TKG_LAB_SCRIPTS/deploy-images.sh
+else
+    echo "Skipping prepping acme images"
 fi
