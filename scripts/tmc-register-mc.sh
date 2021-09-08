@@ -36,7 +36,7 @@ tmc managementcluster register $CLUSTER_NAME \
   --kubernetes-provider-type TKG \
   --output generated/$CLUSTER_NAME/tmc/mc-register-manifest.yaml
 
-TMC_REGISTRATION_URL=$(tmc managementcluster get castleblack | yq e .status.registrationUrl -)
+TMC_REGISTRATION_URL=$(tmc managementcluster get $CLUSTER_NAME | yq e .status.registrationUrl -)
 
 tanzu management-cluster register --tmc-registration-url $TMC_REGISTRATION_URL
 
