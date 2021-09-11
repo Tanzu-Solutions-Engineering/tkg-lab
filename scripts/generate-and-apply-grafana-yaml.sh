@@ -15,14 +15,14 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/monitoring/
 
-kubectl create ns tanzu-system-monitoring --dry-run=client -oyaml | kubectl apply -f -
+kubectl create ns tanzu-system-dashboards --dry-run=client -oyaml | kubectl apply -f -
 
 # Create certificate
 cp tkg-extensions-mods-examples/monitoring/grafana-cert.yaml generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml
 yq e -i ".spec.dnsNames[0] = env(GRAFANA_FQDN)" generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml
 kubectl apply -f generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml
 # Wait for cert to be ready
-while kubectl get certificates -n tanzu-system-monitoring grafana-cert | grep True ; [ $? -ne 0 ]; do
+while kubectl get certificates -n tanzu-system-dashboards grafana-cert | grep True ; [ $? -ne 0 ]; do
 	echo Grafana certificate is not yet ready
 	sleep 5s
 done
