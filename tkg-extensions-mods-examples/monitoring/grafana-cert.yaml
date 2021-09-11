@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: grafana-cert
-  namespace: tanzu-system-monitoring
+  namespace: tanzu-system-dashboards
 spec:
   # Secret names are always required.
   secretName: grafana-cert-tls
@@ -16,7 +16,7 @@ spec:
   keyEncoding: pkcs1
   # At least one of a DNS Name, USI SAN, or IP address is required.
   dnsNames:
-  # 
+  #
   issuerRef:
     name: letsencrypt-contour-cluster-issuer
     # We can reference ClusterIssuers by changing the kind here.
