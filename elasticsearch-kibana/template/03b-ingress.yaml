@@ -1,15 +1,21 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: elasticsearch
   namespace: elasticsearch-kibana
   labels:
     app: elasticsearch
+  annotations:
+    kubernetes.io/ingress.class: contour
 spec:
   rules:
   - host: elasticsearch.mgmt.tkg-vsp-lab.hyrulelab.com
     http:
       paths:
-      - backend:
-          serviceName: elasticsearch
-          servicePort: 9200
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+           name: elasticsearch
+           port:
+             number: 9200
