@@ -132,8 +132,14 @@ else
 
   # Default to false if the no value has been set
   export AUTOSCALER_ENABLED=$(yq e '.'$CLUSTER_TYPE'.worker-autoscaler-enabled // false' $PARAMS_YAML)
-  # Default to worker-replas value if no max has been set
-  export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
+  if [ "$AUTOSCALER_ENABLED" = "true" ];
+  then
+    # Default to worker-replas value if no max has been set
+    export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
+  fi
+
+  # Enable Antrea NodePortLocal
+  export ANTREA_NODEPORTLOCAL=$(yq e '.'$CLUSTER_TYPE'.antrea-nodeportlocal-enabled // false' $PARAMS_YAML)
 
   # Write vars into cluster-config file
   yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml
@@ -151,9 +157,13 @@ else
   yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
+  if [ "$AUTOSCALER_ENABLED" = "true" ];
+  then
+    yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
+  fi
+  yq e -i '.ANTREA_NODEPORTLOCAL = env(ANTREA_NODEPORTLOCAL)' generated/$CLUSTER/cluster-config.yaml
 
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi

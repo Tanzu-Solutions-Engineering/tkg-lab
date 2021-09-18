@@ -59,6 +59,7 @@ shared-services-cluster:
   grafana-fqdn: grafana.dorn.tkg-aws-e2-lab.winterfell.live
   controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
   kubernetes-version: v1.20.5---vmware.1-tkg.1 # To Explicitly set to v1.20.5---vmware.1-tkg.1 version (optional)
+  antrea-nodeportlocal-enabled: false
 workload-cluster:
   worker-replicas: 1
   worker-replicas-max: 3
@@ -68,6 +69,7 @@ workload-cluster:
   prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live # Leave this blank if you choose not to expose prometheus
   grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
   controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
+  antrea-nodeportlocal-enabled: false
 okta:
   auth-server-fqdn: dev-677945.okta.com
   tkg-app-client-id: REDACTED
