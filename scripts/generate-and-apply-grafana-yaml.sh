@@ -28,8 +28,8 @@ while kubectl get certificates -n tanzu-system-dashboards grafana-cert | grep Tr
 done
 
 # Read Grafana certificate details and store in files
-export GRAFANA_CERT_CRT=$(kubectl get secret grafana-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.crt"} | base64 --decode)
-export GRAFANA_CERT_KEY=$(kubectl get secret grafana-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.key"} | base64 --decode)
+export GRAFANA_CERT_CRT=$(kubectl get secret grafana-cert-tls -n tanzu-system-dashboards -o=jsonpath={.data."tls\.crt"} | base64 --decode)
+export GRAFANA_CERT_KEY=$(kubectl get secret grafana-cert-tls -n tanzu-system-dashboards -o=jsonpath={.data."tls\.key"} | base64 --decode)
 
 if [ `uname -s` = 'Darwin' ];
 then
