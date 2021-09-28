@@ -43,6 +43,12 @@ if tmc cluster list | grep -q $TMC_CLUSTER_NAME; then
     echo "Cluster is already attached and unhealthy, likely an old reference.  Will detach and re-attach."
     echo "Detaching cluster."
     tmc cluster delete $TMC_CLUSTER_NAME -m attached -p attached --force
+
+    while tmc cluster list | grep -q $TMC_CLUSTER_NAME; do
+      echo Waiting for cluster to finish detaching.
+      sleep 5s
+    done
+
   fi 
 fi
 
