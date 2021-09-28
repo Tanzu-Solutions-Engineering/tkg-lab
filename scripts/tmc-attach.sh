@@ -28,15 +28,39 @@ fi
 if tmc clustergroup list | grep -q $TMC_CLUSTER_GROUP; then
   echo "Cluster group $TMC_CLUSTER_GROUP found."
 else
-  echo "Cluster group $TMC_CLUSTER_GROUP not found.  Automattically creating it."
+  echo "Cluster group $TMC_CLUSTER_GROUP not found.  Automatically creating it."
   tmc clustergroup create -n $TMC_CLUSTER_GROUP
 fi
 
-tmc cluster attach \
-  --name $VMWARE_ID-$CLUSTER_NAME-$IAAS \
-  --labels origin=$VMWARE_ID \
-  --labels iaas=$IAAS \
-  --cluster-group $TMC_CLUSTER_GROUP \
-  --output generated/$CLUSTER_NAME/tmc.yaml
+TMC_CLUSTER_NAME=$VMWARE_ID-$CLUSTER_NAME-$IAAS
+ATTACH=true
+
+if tmc cluster list | grep -q $TMC_CLUSTER_NAME; then
+  if [ "$(tmc cluster get dpfeffer-bearisland-vsphere -p attached -m attached | yq e '.status.health' -)" == "HEALTHY" ]; then
+    echo "Cluster is already attached and healthy."
+    ATTACH=false
+  else 
+    echo "Cluster is already attached and unhealthy, likely an old reference.  Will detach and re-attach."
+    echo "Detaching cluster."
+    tmc cluster delete $TMC_CLUSTER_NAME -m attached -p attached --force
+
+    while tmc cluster list | grep -q $TMC_CLUSTER_NAME; do
+      echo Waiting for cluster to finish detaching.
+      sleep 5s
+    done
+
+  fi 
+fi
+
+if $ATTACH; then
+  echo "Attaching cluster now it now."
+  tmc cluster attach \
+    --name $TMC_CLUSTER_NAME \
+    --labels origin=$VMWARE_ID \
+    --labels iaas=$IAAS \
+    --cluster-group $TMC_CLUSTER_GROUP \
+    --output generated/$CLUSTER_NAME/tmc.yaml
+fi
+
 kubectl apply -f generated/$CLUSTER_NAME/tmc.yaml
 echo "$CLUSTER_NAME registered with TMC"

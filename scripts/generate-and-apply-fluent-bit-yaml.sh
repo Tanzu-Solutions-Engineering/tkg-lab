@@ -24,21 +24,46 @@ fi
 
 mkdir -p generated/$CLUSTER_NAME/fluent-bit/
 
-# 04-fluent-bit-configmap.yaml
-cp tkg-extensions/extensions/logging/fluent-bit/elasticsearch/fluent-bit-data-values.yaml.example generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+export CONFIG_OUTPUTS=$(cat << EOF
+[OUTPUT]
+  Name              es
+  Match             *
+  Host              $ELASTICSEARCH_CN
+  Port              $ELASTICSEARCH_PORT
+  Logstash_Format   On
+  Replace_Dots      On
+  Retry_Limit       False
+  Buffer_Size       False
+  tls               Off
+EOF
+)
+export CONFIG_FILTERS=$(cat << EOF
+[FILTER]
+  Name                kubernetes
+  Match               kube.*
+  Kube_URL            https://kubernetes.default.svc:443
+  Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+  Kube_Tag_Prefix     kube.var.log.containers.
+  Merge_Log           On
+  Merge_Log_Key       log_processed
+  K8S-Logging.Parser  On
+  K8S-Logging.Exclude On
 
-yq e -i ".tkg.instance_name = env(TKG_ENVIRONMENT_NAME)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
-yq e -i ".tkg.cluster_name = env(CLUSTER_NAME)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
-yq e -i ".fluent_bit.elasticsearch.host = env(ELASTICSEARCH_CN)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
-yq e -i ".fluent_bit.elasticsearch.port = env(ELASTICSEARCH_PORT)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+[FILTER]
+  Name                record_modifier
+  Match               *
+  Record tkg_cluster  $CLUSTER_NAME
+  Record tkg_instance $TKG_ENVIRONMENT_NAME
+EOF
+)
 
-add_yaml_doc_seperator generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+yq e ".fluent_bit.config.outputs = strenv(CONFIG_OUTPUTS)" --null-input > generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+yq e -i ".fluent_bit.config.filters = strenv(CONFIG_FILTERS)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
-kubectl apply -f tkg-extensions/extensions/logging/fluent-bit/namespace-role.yaml
-kubectl create secret generic fluent-bit-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml -n tanzu-system-logging -o yaml --dry-run=client | kubectl apply -f-
-kubectl apply -f tkg-extensions/extensions/logging/fluent-bit/fluent-bit-extension.yaml
-
-while kubectl get app fluent-bit -n tanzu-system-logging | grep fluent-bit | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-	echo Fluent-bit extension is not yet ready
-	sleep 5s
-done   
+VERSION=$(tanzu package available list fluent-bit.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+tanzu package install fluent-bit \
+    --package-name fluent-bit.tanzu.vmware.com \
+    --version $VERSION \
+    --namespace tanzu-kapp \
+    --values-file generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml

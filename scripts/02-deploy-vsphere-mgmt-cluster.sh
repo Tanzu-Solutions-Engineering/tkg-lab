@@ -9,12 +9,13 @@ export OIDC_IDENTITY_PROVIDER_ISSUER_URL=https://$(yq e .okta.auth-server-fqdn $
 export OIDC_IDENTITY_PROVIDER_CLIENT_ID=$(yq e .okta.tkg-app-client-id $PARAMS_YAML)
 export OIDC_IDENTITY_PROVIDER_CLIENT_SECRET=$(yq e .okta.tkg-app-client-secret $PARAMS_YAML)
 export WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
-export AVI_ENABLE=$(yq e .avi.avi-enable $PARAMS_YAML)
 export AVI_CA_DATA_B64=$(yq e .avi.avi-ca-data $PARAMS_YAML)
 export AVI_CLOUD_NAME=$(yq e .avi.avi-cloud-name $PARAMS_YAML)
 export AVI_CONTROLLER=$(yq e .avi.avi-controller $PARAMS_YAML)
 export AVI_DATA_NETWORK=$(yq e .avi.avi-data-network $PARAMS_YAML)
 export AVI_DATA_NETWORK_CIDR=$(yq e .avi.avi-data-network-cidr $PARAMS_YAML)
+export AVI_MANAGEMENT_CLUSTER_VIP_NETWORK_NAME=$(yq e .avi.avi-management-cluster-vip-network $PARAMS_YAML)
+export AVI_MANAGEMENT_CLUSTER_VIP_NETWORK_CIDR=$(yq e .avi.avi-management-cluster-vip-network-cidr $PARAMS_YAML)
 export AVI_LABELS=$(yq e .avi.avi-labels $PARAMS_YAML)
 export AVI_PASSWORD=$(yq e .avi.avi-password $PARAMS_YAML)
 export AVI_SERVICE_ENGINE_GROUP=$(yq e .avi.avi-service-engine-group $PARAMS_YAML)
@@ -35,22 +36,18 @@ yq e -i '.OIDC_IDENTITY_PROVIDER_ISSUER_URL = env(OIDC_IDENTITY_PROVIDER_ISSUER_
 yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_ID = env(OIDC_IDENTITY_PROVIDER_CLIENT_ID)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OIDC_IDENTITY_PROVIDER_CLIENT_SECRET = env(OIDC_IDENTITY_PROVIDER_CLIENT_SECRET)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER_NAME/cluster-config.yaml
-yq e -i '.AVI_ENABLE = env(AVI_ENABLE)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_CA_DATA_B64 = strenv(AVI_CA_DATA_B64)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_CLOUD_NAME = env(AVI_CLOUD_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_CONTROLLER = env(AVI_CONTROLLER)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_DATA_NETWORK = env(AVI_DATA_NETWORK)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_DATA_NETWORK_CIDR = env(AVI_DATA_NETWORK_CIDR)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.AVI_MANAGEMENT_CLUSTER_VIP_NETWORK_NAME = env(AVI_MANAGEMENT_CLUSTER_VIP_NETWORK_NAME)' generated/$CLUSTER_NAME/cluster-config.yaml
+yq e -i '.AVI_MANAGEMENT_CLUSTER_VIP_NETWORK_CIDR = env(AVI_MANAGEMENT_CLUSTER_VIP_NETWORK_CIDR)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_LABELS = strenv(AVI_LABELS)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_PASSWORD = strenv(AVI_PASSWORD)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_SERVICE_ENGINE_GROUP = env(AVI_SERVICE_ENGINE_GROUP)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_USERNAME = env(AVI_USERNAME)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
-
-
-# Setting the right BOM to use the TKG 1.3.1 path version with the CVE-2021-30465 patch
-rm -rf ~/.tanzu/tkg/bom
-export TKG_BOM_CUSTOM_IMAGE_TAG="v1.3.1-patch1"
 
 tanzu management-cluster create --file=generated/$CLUSTER_NAME/cluster-config.yaml -v 6 -y

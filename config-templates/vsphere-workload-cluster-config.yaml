@@ -1,5 +1,8 @@
 # To be changed by scripts based on params.yaml
 CLUSTER_NAME: # rito
+VSPHERE_SERVER: #vcenter7.hyrulelab.com
+VSPHERE_USERNAME: #administrator@vsphere.local
+VSPHERE_PASSWORD: "" #"changeme" # Need this value to be quoted for yq parsing
 VSPHERE_CONTROL_PLANE_ENDPOINT: # 192.168.14.185
 VSPHERE_DATASTORE: #/Datacenter/datastore/datastore
 VSPHERE_FOLDER: #/Datacenter/vm/tkg
@@ -10,10 +13,13 @@ VSPHERE_TLS_THUMBPRINT: #changeme
 VSPHERE_NETWORK: #changeme
 OS_NAME: #photon
 OS_VERSION: #3
+ANTREA_NODEPORTLOCAL: #changeme
 
 # Defaults
+AVI_CONTROL_PLANE_HA_PROVIDER: "true"
 INFRASTRUCTURE_PROVIDER: vsphere
 CLUSTER_PLAN: dev
+ENABLE_AUDIT_LOGGING: "true"
 ENABLE_MHC: "true"
 VSPHERE_CONTROL_PLANE_DISK_GIB: "40"
 VSPHERE_CONTROL_PLANE_MEM_MIB: "4096"
@@ -21,3 +27,4 @@ VSPHERE_CONTROL_PLANE_NUM_CPUS: "3"
 VSPHERE_WORKER_DISK_GIB: "50"
 VSPHERE_WORKER_MEM_MIB: "4096"
 VSPHERE_WORKER_NUM_CPUS: "3"
+IDENTITY_MANAGEMENT_TYPE: oidc

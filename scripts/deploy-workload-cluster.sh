@@ -106,6 +106,9 @@ else
   cp config-templates/vsphere-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
 
   # Get vSphere configuration vars from params.yaml
+  export GOVC_URL=$(yq e .vsphere.server $PARAMS_YAML)
+  export GOVC_USERNAME=$(yq e .vsphere.username $PARAMS_YAML)
+  export GOVC_PASSWORD=$(yq e .vsphere.password $PARAMS_YAML)
   export DATASTORE=$(yq e .vsphere.datastore $PARAMS_YAML)
   export TEMPLATE_FOLDER=$(yq e .vsphere.template-folder $PARAMS_YAML)
   export DATACENTER=$(yq e .vsphere.datacenter $PARAMS_YAML)
@@ -129,11 +132,20 @@ else
 
   # Default to false if the no value has been set
   export AUTOSCALER_ENABLED=$(yq e '.'$CLUSTER_TYPE'.worker-autoscaler-enabled // false' $PARAMS_YAML)
-  # Default to worker-replas value if no max has been set
-  export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
-  
+  if [ "$AUTOSCALER_ENABLED" = "true" ];
+  then
+    # Default to worker-replas value if no max has been set
+    export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
+  fi
+
+  # Enable Antrea NodePortLocal
+  export ANTREA_NODEPORTLOCAL=$(yq e '.'$CLUSTER_TYPE'.antrea-nodeportlocal-enabled // false' $PARAMS_YAML)
+
   # Write vars into cluster-config file
   yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.VSPHERE_SERVER = env(GOVC_URL)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.VSPHERE_USERNAME = env(GOVC_USERNAME)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.VSPHERE_PASSWORD = strenv(GOVC_PASSWORD)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_CONTROL_PLANE_ENDPOINT = env(VSPHERE_CONTROLPLANE_ENDPOINT)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.VSPHERE_DATASTORE = env(DATASTORE)' generated/$CLUSTER/cluster-config.yaml
@@ -145,10 +157,14 @@ else
   yq e -i '.VSPHERE_NETWORK = env(NETWORK)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
-  
+  if [ "$AUTOSCALER_ENABLED" = "true" ];
+  then
+    yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
+  fi
+  yq e -i '.ANTREA_NODEPORTLOCAL = env(ANTREA_NODEPORTLOCAL)' generated/$CLUSTER/cluster-config.yaml
+
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
 

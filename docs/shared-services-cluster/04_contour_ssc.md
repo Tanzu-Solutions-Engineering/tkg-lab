@@ -2,7 +2,7 @@
 
 ## Deploy Cert Manager
 
-Our solution leverages cert manager to generate valid ssl certs.  Cert-manager was deployed automatically into the management cluster, however it an optional component for workload clusters.  Use this script to deploy cert manager into the cluster using TKG Extensions.
+Our solution leverages cert manager to generate valid ssl certs.  Cert-manager was deployed automatically into the management cluster, however it an optional component for workload clusters.  Use this script to deploy cert manager into the cluster using TKG packages.
 
 ```bash
 ./scripts/deploy-cert-manager.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
@@ -31,9 +31,7 @@ Just as we did for the management cluster, we will leverage [external-dns](https
 Execute the script below to deploy `external-dns` and to apply the annotation to the envoy service.
 
 ```bash
-./scripts/generate-and-apply-external-dns-yaml.sh \
-  $(yq e .shared-services-cluster.name $PARAMS_YAML) \
-  $(yq e .shared-services-cluster.ingress-fqdn $PARAMS_YAML)
+./scripts/generate-and-apply-external-dns-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 ```
 
 ## Prepare and Apply Cluster Issuer Manifests

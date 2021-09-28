@@ -25,6 +25,7 @@ kubectl create secret docker-registry docker-hub-creds \
 --docker-username=$DOCKER_HUB_USER \
 --docker-password=$DOCKER_HUB_PASSWORD \
 --docker-email=$DOCKER_HUB_EMAIL \
---namespace=$NAMESPACE
+--namespace=$NAMESPACE \
+--dry-run=client --output yaml | kubectl apply -f -
 
 kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "docker-hub-creds"}]}' --namespace=$NAMESPACE

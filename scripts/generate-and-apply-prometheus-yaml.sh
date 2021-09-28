@@ -14,7 +14,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/monitoring/
 
-kubectl apply -f tkg-extensions/extensions/monitoring/prometheus/namespace-role.yaml
+kubectl create ns tanzu-system-monitoring --dry-run=client --output yaml | kubectl apply -f -
 
 # Create certificate
 cp tkg-extensions-mods-examples/monitoring/prometheus-cert.yaml generated/$CLUSTER_NAME/monitoring/prometheus-cert.yaml
@@ -30,25 +30,16 @@ done
 export PROMETHEUS_CERT_CRT=$(kubectl get secret prometheus-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.crt"} | base64 --decode)
 export PROMETHEUS_CERT_KEY=$(kubectl get secret prometheus-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.key"} | base64 --decode)
 
-cp tkg-extensions/extensions/monitoring/prometheus/prometheus-data-values.yaml.example generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
-
 export TRUE_VALUE=true
-yq e -i ".monitoring.ingress.enabled = env(TRUE_VALUE)" generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
-yq e -i ".monitoring.ingress.virtual_host_fqdn = env(PROMETHEUS_FQDN)" generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
-yq e -i '.monitoring.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml 
-yq e -i '.monitoring.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml 
-
-# Add in the document seperator that yq removes
-add_yaml_doc_seperator generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e ".ingress.enabled = env(TRUE_VALUE)" --null-input > generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e -i ".ingress.virtual_host_fqdn = env(PROMETHEUS_FQDN)" generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 
 # Apply Monitoring
-
-# Using the following "apply" syntax to allow for script to be rerun
-kubectl create secret generic prometheus-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml -n tanzu-system-monitoring -o yaml --dry-run=client | kubectl apply -f-
-kubectl apply -f tkg-extensions/extensions/monitoring/prometheus/prometheus-extension.yaml
-
-while kubectl get app prometheus -n tanzu-system-monitoring | grep prometheus | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-	echo prometheus extension is not yet ready
-	sleep 5s
-done   
-
+VERSION=$(tanzu package available list prometheus.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+tanzu package install prometheus \
+    --package-name prometheus.tanzu.vmware.com \
+    --version $VERSION \
+    --namespace tanzu-kapp \
+    --values-file generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml

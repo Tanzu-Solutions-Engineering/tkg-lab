@@ -8,10 +8,11 @@ WORKER_MACHINE_COUNT: # Added by scripts
 
 INFRASTRUCTURE_PROVIDER: aws
 CLUSTER_PLAN: dev # default is blank
-CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling aws.control-plane-machine-type in params.yaml 
+CONTROL_PLANE_MACHINE_TYPE: # Added by scripts by pulling aws.control-plane-machine-type in params.yaml
 NODE_MACHINE_TYPE: # Added by scripts by pulling aws.node-machine-type in params.yaml
 
 TKG_HTTP_PROXY_ENABLED: "false" # default is blank
+ENABLE_AUDIT_LOGGING: "true"
 ENABLE_MHC: "true" # default is blank
 ENABLE_CEIP_PARTICIPATION: "false" # default is true
 BASTION_HOST_ENABLED: "true" # this is default but good to be explicit

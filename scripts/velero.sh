@@ -20,17 +20,18 @@ IAAS=$(yq e .iaas $PARAMS_YAML)
 if [ "$IAAS" = "vsphere" ];
 then
   velero install \
+      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
-      --plugins velero/velero-plugin-for-aws:v1.1.0,vsphereveleroplugin/velero-plugin-for-vsphere:1.1.0 \
+      --plugins=projects.registry.vmware.com/tkg/velero/velero-plugin-for-aws:v1.2.1_vmware.1,projects.registry.vmware.com/tkg/velero/velero-plugin-for-vsphere:v1.1.1_vmware.1 \
       --bucket $VELERO_BUCKET \
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
-  velero snapshot-location create vsl-vsphere --provider velero.io/vsphere
 else
   velero install \
+      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
-      --plugins velero/velero-plugin-for-aws:v1.1.0 \
+      --plugins projects.registry.vmware.com/tkg/velero/velero-plugin-for-aws:v1.2.1_vmware.1 \
       --bucket $VELERO_BUCKET \
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
@@ -48,8 +49,8 @@ if [ "$IAAS" = "vsphere" ];
 then
   velero schedule create daily-$CLUSTER_NAME-cluster-backup \
     --schedule "0 7 * * *" \
-    --volume-snapshot-locations vsl-vsphere
+    --volume-snapshot-locations default
 else
   velero schedule create daily-$CLUSTER_NAME-cluster-backup \
-    --schedule "0 7 * * *" 
+    --schedule "0 7 * * *"
 fi
