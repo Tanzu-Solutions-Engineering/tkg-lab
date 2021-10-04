@@ -58,7 +58,7 @@ shared-services-cluster:
   prometheus-fqdn: prometheus.dorn.tkg-aws-e2-lab.winterfell.live
   grafana-fqdn: grafana.dorn.tkg-aws-e2-lab.winterfell.live
   controlplane-endpoint: 192.168.7.181 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
-  kubernetes-version: v1.20.5---vmware.1-tkg.1 # To Explicitly set to v1.20.5---vmware.1-tkg.1 version (optional)
+  kubernetes-version: # To Explicitly set a kubernetes version use`tanzu kubernetes-release get` and choose the appropriate value from the name column
   antrea-nodeportlocal-enabled: false
 workload-cluster:
   worker-replicas: 1
@@ -69,6 +69,7 @@ workload-cluster:
   prometheus-fqdn: prometheus.highgarden.tkg-vsphere-lab.winterfell.live # Leave this blank if you choose not to expose prometheus
   grafana-fqdn: grafana.highgarden.tkg-vsphere-lab.winterfell.live
   controlplane-endpoint: 192.168.7.182 # only required for vsphere iaas, must belog to avi-management-cluster-vip-network-cidr
+  kubernetes-version: # To Explicitly set a kubernetes version use`tanzu kubernetes-release get` and choose the appropriate value from the name column
   antrea-nodeportlocal-enabled: false
 okta:
   auth-server-fqdn: dev-677945.okta.com
