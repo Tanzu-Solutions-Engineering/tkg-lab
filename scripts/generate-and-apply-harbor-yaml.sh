@@ -29,14 +29,14 @@ export NOTARY_CN="notary."$HARBOR_CN
 mkdir -p generated/$SHAREDSVC_CLUSTER_NAME/harbor
 
 # Create a namespace for the Harbor service on the shared services cluster.
-kubectl create namespace tanzu-system-registry --dry-run=client --output yaml | kubectl apply -f -
+# kubectl create namespace tanzu-system-registry --dry-run=client --output yaml | kubectl apply -f -
 
 # Create certificate 02-certs.yaml
-cp tkg-extensions-mods-examples/registry/harbor/02-certs.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
-yq e -i ".spec.commonName = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
-yq e -i ".spec.dnsNames[0] = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
-yq e -i ".spec.dnsNames[1] = env(NOTARY_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
-kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+# cp tkg-extensions-mods-examples/registry/harbor/02-certs.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+# yq e -i ".spec.commonName = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+# yq e -i ".spec.dnsNames[0] = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+# yq e -i ".spec.dnsNames[1] = env(NOTARY_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
+# kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-registry harbor-cert | grep True ; [ $? -ne 0 ]; do
 	echo Harbor certificate is not yet ready
@@ -49,7 +49,8 @@ export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 
 # Get Harbor Package version
 export HARBOR_VERSION=$(tanzu package available list harbor.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
-WAIT_FOR_PACKAGE=true
+# We won't wait for the package while there is an issue we solve with an overlay
+WAIT_FOR_PACKAGE=false
 
 # Prepare Harbor custom configuration
 image_url=$(kubectl -n tanzu-package-repo-global get packages harbor.tanzu.vmware.com."$HARBOR_VERSION" -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
@@ -100,11 +101,21 @@ tanzu package install harbor \
     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml \
     --wait=$WAIT_FOR_PACKAGE
 
+# Patch (via overlay) the harbor-notary to fix a bug captured in this KB: https://kb.vmware.com/s/article/85725
+kubectl create secret generic harbor-notary-singer-image-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-notary-signer-image-fix.yaml | kubectl apply -f -
+kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-notary-singer-image-overlay
+
 # Patch (via overlay) the harbor-registry to use an empty-dir for registry-data when using S3 storage
 if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
   kubectl create secret generic harbor-s3-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml | kubectl apply -f-
   kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-s3-overlay
 fi
+
+# Wait for the Package to reconcile
+while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
+	echo Harbor extension is not yet ready
+	sleep 5s
+done
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it
 
