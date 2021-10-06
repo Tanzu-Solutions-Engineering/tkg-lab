@@ -40,3 +40,5 @@ TMC_REGISTRATION_URL=$(tmc managementcluster get $CLUSTER_NAME | yq e .status.re
 tanzu management-cluster register --tmc-registration-url $TMC_REGISTRATION_URL
 
 echo "$CLUSTER_NAME registered as management-cluster with TMC"
+
+mv k8s-register-manifest.yaml generated/$CLUSTER_NAME/tmc/
