@@ -52,4 +52,5 @@ tanzu package install grafana \
     --package-name grafana.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
-	--values-file generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
+    --values-file generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml \
+    --poll-timeout 10m0s

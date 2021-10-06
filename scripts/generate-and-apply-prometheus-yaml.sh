@@ -42,4 +42,5 @@ tanzu package install prometheus \
     --package-name prometheus.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+    --values-file generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml \
+    --poll-timeout 10m0s

@@ -24,7 +24,8 @@ tanzu package install contour \
     --package-name contour.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+    --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml \
+    --poll-timeout 10m0s
 
 # Contour would not spinup an http listener on the envoy service until an http ingress or httpproxy is created
 # Specifically for AWS, the load balancer created for the envoy service, uses the http port on the node port
