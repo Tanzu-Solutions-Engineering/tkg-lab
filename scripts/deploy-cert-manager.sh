@@ -17,4 +17,5 @@ VERSION=$(tanzu package available list cert-manager.tanzu.vmware.com -oyaml | yq
 tanzu package install cert-manager \
     --package-name cert-manager.tanzu.vmware.com \
     --version $VERSION \
-    --namespace tanzu-kapp
+    --namespace tanzu-kapp \
+    --poll-timeout 10m0s
