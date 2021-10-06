@@ -64,4 +64,5 @@ tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+    --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
+    --poll-timeout 10m0s

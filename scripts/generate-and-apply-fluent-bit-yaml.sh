@@ -66,4 +66,5 @@ tanzu package install fluent-bit \
     --package-name fluent-bit.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+    --values-file generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml \
+    --poll-timeout 10m0s
