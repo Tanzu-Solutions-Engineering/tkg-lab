@@ -11,7 +11,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 mkdir -p generated/$CLUSTER_NAME/pinniped/
 
 # TODO: This is a temporary fix until this is updated with the add-on.  Addresses noise logs in pinniped-concierge
-# kubectl apply -f tkg-extensions-mods-examples/authentication/pinniped/pinniped-rbac-extension.yaml
+kubectl apply -f tkg-extensions-mods-examples/authentication/pinniped/pinniped-rbac-extension.yaml
 
 cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-ingress.yaml  generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-certificate.yaml  generated/$CLUSTER_NAME/pinniped/pinniped-certificate.yaml
