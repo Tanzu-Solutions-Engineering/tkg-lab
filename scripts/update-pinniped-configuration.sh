@@ -52,7 +52,14 @@ yq e -i '.pinniped.supervisor_svc_endpoint = env(PINNIPED_SVC_ENDPOINT)' generat
 # Deleting the existing job.  It will be recreated when the pinniped-addon secret is updated below.  And then gives us a chance to wait until job is competed
 kubectl delete job pinniped-post-deploy-job -n pinniped-supervisor
 
-NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml | base64`
+if [ `uname -s` = 'Darwin' ];
+then
+	NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml | base64`
+
+else
+	NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml | base64 -w 0`
+fi
+
 kubectl patch secret $CLUSTER_NAME-pinniped-addon -n tkg-system -p '{"data": {"values.yaml": "'$NEW_VALUES'"}}'
 
 # Wait until job is completed.
