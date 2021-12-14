@@ -1,0 +1,9 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "HTTPProxy","metadata":{"name":"harbor-httpproxy"}})
+---
+spec:
+  routes:
+  #@overlay/match by=lambda indexOrKey, left, right: left["conditions"][0]["prefix"].endswith("/v2/")
+  - timeoutPolicy:
+      response: 300s
