@@ -1,0 +1,16 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-registry"
+  labels:
+    app: "harbor"
+  namespace: tanzu-system-registry
+  annotations:
+    "kapp.k14s.io/versioned": ""
+type: Opaque
+data:
+  REGISTRY_HTPASSWD: "aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJ5JDEwJDlMNFRjMERKYkZGTUI2UmRTQ3Vuck9wVEhkd2hpZDRrdEJKbUxEMDBiWWdxa2tHT3ZsbDNt"
+  REGISTRY_HTTP_SECRET: "dGhlLXNlY3JldC1vZi10aGUtcmVnaXN0cnk="
+  REGISTRY_REDIS_PASSWORD: ""
