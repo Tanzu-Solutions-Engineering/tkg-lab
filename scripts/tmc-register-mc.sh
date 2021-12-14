@@ -37,7 +37,8 @@ tmc managementcluster register $CLUSTER_NAME \
 
 TMC_REGISTRATION_URL=$(tmc managementcluster get $CLUSTER_NAME | yq e .status.registrationUrl -)
 
-tanzu management-cluster register --tmc-registration-url $TMC_REGISTRATION_URL
+# tanzu management-cluster register command has been removed since v1.4.1
+kubectl apply -f $TMC_REGISTRATION_URL
 
 echo "$CLUSTER_NAME registered as management-cluster with TMC"
 
