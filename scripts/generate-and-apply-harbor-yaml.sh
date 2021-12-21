@@ -101,10 +101,6 @@ tanzu package install harbor \
     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml \
     --wait=$WAIT_FOR_PACKAGE
 
-# Patch (via overlay) the harbor-notary to fix a bug captured in this KB: https://kb.vmware.com/s/article/85725
-kubectl create secret generic harbor-notary-singer-image-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-notary-signer-image-fix.yaml | kubectl apply -f -
-kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-notary-singer-image-overlay
-
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
 kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
 kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.1=harbor-timeout-increase-overlay
