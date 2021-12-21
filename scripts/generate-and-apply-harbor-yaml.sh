@@ -100,6 +100,7 @@ tanzu package install harbor \
     --namespace tanzu-kapp \
     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml \
     --wait=$WAIT_FOR_PACKAGE
+
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
 kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
 kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay
