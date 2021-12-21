@@ -103,16 +103,16 @@ tanzu package install harbor \
 
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
 kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
-kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.1=harbor-timeout-increase-overlay
+kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay
 
 # Patch (via overlay) the harbor-registry when using S3 storage. This won't be necessary on TKG 1.5
 # - create harbor-registry secret
 # - use an empty-dir for registry-data to clean PVC info
 if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
   kubectl create secret generic harbor-storage-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-storage-fix.yaml | kubectl apply -f -
-  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.2=harbor-storage-overlay
+  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.1=harbor-storage-overlay
   kubectl create secret generic harbor-s3-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml | kubectl apply -f-
-  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.3=harbor-s3-overlay
+  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.2=harbor-s3-overlay
 fi
 
 # Wait for the Package to reconcile
