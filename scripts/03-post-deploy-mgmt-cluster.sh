@@ -27,12 +27,6 @@ else
     # Velere needs to be able to access AWS API via IAM Instance Role
     aws iam attach-role-policy --role-name nodes.tkg.cloud.vmware.com --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
 
-    # Path the deployment so it will run on the control plane
-    # remove AWS Credentials TKG installer adds to the capa secret
-    kubectl patch secret capa-manager-bootstrap-credentials  --patch "$(cat cloudgate/capa-secret.yaml)" -n capa-system
-
-    #ensure capa controller runs on the control-plane.  This node will have IAM permissions to access AWS
-    kubectl patch deployment capa-controller-manager  --patch "$(cat cloudgate/capa-system.yaml)" -n capa-system
 fi
 
 # We have found that after the tanzu cli reports that the managmement cluster is created, there are additional initialation of system pods.  In order 
