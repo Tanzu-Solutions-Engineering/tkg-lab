@@ -19,6 +19,8 @@ IAAS=$(yq e .iaas $PARAMS_YAML)
 
 if [ "$IAAS" = "vsphere" ];
 then
+  # this condition uses the velero-plugin-for-vsphere which is special for 
+  # Note: will not work with CloudGate AWS permissions
   velero install \
       --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
@@ -28,6 +30,8 @@ then
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
 elif [ -z "$AWS_SESSION_TOKEN" ];
+  # this condition is for AWS without CloudGate or for Azure (yes, azure still uses the plugin for aws)
+  # note for Azure users, it will only work if you have non-CloudGate AWS credentials for S3
   velero install \
       --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
@@ -37,9 +41,13 @@ elif [ -z "$AWS_SESSION_TOKEN" ];
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
 else
-# For cloudgate use case don't need a secret since the IAM role on the cluster node will be used for access.
-   echo "Using IAM Profile for S3 Access"
-   velero install \
+  # this condition is for AWS with CloudGate use case don't need a secret since the IAM role on the cluster node will be used for access.
+
+  # For Cloudgate we will must add the permission to the policy the nodes run with and also indicate --no-secret flag in install command
+  aws iam attach-role-policy --role-name nodes.tkg.cloud.vmware.com --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+  echo "Using IAM Profile for S3 Access"
+  velero install \
       --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
       --plugins velero/velero-plugin-for-aws:v1.1.0 \
