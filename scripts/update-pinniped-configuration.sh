@@ -10,11 +10,8 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/pinniped/
 
-# TODO: This is a temporary fix until this is updated with the add-on.  Addresses noise logs in pinniped-concierge
-kubectl apply -f tkg-extensions-mods-examples/authentication/pinniped/pinniped-rbac-extension.yaml
-
-cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-ingress.yaml  generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
-cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-certificate.yaml  generated/$CLUSTER_NAME/pinniped/pinniped-certificate.yaml
+cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-ingress.yaml generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
+cp tkg-extensions-mods-examples/authentication/pinniped/pinniped-certificate.yaml generated/$CLUSTER_NAME/pinniped/pinniped-certificate.yaml
 
 yq e -i '.spec.dnsNames[0] = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/pinniped-certificate.yaml
 yq e -i '.spec.virtualhost.fqdn = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
@@ -44,7 +41,6 @@ else
 fi
 
 yq e -i '.custom_tls_secret = "custom-auth-cert-tls"' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
-# yq e -i '.custom_cluster_issuer = "letsencrypt-contour-cluster-issuer"' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
 yq e -i '.pinniped.supervisor_svc_external_dns = env(PINNIPED_CN)' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
 yq e -i '.pinniped.supervisor_ca_bundle_data = env(CA_BUNDLE)' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
 yq e -i '.pinniped.supervisor_svc_endpoint = env(PINNIPED_SVC_ENDPOINT)' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml

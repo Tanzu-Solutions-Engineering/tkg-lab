@@ -15,21 +15,19 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/contour/
 
-# Not necessary for azure and aws, but it doesn't hurt
+# The default for vSphere is NodePort for envoy, so we must set it to LoadBalancer.  The following is not necessary for azure and aws, but it doesn't hurt.  
 yq e '.envoy.service.type = "LoadBalancer"' --null-input > generated/$CLUSTER_NAME/contour/contour-data-values.yaml
 
-# Double check the version number form above list command and update below as necessary
-VERSION=$(tanzu package available list contour.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# See TKG-4309.  TKG modified the default for contour to Cluster.  Setting back to TCE defualt which is Local.  Amongst other things, this allows for SourceIP to be preserved and in cases where there is only
+# SSL HTTPProxy, allows contour to satisfy the AWS LoadBalance Healthcheck.
+yq e -i '.envoy.service.externalTrafficPolicy = "Local"' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
+
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# thus supplying -1 as the index of the array
+VERSION=$(tanzu package available list contour.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
 tanzu package install contour \
     --package-name contour.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/contour/contour-data-values.yaml \
     --poll-timeout 10m0s
-
-# Contour would not spinup an http listener on the envoy service until an http ingress or httpproxy is created
-# Specifically for AWS, the load balancer created for the envoy service, uses the http port on the node port
-# for health check.  This causes a problems with our auth services which use a httpproxy with tls pass through
-# as that does not activate the http listen and thus doesn't set AWS load balancers to active.  By deploying this
-# service and httpproxy with non-tls endpoint, we activate the load balancer's health check
-kubectl apply -f tkg-extensions-mods-examples/ingress/contour/warm-up-envoy.yaml

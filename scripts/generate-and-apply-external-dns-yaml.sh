@@ -57,23 +57,32 @@ else # Using AWS Route53
   if [ -z "$AWS_SESSION_TOKEN" ]; then
     echo "Using Existing Extension."
 
-  kubectl create secret generic route53-credentials \
-    --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
-    --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
-    -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
+    kubectl create secret generic route53-credentials \
+      --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
+      --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
+      -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
   else
-    echo "rmoving AWS Credentials from Extension"
-    # Remove Secret reference from data-values for the external dns extension. 
+    # When using cloudgate, External-DNS should use permissions on the EC2 instance to access Route53 API
+    # TODO: Determine if there is a lower privilege than FullAccess that can be used
+    aws iam attach-role-policy --role-name nodes.tkg.cloud.vmware.com --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess
+
+    echo "Removing AWS Credentials from Extension"
+    # Remove Secret reference from data-values for the external dns so that it will use the instance profile permissions
     yq -i eval 'del(.deployment.env)'  generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   fi
 
-
 fi
 
-VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# thus supplying -1 as the index of the array
+VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
 tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
     --version $VERSION \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
     --poll-timeout 10m0s
+
+# HACK: The current version of external-dns does not run properly on k8s 1.22 due older ingress deprication
+# need to add this additional permission, or else the external-dns will go through crash loop
+kubectl apply -f tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-rbac.yaml

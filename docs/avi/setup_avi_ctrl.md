@@ -147,7 +147,7 @@ Click `Save`.
 
 
 ### 4.4 Upgrade Controller to latest patch (Optional)
-To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.7-2p` when this guide was updated last).
+To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.7-2p8` when this guide was updated last).
 
 Go to `Administration > Controller > Software`. Click on `Upload from Computer` and select the avi-patch `pkg` file.
 

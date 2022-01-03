@@ -24,22 +24,55 @@ else
   tmc clustergroup create -n $TMC_CLUSTER_GROUP
 fi
 
-if [ "$IAAS" == "aws" ];
+# Currently TMC cluster lifecycle management for TKG on vSphere only works with Photon OS.
+if [ "$IAAS" == "vsphere" ];
 then
-  echo "Warning! Please note, although you management cluster will be registered, TMC features associated to the management cluster are only supported for TKG on vSphere and Azure at this time."
+  NODE_OS=$(yq e .vsphere.node-os $PARAMS_YAML)
+  if [ "$NODE_OS" == "ubuntu" ];
+  then
+    echo "Warning! Please note, although you management cluster will be registered, TMC features associated to the management cluster on vsphere are only supported for Photon OS."
+  fi
 fi
 
 mkdir -p generated/$CLUSTER_NAME/tmc
 
-tmc managementcluster register $CLUSTER_NAME \
-  --default-cluster-group $TMC_CLUSTER_GROUP \
-  --kubernetes-provider-type TKG
+REGISTER=true
 
-TMC_REGISTRATION_URL=$(tmc managementcluster get $CLUSTER_NAME | yq e .status.registrationUrl -)
+if tmc managementcluster list | grep -q $CLUSTER_NAME; then
+  if [ "$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" == "READY" ]; then
+    echo "Management Cluster is already registered and ready."
+    REGISTER=false
+  else 
+    echo "Management Cluster is already registered and not READY, likely an old reference.  Will deregistery and re-register."
+    echo "Deregistering managemnet cluster."
+    tmc managementcluster deregister $CLUSTER_NAME --force
 
-# tanzu management-cluster register command has been removed since v1.4.1
-kubectl apply -f $TMC_REGISTRATION_URL
+    while tmc managementcluster list | grep -q $CLUSTER_NAME; do
+      echo Waiting for management cluster to finish deregistering.
+      sleep 5s
+    done
 
-echo "$CLUSTER_NAME registered as management-cluster with TMC"
+  fi 
+fi
 
-mv k8s-register-manifest.yaml generated/$CLUSTER_NAME/tmc/
+if $REGISTER; then
+  echo "Registering management cluster now."
+  tmc managementcluster register $CLUSTER_NAME \
+    --default-cluster-group $TMC_CLUSTER_GROUP \
+    --kubernetes-provider-type TKG
+
+  TMC_REGISTRATION_URL=$(tmc managementcluster get $CLUSTER_NAME | yq e .status.registrationUrl -)
+
+  # tanzu management-cluster register command has been removed since v1.4.1
+  kubectl apply -f $TMC_REGISTRATION_URL
+
+  echo "$CLUSTER_NAME registered as management-cluster with TMC"
+
+  mv k8s-register-manifest.yaml generated/$CLUSTER_NAME/tmc/
+
+  while "$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" != "READY"; do
+    echo Waiting for management cluster to have registration status of READY.
+    sleep 5s
+  done
+
+fi

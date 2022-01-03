@@ -36,7 +36,7 @@ TMC_CLUSTER_NAME=$VMWARE_ID-$CLUSTER_NAME-$IAAS
 ATTACH=true
 
 if tmc cluster list | grep -q $TMC_CLUSTER_NAME; then
-  if [ "$(tmc cluster get dpfeffer-bearisland-vsphere -p attached -m attached | yq e '.status.health' -)" == "HEALTHY" ]; then
+  if [ "$(tmc cluster get $TMC_CLUSTER_NAME -p attached -m attached | yq e '.status.health' -)" == "HEALTHY" ]; then
     echo "Cluster is already attached and healthy."
     ATTACH=false
   else 
@@ -53,7 +53,7 @@ if tmc cluster list | grep -q $TMC_CLUSTER_NAME; then
 fi
 
 if $ATTACH; then
-  echo "Attaching cluster now it now."
+  echo "Attaching cluster now."
   tmc cluster attach \
     --name $TMC_CLUSTER_NAME \
     --labels origin=$VMWARE_ID \
