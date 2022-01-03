@@ -87,6 +87,8 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - [yq v4.12+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
 - kind (helpful, but not required)
 - ytt, kapp, imgpkg, kbld (bundled with tkg)
+- jq
+- aws (for deploying on AWS or using Route53 DNS)
 
 ## Foundational Lab Setup Guides
 

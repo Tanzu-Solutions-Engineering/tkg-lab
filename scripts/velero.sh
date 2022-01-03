@@ -27,7 +27,7 @@ then
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
-else
+elif [ -z "$AWS_SESSION_TOKEN" ];
   velero install \
       --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
       --provider aws \
@@ -36,6 +36,17 @@ else
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
+else
+# For cloudgate use case don't need a secret since the IAM role on the cluster node will be used for access.
+   echo "Using IAM Profile for S3 Access"
+   velero install \
+      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
+      --provider aws \
+      --plugins velero/velero-plugin-for-aws:v1.1.0 \
+      --bucket $VELERO_BUCKET \
+      --backup-location-config region=$VELERO_REGION \
+      --snapshot-location-config region=$VELERO_REGION \
+      --no-secret
 fi
 
 # Wait for it to be ready
