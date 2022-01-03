@@ -53,10 +53,21 @@ else # Using AWS Route53
   yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   yq e -i '.deployment.args[6] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
+  # Perform special processing to handle Cloudgate use case where session tokens are used 
+  if [ -z "$AWS_SESSION_TOKEN" ]; then
+    echo "Using Existing Extension."
+
   kubectl create secret generic route53-credentials \
     --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
     --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
     -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
+  else
+    echo "rmoving AWS Credentials from Extension"
+    # Remove Secret reference from data-values for the external dns extension. 
+    yq -i eval 'del(.deployment.env)'  generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  fi
+
+
 fi
 
 VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
