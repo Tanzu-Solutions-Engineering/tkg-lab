@@ -62,7 +62,7 @@ ldapsearch -H ldaps://dev-REDACTED.ldap.okta.com:636 -x -D "uid=servicebind@wint
 
 ### 1. Create Auth Policy
 
-As of NSX ALB v20.1.6, ESSENTIALS tier licensing can not use UI to create policies and this action must be performed using the shell.
+As of NSX ALB v20.1.7, ESSENTIALS tier licensing can not use UI to create policies and this action must be performed using the shell.
 
 #### Enterprise Licensing Instructions
 

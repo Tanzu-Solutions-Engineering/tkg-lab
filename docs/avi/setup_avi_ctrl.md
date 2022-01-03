@@ -1,13 +1,13 @@
 # NSX-ALB (AVI) Controller Setup
 
-This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.4.0+`
+This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.5.0+`
 
 ## 1. Get Binaries
 
 To download the Controller binaries we can go to the same location where we download the rest of the TKG components [here](https://www.vmware.com/go/get-tkg).
 Look for `VMware NSX Advanced Load Balancer`, `GO TO DOWNLOADS` and `DOWNLOAD NOW`.
 That will take you to the Partner Connect Portal.  If don't already have an active session, you will need to log-in.
-You will be redirected to the AVI Portal. Once there go to Downloads and download current version (`20.1.5` when this guide was updated last). Choose the VMware Controller OVA.
+You will be redirected to the AVI Portal. Once there go to Downloads and download current version (`20.1.7` when this guide was updated last). Choose the VMware Controller OVA.
 
 ## 2. Choose Topology
 
@@ -147,7 +147,7 @@ Click `Save`.
 
 
 ### 4.4 Upgrade Controller to latest patch (Optional)
-To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.5.2p3` when this guide was updated last).
+To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.7-2p` when this guide was updated last).
 
 Go to `Administration > Controller > Software`. Click on `Upload from Computer` and select the avi-patch `pkg` file.
 

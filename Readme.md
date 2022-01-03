@@ -81,12 +81,12 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 
 - kubectl
 - tmc
-- tanzu v1.4.0
-- velero v1.6.2
+- tanzu v1.5.0
+- velero v1.7.1
 - helm v3
 - [yq v4.12+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
 - kind (helpful, but not required)
-- ytt, kapp, imgpkg, kbld (bundled with tkg)
+- ytt, kapp, imgpkg, kbld (bundled with tanzu cli)
 - jq
 - aws (for deploying on AWS or using Route53 DNS)
 
