@@ -10,10 +10,7 @@ $TKG_LAB_SCRIPTS/01-prep-$IAAS-objects.sh
 $TKG_LAB_SCRIPTS/02-deploy-$IAAS-mgmt-cluster.sh
 $TKG_LAB_SCRIPTS/03-post-deploy-mgmt-cluster.sh
 # Management Step 2
-if [ "$IAAS" != "aws" ];
-then
-  $TKG_LAB_SCRIPTS/tmc-register-mc.sh
-fi
+$TKG_LAB_SCRIPTS/tmc-register-mc.sh
 # Management Step 3
 $TKG_LAB_SCRIPTS/create-dns-zone.sh
 $TKG_LAB_SCRIPTS/retrieve-lets-encrypt-ca-cert.sh

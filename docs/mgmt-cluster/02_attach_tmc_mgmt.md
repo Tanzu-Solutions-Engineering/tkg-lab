@@ -6,8 +6,6 @@ The following scripts assume that you have an active `tmc` cli session.  In orde
 
 ## Register Management Cluster
 
->Note: Registering management clusters is currently only supported for TKG on vSphere and Azure.  TKG on AWS is coming soon.
-
 Execute the following script to register your TMC management cluster.  It will create a cluster group as defined in `.tmc.cluster-group` in `params.yaml`.  Then it will use the tmc cli to regiter the management cluster.
 
 ```bash
