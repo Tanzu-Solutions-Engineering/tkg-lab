@@ -27,6 +27,9 @@ yq e -i ".fullName.clusterName = env(TMC_CLUSTER_NAME)" generated/$CLUSTER_NAME/
 yq e -i ".meta.labels.origin = env(VMWARE_ID)"  generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml
 yq e -i ".spec.workspaceName = env(TMC_ACME_FITNESS_WORKSPACE_NAME)" generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml
 
+if tmc workspace list | grep -q $TMC_ACME_FITNESS_WORKSPACE_NAME; then
+    tmc workspace delete $TMC_ACME_FITNESS_WORKSPACE_NAME
+fi
 tmc workspace create -f generated/$CLUSTER_NAME/tmc/workspace/acme-fitness-dev.yaml
 tmc workspace iam add-binding $TMC_ACME_FITNESS_WORKSPACE_NAME --role workspace.edit --groups acme-fitness-devs
 tmc cluster namespace create -f generated/$CLUSTER_NAME/tmc/namespace/tkg-wlc-acme-fitness.yaml

@@ -85,4 +85,4 @@ tanzu package install external-dns \
 
 # HACK: The current version of external-dns does not run properly on k8s 1.22 due older ingress deprication
 # need to add this additional permission, or else the external-dns will go through crash loop
-kubectl apply -f tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-rbac.yaml
+kubectl apply -f tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-rbac-hack.yaml

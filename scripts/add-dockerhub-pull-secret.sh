@@ -9,9 +9,9 @@ if [ ! $# -eq 1 ]; then
 fi
 
 NAMESPACE=$1
-DOCKER_HUB_USER=$(yq e .dockerhub.username $PARAMS_YAML)
-DOCKER_HUB_PASSWORD=$(yq e .dockerhub.password $PARAMS_YAML)
-DOCKER_HUB_EMAIL=$(yq e .dockerhub.email $PARAMS_YAML)
+DOCKER_HUB_USER=$(yq e '.dockerhub.username // null' $PARAMS_YAML)
+DOCKER_HUB_PASSWORD=$(yq e '.dockerhub.password // null' $PARAMS_YAML)
+DOCKER_HUB_EMAIL=$(yq e '.dockerhub.email // null' $PARAMS_YAML)
 
 if [ "$DOCKER_HUB_USER" == null ] || [ "$DOCKER_HUB_USER" = "REDACTED" ] || \
   [ "$DOCKER_HUB_PASSWORD" == null ] || [ "$DOCKER_HUB_PASSWORD" = "REDACTED" ] || \

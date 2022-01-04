@@ -27,6 +27,17 @@ if [ ! "$KUBERNETES_VERSION" = "null" ]; then
   KUBERNETES_VERSION_FLAG_AND_VALUE="--tkr $KUBERNETES_VERSION"
 fi
 
+# Determine the cluster type based upon the name passed in (function defined above) and then check to see if it has autscaler enabled
+CLUSTER_TYPE="$(get_cluster_type $CLUSTER)"
+
+# Default to false if the no value has been set
+export AUTOSCALER_ENABLED=$(yq e '.'$CLUSTER_TYPE'.worker-autoscaler-enabled // false' $PARAMS_YAML)
+if [ "$AUTOSCALER_ENABLED" = "true" ];
+then
+  # Default to worker-replas value if no max has been set
+  export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
+fi
+
 mkdir -p generated/$CLUSTER
 
 MANAGEMENT_CLUSTER=$(yq e .management-cluster.name $PARAMS_YAML)
@@ -55,6 +66,12 @@ then
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.CONTROL_PLANE_MACHINE_TYPE = env(AWS_CONTROL_PLANE_MACHINE_TYPE)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.NODE_MACHINE_TYPE = env(AWS_NODE_MACHINE_TYPE)' generated/$CLUSTER/cluster-config.yaml
+  if [ "$AUTOSCALER_ENABLED" = "true" ];
+  then
+    yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
+  fi
 
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 
@@ -96,6 +113,13 @@ then
   # from cli options
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' "$CLUSTER_CONFIG"
 
+  if [ "$AUTOSCALER_ENABLED" = "true" ];
+  then
+    yq e -i '.ENABLE_AUTOSCALER = env(AUTOSCALER_ENABLED)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
+    yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
+  fi
+
   # create the cluster
   tanzu cluster create \
   --file=generated/$CLUSTER/cluster-config.yaml \
@@ -125,17 +149,6 @@ else
   else
     export NODE_OS="ubuntu"
     export NODE_VERSION="20.04"
-  fi
-
-  # Determine the cluster type based upon the name passed in (funciton defined above) and then check to see if it has autscaler enabled
-  CLUSTER_TYPE="$(get_cluster_type $CLUSTER)"
-
-  # Default to false if the no value has been set
-  export AUTOSCALER_ENABLED=$(yq e '.'$CLUSTER_TYPE'.worker-autoscaler-enabled // false' $PARAMS_YAML)
-  if [ "$AUTOSCALER_ENABLED" = "true" ];
-  then
-    # Default to worker-replas value if no max has been set
-    export WORKER_AUTOSCALER_MAX_NODES=$(yq e '.'$CLUSTER_TYPE'.worker-replicas-max // .'$CLUSTER_TYPE'.worker-replicas' $PARAMS_YAML)
   fi
 
   # Enable Antrea NodePortLocal
@@ -173,8 +186,20 @@ tanzu cluster kubeconfig get $CLUSTER --admin
 
 kubectl config use-context $CLUSTER-admin@$CLUSTER
 
+# A cluster can still be created even if the system addon apps fail to reconcile.  The following checks will break the script if an app has not succeeded reconciliation
+if kubectl get app -n tkg-system | grep failed ; [ $? -ne 0 ]; then
+	echo No apps have failed reconciliation, proceeding.
+else
+	echo An app has failed reconciliation, please troubleshoot!
+	exit 1
+fi
+
+if kubectl get app -n tkg-system | grep Reconciling ; [ $? -ne 0 ]; then
+	echo No apps are still reconciling, proceeding.
+else
+	echo An app is still reconciling, please troubleshoot!
+	exit 1
+fi
+
 # Create namespace that the lab uses for kapp metadata
 kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
-
-# TODO: This is a temporary fix until this is updated with the add-on.  Addresses noise logs in pinniped-concierge
-kubectl apply -f tkg-extensions-mods-examples/authentication/pinniped/pinniped-rbac-extension.yaml

@@ -43,11 +43,12 @@ yq e -i '.grafana.service.type = "ClusterIP"' generated/$CLUSTER_NAME/monitoring
 yq e -i ".ingress.virtual_host_fqdn = env(GRAFANA_FQDN)" generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml -i
 yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(GRAFANA_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 yq e -i '.ingress.tlsCertificate."tls.key" = strenv(GRAFANA_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
-# Temporarily forcing the namespace to be differnt than Prometheus until the split is included in next release (1.4.1)
 yq e -i '.namespace = "tanzu-system-dashboards"' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 
 # Apply Monitoring
-VERSION=$(tanzu package available list grafana.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# thus supplying -1 as the index of the array
+VERSION=$(tanzu package available list grafana.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
 tanzu package install grafana \
     --package-name grafana.tanzu.vmware.com \
     --version $VERSION \

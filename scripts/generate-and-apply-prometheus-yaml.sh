@@ -35,9 +35,12 @@ yq e ".ingress.enabled = env(TRUE_VALUE)" --null-input > generated/$CLUSTER_NAME
 yq e -i ".ingress.virtual_host_fqdn = env(PROMETHEUS_FQDN)" generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e -i '.namespace = "tanzu-system-monitoring"' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 
 # Apply Monitoring
-VERSION=$(tanzu package available list prometheus.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# thus supplying -1 as the index of the array
+VERSION=$(tanzu package available list prometheus.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
 tanzu package install prometheus \
     --package-name prometheus.tanzu.vmware.com \
     --version $VERSION \

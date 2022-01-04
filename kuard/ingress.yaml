@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: kuard
@@ -9,6 +9,10 @@ spec:
   - host: kuard.platform-sandbox-1.tanzu-poc.company.com
     http:
       paths:
-      - backend:
-          serviceName: kuard
-          servicePort: 8080
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+           name: kuard
+           port:
+             number: 8080

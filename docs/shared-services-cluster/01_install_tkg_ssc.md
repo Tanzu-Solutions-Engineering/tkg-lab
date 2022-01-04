@@ -25,7 +25,7 @@ All of the steps above can be accomplished by running the following script:
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.worker-replicas $PARAMS_YAML) \
   $(yq e .shared-services-cluster.controlplane-endpoint $PARAMS_YAML) \
-  $(yq e .shared-services-cluster.kubernetes-version $PARAMS_YAML)
+  $(yq e '.shared-services-cluster.kubernetes-version // null' $PARAMS_YAML)
 ```
 
 >Note: The kubernetes-version parameter is optional for the script and if you don't have it in your configuration, then it will default to the default version of the tanzu cli.  You can get a list of valid options to supply in the kubernetes-version parameter by issuing the `tanzu kubernetes-release get` and choose the appropriate value from the name column.

@@ -45,7 +45,7 @@ if tmc managementcluster list | grep -q $CLUSTER_NAME; then
   else 
     echo "Management Cluster is already registered and not READY, likely an old reference.  Will deregistery and re-register."
     echo "Deregistering managemnet cluster."
-    tmc managementcluster deregister $CLUSTER_NAME --force
+    tmc managementcluster deregister $CLUSTER_NAME
 
     while tmc managementcluster list | grep -q $CLUSTER_NAME; do
       echo Waiting for management cluster to finish deregistering.
@@ -70,7 +70,7 @@ if $REGISTER; then
 
   mv k8s-register-manifest.yaml generated/$CLUSTER_NAME/tmc/
 
-  while "$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" != "READY"; do
+  while ["$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" != "READY"]; do
     echo Waiting for management cluster to have registration status of READY.
     sleep 5s
   done

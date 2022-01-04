@@ -17,25 +17,32 @@ VELERO_BUCKET=$(yq e .velero.bucket $PARAMS_YAML)
 VELERO_REGION=$(yq e .velero.region $PARAMS_YAML)
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
+# HACK: Need to update to the GA repository once it goes GA
+VELERO_IMAGE_REPO=projects-stg.registry.vmware.com
+VELERO_VERSION=v1.7.0_vmware.1
+VELERO_PLUGIN_FOR_VSPHERE_VERSION=v1.1.1_vmware.1
+VELERO_PLUGIN_FOR_AWS_VERSION=v1.3.0_vmware.1
+
 if [ "$IAAS" = "vsphere" ];
 then
   # this condition uses the velero-plugin-for-vsphere which is special for 
   # Note: will not work with CloudGate AWS permissions
   velero install \
-      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
+      --image=$VELERO_IMAGE_REPO/tkg/velero/velero:$VELERO_VERSION \
       --provider aws \
-      --plugins=projects.registry.vmware.com/tkg/velero/velero-plugin-for-aws:v1.2.1_vmware.1,projects.registry.vmware.com/tkg/velero/velero-plugin-for-vsphere:v1.1.1_vmware.1 \
+      --plugins=$VELERO_IMAGE_REPO/tkg/velero/velero-plugin-for-aws:$VELERO_PLUGIN_FOR_AWS_VERSION,$VELERO_IMAGE_REPO/tkg/velero/velero-plugin-for-vsphere:$VELERO_PLUGIN_FOR_VSPHERE_VERSION \
       --bucket $VELERO_BUCKET \
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
       --secret-file keys/credentials-velero
 elif [ -z "$AWS_SESSION_TOKEN" ];
+then
   # this condition is for AWS without CloudGate or for Azure (yes, azure still uses the plugin for aws)
   # note for Azure users, it will only work if you have non-CloudGate AWS credentials for S3
   velero install \
-      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
+      --image=$VELERO_IMAGE_REPO/tkg/velero/velero:$VELERO_VERSION \
       --provider aws \
-      --plugins projects.registry.vmware.com/tkg/velero/velero-plugin-for-aws:v1.2.1_vmware.1 \
+      --plugins $VELERO_IMAGE_REPO/tkg/velero/velero-plugin-for-aws:$VELERO_PLUGIN_FOR_AWS_VERSION \
       --bucket $VELERO_BUCKET \
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
@@ -48,9 +55,9 @@ else
 
   echo "Using IAM Profile for S3 Access"
   velero install \
-      --image=projects.registry.vmware.com/tkg/velero/velero:v1.6.2_vmware.1 \
+      --image=$VELERO_IMAGE_REPO/tkg/velero/velero:$VELERO_VERSION \
       --provider aws \
-      --plugins velero/velero-plugin-for-aws:v1.1.0 \
+      --plugins $VELERO_IMAGE_REPO/tkg/velero/velero-plugin-for-aws:$VELERO_PLUGIN_FOR_AWS_VERSION \
       --bucket $VELERO_BUCKET \
       --backup-location-config region=$VELERO_REGION \
       --snapshot-location-config region=$VELERO_REGION \
