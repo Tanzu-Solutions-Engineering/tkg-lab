@@ -45,7 +45,10 @@ if tmc managementcluster list | grep -q $CLUSTER_NAME; then
   else 
     echo "Management Cluster is already registered and not READY, likely an old reference.  Will deregistery and re-register."
     echo "Deregistering managemnet cluster."
-    tmc managementcluster deregister $CLUSTER_NAME
+
+    # HACK: Kubeconfig should not be required, OLYMP-26147 has been created address this.  Set current context to managment cluster
+    kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
+    tmc managementcluster deregister $CLUSTER_NAME --force --kubeconfig ~/.kube/config
 
     while tmc managementcluster list | grep -q $CLUSTER_NAME; do
       echo Waiting for management cluster to finish deregistering.

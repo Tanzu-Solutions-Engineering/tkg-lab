@@ -36,5 +36,5 @@ clusters:
 
 apprepository:
   initialRepos:
-    - name: tac-repo
-      url: https://charts.trials.tac.bitnami.com/demo
+    - name: vac-repo
+      url: https://charts.app-catalog.vmware.com/demo

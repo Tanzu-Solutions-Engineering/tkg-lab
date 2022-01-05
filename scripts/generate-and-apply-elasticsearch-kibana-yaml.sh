@@ -16,6 +16,8 @@ cp elasticsearch-kibana/template/*.yaml generated/$CLUSTER_NAME/ek/
 yq e -i ".spec.rules[0].host = env(ELASTICSEARCH_CN)" generated/$CLUSTER_NAME/ek/03b-ingress.yaml
 yq e -i ".spec.rules[0].host = env(KIBANA_CN)" generated/$CLUSTER_NAME/ek/05-kibana-ingress.yaml 
 
+kubectl apply -f generated/$CLUSTER_NAME/ek/01-namespace.yaml
+
 # Add image pull secret with dockerhub creds
 $TKG_LAB_SCRIPTS/add-dockerhub-pull-secret.sh elasticsearch-kibana
 
