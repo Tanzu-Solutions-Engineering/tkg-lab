@@ -49,9 +49,9 @@ then
 
   cp config-templates/aws-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
 
-  export VPC_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.networkSpec.vpc.id}")
-  export PUBLIC_SUBNET_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.networkSpec.subnets[?(@.isPublic==true)].id}")
-  export PRIVATE_SUBNET_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.networkSpec.subnets[?(@.isPublic==false)].id}")
+  export VPC_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.network.vpc.id}")
+  export PUBLIC_SUBNET_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.network.subnets[?(@.isPublic==true)].id}")
+  export PRIVATE_SUBNET_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.network.subnets[?(@.isPublic==false)].id}")
   export REGION=$(yq e .aws.region $PARAMS_YAML)
   export SSH_KEY_NAME=tkg-$(yq e .environment-name $PARAMS_YAML)-default
   export AWS_CONTROL_PLANE_MACHINE_TYPE=$(yq e .aws.control-plane-machine-type $PARAMS_YAML)
