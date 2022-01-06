@@ -44,6 +44,26 @@ then
   yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   yq e -i '.deployment.args[6] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
+elif [ "$DNS_PROVIDER" = "azure-dns" ];
+then
+  echo "DEBUG: Configuring External DNS for Azure DNS"
+
+  # Expecting that create-dns-zone.sh has been run and ahreasetting up the zone and service principle
+
+  kubectl -n tanzu-system-service-discovery create secret \
+    generic azure-config-file \
+    --from-file=externaldns-config.json=keys/azure-dns-credentials.json \
+    -o yaml --dry-run=client | kubectl apply -f-
+
+  cp tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-data-values-azure-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
+  AZURE_DNZ_ZONE_NAME=$(yq e .subdomain $PARAMS_YAML)
+  AZURE_ZONE_RESOURCE_GROUP=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNZ_ZONE_NAME'].resourceGroup")
+  export DOMAIN_FILTER=--domain-filter=$AZURE_DNZ_ZONE_NAME
+  export AZURE_RESOURCE_GROUP_ARG=--azure-resource-group=$AZURE_ZONE_RESOURCE_GROUP
+  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[6] = env(AZURE_RESOURCE_GROUP_ARG)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
 else # Using AWS Route53
 
   cp tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-data-values-aws-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
