@@ -48,7 +48,7 @@ export HARBOR_CERT_KEY=$(kubectl get secret harbor-cert-tls -n tanzu-system-regi
 export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 
 # Get Harbor Package version
-# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
 export HARBOR_VERSION=$(tanzu package available list harbor.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
 # We won't wait for the package while there is an issue we solve with an overlay
@@ -106,16 +106,6 @@ tanzu package install harbor \
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
 kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
 kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay
-
-# Patch (via overlay) the harbor-registry when using S3 storage. This won't be necessary on TKG 1.5
-# - create harbor-registry secret
-# - use an empty-dir for registry-data to clean PVC info
-if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
-  kubectl create secret generic harbor-storage-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-storage-fix.yaml | kubectl apply -f -
-  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.1=harbor-storage-overlay
-  kubectl create secret generic harbor-s3-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml | kubectl apply -f-
-  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.2=harbor-s3-overlay
-fi
 
 # Wait for the Package to reconcile
 while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
