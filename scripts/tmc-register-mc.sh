@@ -73,7 +73,7 @@ if $REGISTER; then
 
   mv k8s-register-manifest.yaml generated/$CLUSTER_NAME/tmc/
 
-  while ["$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" != "READY"]; do
+  while [ "$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" != "READY" ]; do
     echo Waiting for management cluster to have registration status of READY.
     sleep 5s
   done
