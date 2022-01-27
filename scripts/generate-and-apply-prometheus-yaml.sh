@@ -26,6 +26,8 @@ while kubectl get certificates -n tanzu-system-monitoring prometheus-cert | grep
 	sleep 5s
 done
 
+# TODO: Created https://github.com/vmware-tanzu/community-edition/issues/2946 requsting that a paramater be added to allow you to specify secret name
+#    instead of providing the cert in data values.yaml.  Once that has been delivered and flows downstream, we can update this section of the code
 # Read prometheus certificate details and store in files
 export PROMETHEUS_CERT_CRT=$(kubectl get secret prometheus-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.crt"} | base64 --decode)
 export PROMETHEUS_CERT_KEY=$(kubectl get secret prometheus-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.key"} | base64 --decode)
