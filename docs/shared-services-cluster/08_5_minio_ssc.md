@@ -1,6 +1,6 @@
 # Install Minio
 
-We will deploy Minio as a target for harbor images and backups.
+We will deploy Minio as a target for harbor images and Velero backups.
 
 This is a minimalist and POC quality deployment of Minio.  This is not a component of Tanzu.  This deployment is just for the purpose of demonstration purpose.
 
