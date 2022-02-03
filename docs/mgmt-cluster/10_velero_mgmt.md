@@ -8,15 +8,17 @@ At this time the management cluster can not be managed by Tanzu Mission Control,
 
 It is assumed you have already downloaded velero cli from [Enable Data Protection and Setup Nightly Backup for Shared Services Cluster](../shared-services-cluster/09_velero_ssc.md).
 
-## Setup AWS as a target for backups
+## Target Locations
 
-Follow [Velero Plugins for AWS Guide](https://github.com/vmware-tanzu/velero-plugin-for-aws#setup).  I chose **Option 1** for **Set Permissions for Velero Step**.
+Your backup will be stored based upon the IaaS you are using.
 
-Store your credentials-velero file in `keys/` directory.
+- `vSphere` will target the Minio server you deployed
+- `Azure` will create a storage account in your cluster resource group and backups will go there
+- `AWS` will go into AWS S3 and backups will go there
 
-Go to AWS console S3 service and create a bucket for cluster backups.
+Credentials to access the target storage location are stored at `generated/$CLUSTER_NAME/velero/velero-credentials`.
 
->Note: You will follow the process of using AWS for backups regardless of if your TKG clusters are deployed to Azure or vSphere.  Remember, this is just a lab, so we have simplified the variations.
+If using Cloud Gate for AWS, no credentials will be stored and you will use the IAM of the node.
 
 ## Set configuration parameters
 
@@ -24,7 +26,6 @@ The scripts to prepare the YAML to deploy velero depend on a parameters to be se
 
 ```yaml
 velero.bucket: my-bucket
-veloreo.region: us-east-2
 ```
 
 ## Prepare Manifests and Deploy Velero

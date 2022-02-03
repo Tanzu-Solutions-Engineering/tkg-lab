@@ -30,6 +30,7 @@ export PARAMS_YAML=local-config/params.yaml
 ### 5. [Install ElasticSearch and Kibana](../shared-services-cluster/06_ek_ssc.md)
 ### 6. [Install FluentBit](../shared-services-cluster/07_fluentbit_ssc.md)
 ### 7. [Add monitoring to cluster](../shared-services-cluster/08_monitoring_ssc.md)
+### 8. [Deploy Minio to Shared Services Cluster](../shared-services-cluster/08_5_minio_ssc.md)
 ### 8. [Enable Data Protection and Setup Nightly Backup](../shared-services-cluster/09_velero_ssc.md)
 ### 9. [Install Harbor](../shared-services-cluster/10_harbor.md)
 
