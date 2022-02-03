@@ -13,6 +13,7 @@ minio:
   server-fqdn: minio.dorn.tkg-aws-e2-lab.winterfell.live
   root-user: foo
   root-password: bar
+  persistence-size: 40Gi
 ```
 
 ## Prepare Manifests and Deploy Minio

@@ -32,7 +32,7 @@ EOF
 
 export ROOT_USER=$(yq e .minio.root-user $PARAMS_YAML)
 export ROOT_PASSWORD=$(yq e .minio.root-password $PARAMS_YAML)
-export PERSITENCE_SIZE=$(yq e .minio.persistence-size $PARAMS_YAML)
+export PERSITENCE_SIZE=$(yq e '.minio.persistence-size // "40Gi"' $PARAMS_YAML)
 export SERVICE_ANNOTATION='{"external-dns.alpha.kubernetes.io/hostname": "'$MINIO_CN'"}'
 export VELERO_BUCKET=$(yq e .velero.bucket $PARAMS_YAML)
 
