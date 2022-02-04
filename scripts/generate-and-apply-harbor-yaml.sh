@@ -40,7 +40,7 @@ kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-registry harbor-cert | grep True ; [ $? -ne 0 ]; do
 	echo Harbor certificate is not yet ready
-	sleep 5s
+	sleep 5
 done
 # Read Harbor certificate details and store in files
 export HARBOR_CERT_CRT=$(kubectl get secret harbor-cert-tls -n tanzu-system-registry -o=jsonpath={.data."tls\.crt"} | base64 --decode)
@@ -50,7 +50,7 @@ export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 # Get Harbor Package version
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-export HARBOR_VERSION=$(tanzu package available list harbor.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
+export HARBOR_VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "harbor") | .latest-version' -)
 # We won't wait for the package while there is an issue we solve with an overlay
 WAIT_FOR_PACKAGE=false
 
@@ -114,7 +114,7 @@ kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/yt
 # Wait for the Package to reconcile
 while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Harbor extension is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it

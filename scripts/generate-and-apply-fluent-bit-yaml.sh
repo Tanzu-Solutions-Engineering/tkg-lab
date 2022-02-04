@@ -61,9 +61,9 @@ EOF
 yq e ".fluent_bit.config.outputs = strenv(CONFIG_OUTPUTS)" --null-input > generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 yq e -i ".fluent_bit.config.filters = strenv(CONFIG_FILTERS)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
-# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list fluent-bit.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "fluent-bit") | .latest-version' -)
 tanzu package install fluent-bit \
     --package-name fluent-bit.tanzu.vmware.com \
     --version $VERSION \

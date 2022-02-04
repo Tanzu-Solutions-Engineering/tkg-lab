@@ -42,7 +42,7 @@ if tmc managementcluster list | grep -q $CLUSTER_NAME; then
   if [ "$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" == "READY" ]; then
     echo "Management Cluster is already registered and ready."
     REGISTER=false
-  else 
+  else
     echo "Management Cluster is already registered and not READY, likely an old reference.  Will deregistery and re-register."
     echo "Deregistering managemnet cluster."
 
@@ -52,10 +52,10 @@ if tmc managementcluster list | grep -q $CLUSTER_NAME; then
 
     while tmc managementcluster list | grep -q $CLUSTER_NAME; do
       echo Waiting for management cluster to finish deregistering.
-      sleep 5s
+      sleep 5
     done
 
-  fi 
+  fi
 fi
 
 if $REGISTER; then
@@ -75,7 +75,7 @@ if $REGISTER; then
 
   while ["$(tmc managementcluster get $CLUSTER_NAME | yq e '.status.phase' -)" != "READY"]; do
     echo Waiting for management cluster to have registration status of READY.
-    sleep 5s
+    sleep 5
   done
 
 fi

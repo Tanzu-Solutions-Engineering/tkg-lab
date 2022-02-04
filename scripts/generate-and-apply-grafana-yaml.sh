@@ -24,7 +24,7 @@ kubectl apply -f generated/$CLUSTER_NAME/monitoring/grafana-cert.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-dashboards grafana-cert | grep True ; [ $? -ne 0 ]; do
 	echo Grafana certificate is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 # Read Grafana certificate details and store in files
@@ -46,9 +46,9 @@ yq e -i '.ingress.tlsCertificate."tls.key" = strenv(GRAFANA_CERT_KEY)' generated
 yq e -i '.namespace = "tanzu-system-dashboards"' generated/$CLUSTER_NAME/monitoring/grafana-data-values.yaml
 
 # Apply Monitoring
-# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list grafana.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "grafana") | .latest-version' -)
 tanzu package install grafana \
     --package-name grafana.tanzu.vmware.com \
     --version $VERSION \

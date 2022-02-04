@@ -39,17 +39,17 @@ if tmc cluster list | grep -q $TMC_CLUSTER_NAME; then
   if [ "$(tmc cluster get $TMC_CLUSTER_NAME -p attached -m attached | yq e '.status.health' -)" == "HEALTHY" ]; then
     echo "Cluster is already attached and healthy."
     ATTACH=false
-  else 
+  else
     echo "Cluster is already attached and unhealthy, likely an old reference.  Will detach and re-attach."
     echo "Detaching cluster."
     tmc cluster delete $TMC_CLUSTER_NAME -m attached -p attached --force
 
     while tmc cluster list | grep -q $TMC_CLUSTER_NAME; do
       echo Waiting for cluster to finish detaching.
-      sleep 5s
+      sleep 5
     done
 
-  fi 
+  fi
 fi
 
 if $ATTACH; then

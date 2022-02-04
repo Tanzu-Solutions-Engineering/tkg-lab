@@ -25,7 +25,7 @@ VELERO_PLUGIN_FOR_AWS_VERSION=v1.3.0_vmware.1
 
 if [ "$IAAS" = "vsphere" ];
 then
-  # this condition uses the velero-plugin-for-vsphere which is special for 
+  # this condition uses the velero-plugin-for-vsphere which is special for
   # Note: will not work with CloudGate AWS permissions
   velero install \
       --image=$VELERO_IMAGE_REPO/tkg/velero/velero:$VELERO_VERSION \
@@ -67,7 +67,7 @@ fi
 # Wait for it to be ready
 while kubectl get po -n velero | grep Running ; [ $? -ne 0 ]; do
 	echo Velero is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 # Setup the backup schedule

@@ -73,7 +73,7 @@ else # Using AWS Route53
   yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   yq e -i '.deployment.args[6] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
-  # Perform special processing to handle Cloudgate use case where session tokens are used 
+  # Perform special processing to handle Cloudgate use case where session tokens are used
   if [ -z "$AWS_SESSION_TOKEN" ]; then
     echo "Using Existing Extension."
 
@@ -93,9 +93,9 @@ else # Using AWS Route53
 
 fi
 
-# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "external-dns") | .latest-version' -)
 tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
     --version $VERSION \

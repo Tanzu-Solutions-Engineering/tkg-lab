@@ -12,9 +12,9 @@ CLUSTER_NAME=$1
 
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
-# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list cert-manager.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "cert-manager") | .latest-version' -)
 
 tanzu package install cert-manager \
     --package-name cert-manager.tanzu.vmware.com \

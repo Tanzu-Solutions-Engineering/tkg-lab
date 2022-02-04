@@ -20,14 +20,14 @@ kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-ingress.yaml
 
 while dig $PINNIPED_CN | grep "ANSWER SECTION" ; [ $? -ne 0 ]; do
 	echo Waiting for external-dns to complete  configuration of DNS to satisfy for $PINNIPED_CN
-	sleep 5s
+	sleep 5
 done
 
 kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-certificate.yaml
 
 while kubectl get certificate custom-pinniped-cert -n pinniped-supervisor | grep True ; [ $? -ne 0 ]; do
 	echo Pinniped certificate is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 kubectl get secret $CLUSTER_NAME-pinniped-addon -n tkg-system -ojsonpath="{.data.values\.yaml}" | base64 --decode > generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
@@ -61,7 +61,7 @@ kubectl patch secret $CLUSTER_NAME-pinniped-addon -n tkg-system -p '{"data": {"v
 # Wait until job is completed.
 while kubectl get jobs -n pinniped-supervisor | grep "1/1"; [ $? -ne 0 ]; do
 	echo "Waiting for pinniped-post-deploy-job job to be completed"
-	sleep 5s
+	sleep 5
 done
 
 # Now patch the CRDs - This is a hack because there is no way to configure this information

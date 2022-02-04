@@ -23,7 +23,7 @@ kubectl apply -f generated/$CLUSTER_NAME/monitoring/prometheus-cert.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-monitoring prometheus-cert | grep True ; [ $? -ne 0 ]; do
 	echo prometheus certificate is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 # Read prometheus certificate details and store in files
@@ -38,9 +38,9 @@ yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' genera
 yq e -i '.namespace = "tanzu-system-monitoring"' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 
 # Apply Monitoring
-# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last, 
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list prometheus.tanzu.vmware.com -oyaml | yq eval ".[-1].version" -)
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "prometheus") | .latest-version' -)
 tanzu package install prometheus \
     --package-name prometheus.tanzu.vmware.com \
     --version $VERSION \
