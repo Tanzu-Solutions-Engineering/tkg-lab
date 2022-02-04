@@ -27,6 +27,9 @@ while kubectl get certificates -n tanzu-system-dashboards grafana-cert | grep Tr
 	sleep 5
 done
 
+# TODO: Created https://github.com/vmware-tanzu/community-edition/issues/2947 requsting that a paramater be added to allow you to specify secret name
+#    instead of providing the cert in data values.yaml.  Once that has been delivered and flows downstream, we can update this section of the code
+
 # Read Grafana certificate details and store in files
 export GRAFANA_CERT_CRT=$(kubectl get secret grafana-cert-tls -n tanzu-system-dashboards -o=jsonpath={.data."tls\.crt"} | base64 --decode)
 export GRAFANA_CERT_KEY=$(kubectl get secret grafana-cert-tls -n tanzu-system-dashboards -o=jsonpath={.data."tls\.key"} | base64 --decode)

@@ -29,6 +29,7 @@ Leverages the following external services:
 
 Additional OSS components not supported by VMware
 - **Elasticsearch and Kibana** for log aggregation and viewing
+- **Minio** for object storage
 
 ## Goals and Audience
 

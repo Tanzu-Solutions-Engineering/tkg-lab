@@ -88,7 +88,6 @@ wavefront:
   jaeger-app-name-prefix: dpfeffer-acme-fitness
 velero:
   bucket: pa-dpfeffer-mgmt-velero
-  region: us-east-2
 harbor:
   admin-password: "VMware1!"
   harbor-cn: harbor.dorn.tkg-aws-e2-lab.winterfell.live
@@ -129,3 +128,8 @@ dockerhub:
   username: REDACTED # Your dockerhub username
   password: REDACTED # Your dockerhub password
   email: REDACTED # Your dockerhub email
+minio:
+  server-fqdn: minio.dorn.tkg-aws-e2-lab.winterfell.live
+  root-user: REDACTED
+  root-password: REDACTED
+  persistence-size: 40Gi

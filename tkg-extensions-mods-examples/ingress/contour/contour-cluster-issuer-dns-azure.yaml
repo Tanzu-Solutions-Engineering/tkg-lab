@@ -16,7 +16,7 @@ spec:
           clientSecretSecretRef:
           # The following is the secret we created in Kubernetes. Issuer will use this to present challenge to Azure DNS.
             name: azure-dns-service-account
-            key: credentials.json
+            key: client-secret
           subscriptionID: AZURE_SUBSCRIPTION_ID
           tenantID: AZURE_TENANT_ID
           resourceGroupName: AZURE_DNS_ZONE_RESOURCE_GROUP
