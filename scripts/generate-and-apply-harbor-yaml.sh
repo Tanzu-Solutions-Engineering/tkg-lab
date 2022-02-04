@@ -65,6 +65,10 @@ bash /tmp/harbor-package/config/scripts/generate-passwords.sh generated/$SHAREDS
 # Specify settings in harbor-data-values.yaml
 export HARBOR_ADMIN_PASSWORD=$(yq e ".harbor.admin-password" $PARAMS_YAML)
 yq e -i ".hostname = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+# To be used in the future. Initial tests show that this approach doesn't work in this script: Our let's encrypt cert secret does not include the CA, and even if we manually create the k8s secret with the ca.crt it does not work if it's not called harbor-tls
+# Once https://github.com/vmware-tanzu/community-edition/issues/2942 is done and the CA cert is properly passsed to the core and other Harbor components it may work.
+# export HARBOR_CERT_NAME="harbor-tls"
+# yq e -i '.tlsCertificateSecretName = strenv(HARBOR_CERT_NAME)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.crt" = strenv(HARBOR_CERT_CRT)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.key" = strenv(HARBOR_CERT_KEY)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
