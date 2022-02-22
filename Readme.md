@@ -82,7 +82,7 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 
 - kubectl
 - tmc
-- tanzu v1.5.0
+- tanzu v1.5.1
 - velero v1.7.0
 - helm v3
 - [yq v4.12+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
