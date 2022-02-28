@@ -61,7 +61,7 @@ then
   yq e -i '.AWS_PUBLIC_SUBNET_ID = env(PUBLIC_SUBNET_ID)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.AWS_PRIVATE_SUBNET_ID = env(PRIVATE_SUBNET_ID)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.CLUSTER_NAME = env(CLUSTER)' generated/$CLUSTER/cluster-config.yaml
-  yq e -i '.AWS_REGION = env(REGION)' generated/$CLUSTER/cluster-config.yaml
+  yq e -i '.AWS_REGION = env(AWS_REGION)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.AWS_SSH_KEY_NAME = env(SSH_KEY_NAME)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.WORKER_MACHINE_COUNT = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
   yq e -i '.CONTROL_PLANE_MACHINE_TYPE = env(AWS_CONTROL_PLANE_MACHINE_TYPE)' generated/$CLUSTER/cluster-config.yaml
@@ -73,10 +73,13 @@ then
     yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
   fi
 
+  # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
+  # do this first so we can fail fast if no valid AWS creds
+  aws ec2 create-tags --resources $PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
+
   tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 
-  # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
-  aws ec2 create-tags --resources $PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
+
 elif [ "$IAAS" == "azure" ];
 then
 
