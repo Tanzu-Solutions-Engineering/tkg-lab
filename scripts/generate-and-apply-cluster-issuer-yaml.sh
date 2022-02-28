@@ -30,6 +30,26 @@ then
         -n cert-manager -o yaml --dry-run=client | kubectl apply -f-
     export GCLOUD_PROJECT=$(yq e .gcloud.project $PARAMS_YAML )
     yq e -i '.spec.acme.solvers[0].dns01.cloudDNS.project = env(GCLOUD_PROJECT)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+  elif [ "$DNS_PROVIDER" = "azure-dns" ];
+  then
+    # Using Azure DNS
+    cp tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns-azure.yaml generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    kubectl create secret generic azure-dns-service-account \
+        --from-literal=client-secret=$(yq e .aadClientSecret keys/azure-dns-credentials.json) \
+        -n cert-manager -o yaml --dry-run=client | kubectl apply -f-
+
+    export AZURE_CERT_MANAGER_SP_APP_ID=$(yq e .aadClientId keys/azure-dns-credentials.json)
+    export AZURE_SUBSCRIPTION_ID=$(yq e .subscriptionId keys/azure-dns-credentials.json)
+    export AZURE_TENANT_ID=$(yq e .tenantId keys/azure-dns-credentials.json)
+    export AZURE_DNS_ZONE=$(yq e .subdomain $PARAMS_YAML)
+    export AZURE_ENVIRONMENT=$(yq e '.azure.environment' $PARAMS_YAML)
+    export AZURE_ZONE_RESOURCE_GROUP_NAME=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNS_ZONE'].resourceGroup")
+    yq e -i '.spec.acme.solvers[0].dns01.azureDNS.clientID = env(AZURE_CERT_MANAGER_SP_APP_ID)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    yq e -i '.spec.acme.solvers[0].dns01.azureDNS.subscriptionID = env(AZURE_SUBSCRIPTION_ID)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    yq e -i '.spec.acme.solvers[0].dns01.azureDNS.tenantID = env(AZURE_TENANT_ID)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    yq e -i '.spec.acme.solvers[0].dns01.azureDNS.resourceGroupName = env(AZURE_ZONE_RESOURCE_GROUP_NAME)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    yq e -i '.spec.acme.solvers[0].dns01.azureDNS.hostedZoneName = env(AZURE_DNS_ZONE)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
+    yq e -i '.spec.acme.solvers[0].dns01.azureDNS.environment = env(AZURE_ENVIRONMENT)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
   else
     # Using Route53
     cp tkg-extensions-mods-examples/ingress/contour/contour-cluster-issuer-dns-aws.yaml generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml

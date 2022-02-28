@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-contour-cluster-issuer
+  namespace: tanzu-system-ingress
+spec:
+  acme:
+    email: "jaguilar@pivotal.io"
+    privateKeySecretRef:
+      name: acme-account-key
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        azureDNS:
+          clientID: AZURE_CERT_MANAGER_SP_APP_ID
+          clientSecretSecretRef:
+          # The following is the secret we created in Kubernetes. Issuer will use this to present challenge to Azure DNS.
+            name: azure-dns-service-account
+            key: client-secret
+          subscriptionID: AZURE_SUBSCRIPTION_ID
+          tenantID: AZURE_TENANT_ID
+          resourceGroupName: AZURE_DNS_ZONE_RESOURCE_GROUP
+          hostedZoneName: AZURE_DNS_ZONE
+          # Azure Cloud Environment, default to AzurePublicCloud
+          environment: AzurePublicCloud

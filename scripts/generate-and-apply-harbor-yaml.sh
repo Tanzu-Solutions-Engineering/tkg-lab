@@ -40,7 +40,7 @@ kubectl apply -f generated/$SHAREDSVC_CLUSTER_NAME/harbor/02-certs.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-registry harbor-cert | grep True ; [ $? -ne 0 ]; do
 	echo Harbor certificate is not yet ready
-	sleep 5s
+	sleep 5
 done
 # Read Harbor certificate details and store in files
 export HARBOR_CERT_CRT=$(kubectl get secret harbor-cert-tls -n tanzu-system-registry -o=jsonpath={.data."tls\.crt"} | base64 --decode)
@@ -48,7 +48,9 @@ export HARBOR_CERT_KEY=$(kubectl get secret harbor-cert-tls -n tanzu-system-regi
 export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 
 # Get Harbor Package version
-export HARBOR_VERSION=$(tanzu package available list harbor.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
+# thus supplying -1 as the index of the array
+export HARBOR_VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "harbor") | .latest-version' -)
 # We won't wait for the package while there is an issue we solve with an overlay
 WAIT_FOR_PACKAGE=false
 
@@ -63,6 +65,10 @@ bash /tmp/harbor-package/config/scripts/generate-passwords.sh generated/$SHAREDS
 # Specify settings in harbor-data-values.yaml
 export HARBOR_ADMIN_PASSWORD=$(yq e ".harbor.admin-password" $PARAMS_YAML)
 yq e -i ".hostname = env(HARBOR_CN)" generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+# To be used in the future. Initial tests show that this approach doesn't work in this script: Our let's encrypt cert secret does not include the CA, and even if we manually create the k8s secret with the ca.crt it does not work if it's not called harbor-tls
+# Once https://github.com/vmware-tanzu/community-edition/issues/2942 is done and the CA cert is properly passsed to the core and other Harbor components it may work.
+# export HARBOR_CERT_NAME="harbor-tls"
+# yq e -i '.tlsCertificateSecretName = strenv(HARBOR_CERT_NAME)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.crt" = strenv(HARBOR_CERT_CRT)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."tls.key" = strenv(HARBOR_CERT_KEY)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
@@ -105,20 +111,10 @@ tanzu package install harbor \
 kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
 kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay
 
-# Patch (via overlay) the harbor-registry when using S3 storage. This won't be necessary on TKG 1.5
-# - create harbor-registry secret
-# - use an empty-dir for registry-data to clean PVC info
-if [ "s3" == "$HARBOR_BLOB_STORAGE_TYPE" ]; then
-  kubectl create secret generic harbor-storage-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-storage-fix.yaml | kubectl apply -f -
-  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.1=harbor-storage-overlay
-  kubectl create secret generic harbor-s3-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-s3-pvc-fix.yaml | kubectl apply -f-
-  kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.2=harbor-s3-overlay
-fi
-
 # Wait for the Package to reconcile
 while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Harbor extension is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 # At this point the Harbor Extension is installed and we can access Harbor via its UI as well as push images to it

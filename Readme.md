@@ -29,6 +29,7 @@ Leverages the following external services:
 
 Additional OSS components not supported by VMware
 - **Elasticsearch and Kibana** for log aggregation and viewing
+- **Minio** for object storage
 
 ## Goals and Audience
 
@@ -81,12 +82,15 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 
 - kubectl
 - tmc
-- tanzu v1.4.0
-- velero v1.6.2
+- tanzu v1.5.1
+- velero v1.7.0
 - helm v3
 - [yq v4.12+](https://github.com/mikefarah/yq) (to install use `brew` for Mac and `apt-get` for Linux).
 - kind (helpful, but not required)
-- ytt, kapp, imgpkg, kbld (bundled with tkg)
+- ytt, kapp, imgpkg, kbld (bundled with tanzu cli)
+- jq
+- aws (for deploying on AWS or using Route53 DNS)
+- az (when deploying to Azure)
 
 ## Foundational Lab Setup Guides
 

@@ -5,7 +5,7 @@
 Tanzu Kubernetes Grid (TKG) leverages the Carvel tool suite (specifically [ytt](http://carvel.dev/ytt)) to dynamically
 generate the [cluster-api](https://cluster-api.sigs.k8s.io/) resources that are used to create clusters.
 
-Furthmore, TKG has defined a set of parameters (and default values) that are used as input to this generatation process.  [TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-config-reference.html) provide details on these parameters.
+Furthmore, TKG has defined a set of parameters (and default values) that are used as input to this generatation process.  [TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-tanzu-config-reference.html) provide details on these parameters.
 
 Whether you are using the UI installer or the CLI to create a cluster with TKG, a cluster-config.yaml file is created/used to customize the default parameters for a given cluster.
 
@@ -17,7 +17,7 @@ You may find that your specific requirements necessitate a configuration that is
 
 ## Opinions
 
-[TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-k8s-clusters-config-plans.html) share the **mechanics** of different ways to customize TKG clusters using overlays and plans.  There are options to use overlays and plans, which are two related, but different approaches.
+[TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-tanzu-k8s-clusters-config-plans.html) share the **mechanics** of different ways to customize TKG clusters using overlays and plans.  There are options to use overlays and plans, which are two related, but different approaches.
 
 This guide walks through an opinionated approach to create/manage a set of customizations that you will maintain and own.  Generally accepted best practices are still evolving.  Considerations used in the development of this opinion are:
 
@@ -83,7 +83,7 @@ tanzu cluster create -f $CLUSTER_CONFIG --dry-run | grep $SOME_KEY -C 10
 
 ## References
 
-- [TKG Docs Custom Overlays and Plans](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-k8s-clusters-config-plans.html)
-- [TKG Docs to Trust Custom CA Certs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-cluster-lifecycle-secrets.html#trust-custom-ca-certificates-on-cluster-nodes-3)
+- [TKG Docs Custom Overlays and Plans](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-tanzu-k8s-clusters-config-plans.html)
+- [TKG Docs to Trust Custom CA Certs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-cluster-lifecycle-secrets.html#trust-custom-ca-certificates-on-cluster-nodes-3)
 - [ytt Testing](https://carvel.dev/ytt/)
 - [ytt Documentation](https://carvel.dev/ytt/docs/latest/)

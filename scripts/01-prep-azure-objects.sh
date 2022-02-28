@@ -9,7 +9,7 @@ source "$TKG_LAB_SCRIPTS/set-env.sh"
 
 # Get client id
 AZURE_CREDENTIALS_CONFIGURED=false
-export AZURE_CLIENT_ID=$(yq e .azure.client-id "$PARAMS_YAML")
+export AZURE_CLIENT_ID=$(yq e '.azure.client-id // null' "$PARAMS_YAML")
 # NOTE: yq returns null string...
 if [ "$AZURE_CLIENT_ID" != "null" ]; then
   echo "INFO: client id already configured in $PARAMS_YAML, not setting up azure credentials"
@@ -36,14 +36,14 @@ fi
 if [ "$AZURE_CREDENTIALS_CONFIGURED" == "false" ]; then
 
   # Get subscription id
-  export AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id "$PARAMS_YAML")
+  export AZURE_SUBSCRIPTION_ID=$(yq e '.azure.subscription-id // null' "$PARAMS_YAML")
   if [ "$AZURE_SUBSCRIPTION_ID" == "null" ]; then
       export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
       echo "INFO: AZURE_SUBSCRIPTION_ID is $AZURE_SUBSCRIPTION_ID"
   fi
 
   # Create an app name - tkg-$date
-  export AZURE_APP_NAME=$(yq e .azure.app-name "$PARAMS_YAML")
+  export AZURE_APP_NAME=$(yq e '.azure.app-name // null' "$PARAMS_YAML")
   if [ "$AZURE_APP_NAME" == "null" ] || [ -z "$AZURE_APP_NAME" ]; then
     export AZURE_APP_NAME=tkg-$(date +%F-%H-%M)
   fi

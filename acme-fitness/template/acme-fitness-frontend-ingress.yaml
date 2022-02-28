@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: frontend
@@ -19,6 +19,10 @@ spec:
   - host: acme-fitness.wlc-1.tkg-aws-lab.winterfell.live
     http:
       paths:
-      - backend:
-          serviceName: frontend
-          servicePort: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+           name: frontend
+           port:
+             number: 80

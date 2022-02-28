@@ -23,9 +23,11 @@ kubectl apply -f generated/$CLUSTER_NAME/monitoring/prometheus-cert.yaml
 # Wait for cert to be ready
 while kubectl get certificates -n tanzu-system-monitoring prometheus-cert | grep True ; [ $? -ne 0 ]; do
 	echo prometheus certificate is not yet ready
-	sleep 5s
+	sleep 5
 done
 
+# TODO: Created https://github.com/vmware-tanzu/community-edition/issues/2946 requsting that a paramater be added to allow you to specify secret name
+#    instead of providing the cert in data values.yaml.  Once that has been delivered and flows downstream, we can update this section of the code
 # Read prometheus certificate details and store in files
 export PROMETHEUS_CERT_CRT=$(kubectl get secret prometheus-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.crt"} | base64 --decode)
 export PROMETHEUS_CERT_KEY=$(kubectl get secret prometheus-cert-tls -n tanzu-system-monitoring -o=jsonpath={.data."tls\.key"} | base64 --decode)
@@ -35,9 +37,12 @@ yq e ".ingress.enabled = env(TRUE_VALUE)" --null-input > generated/$CLUSTER_NAME
 yq e -i ".ingress.virtual_host_fqdn = env(PROMETHEUS_FQDN)" generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 yq e -i '.ingress.tlsCertificate."tls.crt" = strenv(PROMETHEUS_CERT_CRT)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 yq e -i '.ingress.tlsCertificate."tls.key" = strenv(PROMETHEUS_CERT_KEY)' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
+yq e -i '.namespace = "tanzu-system-monitoring"' generated/$CLUSTER_NAME/monitoring/prometheus-data-values.yaml
 
 # Apply Monitoring
-VERSION=$(tanzu package available list prometheus.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
+# thus supplying -1 as the index of the array
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "prometheus") | .latest-version' -)
 tanzu package install prometheus \
     --package-name prometheus.tanzu.vmware.com \
     --version $VERSION \

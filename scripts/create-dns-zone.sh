@@ -23,6 +23,56 @@ then
   else
     echo "Google Cloud Managed Zone $LAB_ENV_NAME already exists"
   fi
+elif [ "$DNS_PROVIDER" = "azure-dns" ];
+then
+  AZURE_DNZ_ZONE_NAME=$(yq e .subdomain $PARAMS_YAML)
+  export AZURE_ZONE_RESOURCE_GROUP_NAME=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNZ_ZONE_NAME'].resourceGroup")
+  if [ -z "$AZURE_ZONE_RESOURCE_GROUP_NAME" ]
+  then
+
+    # zone does not exist, need to create it.
+    # create group, zone
+
+    export AZURE_ZONE_RESOURCE_GROUP_NAME=tkg-lab-dns
+    echo "INFO: Creating $AZURE_ZONE_RESOURCE_GROUP_NAME resource group"
+    az group create -n $AZURE_ZONE_RESOURCE_GROUP_NAME -l $(yq e '.azure.location' $PARAMS_YAML)
+    
+    export AZURE_RESOURCE_GROUP_ID=$(az group show -n $AZURE_ZONE_RESOURCE_GROUP_NAME --query id --output tsv)
+
+    echo "INFO: Creating dns zone within resource group"
+    az network dns zone create -g $AZURE_ZONE_RESOURCE_GROUP_NAME -n $(yq e .subdomain $PARAMS_YAML)
+
+  else 
+    echo "INFO: DNS zone already exists"
+    export AZURE_RESOURCE_GROUP_ID=$(az group show -n $AZURE_ZONE_RESOURCE_GROUP_NAME --query id --output tsv)
+  fi
+
+  # zone exists, must now see if we have a SP
+  VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
+  AZURE_SERVICE_PRINCIPAL=`az ad sp list -o tsv --filter "displayname eq '$VMWARE_ID-tkg-lab-dns-operator'"`
+  if [ -z "$AZURE_SERVICE_PRINCIPAL" ]
+  then
+    # no sp, so need to create one
+    echo "INFO: Creating service priciple with contributor rights on the resource group"
+    RETURNED_SP_JSON=$(az ad sp create-for-rbac -n $VMWARE_ID-tkg-lab-dns-operator --role Contributor --scopes $AZURE_RESOURCE_GROUP_ID)
+    echo "DEBUG: RETURNED_SP_JSON is $RETURNED_SP_JSON"
+
+    # Setup variables from resulting json
+    export AZURE_CLIENT_ID=$(echo "$RETURNED_SP_JSON" | jq -r '.appId')
+    export AZURE_CLIENT_SECRET=$(echo "$RETURNED_SP_JSON" | jq -r '.password')
+    export AZURE_TENANT_ID=$(echo "$RETURNED_SP_JSON" | jq -r '.tenant')
+    export AZURE_SUBSCRIPTION_ID=$(yq e '.azure.subscription-id' $PARAMS_YAML)
+
+    yq e '.tenantId = env(AZURE_TENANT_ID)' --null-input > keys/azure-dns-credentials.yaml
+    yq e -i '.subscriptionId = env(AZURE_SUBSCRIPTION_ID)' keys/azure-dns-credentials.yaml
+    yq e -i '.resourceGroup = env(AZURE_ZONE_RESOURCE_GROUP_NAME)' keys/azure-dns-credentials.yaml
+    yq e -i '.aadClientId = env(AZURE_CLIENT_ID)' keys/azure-dns-credentials.yaml
+    yq e -i '.aadClientSecret = env(AZURE_CLIENT_SECRET)' keys/azure-dns-credentials.yaml
+
+    yq eval --output-format=json keys/azure-dns-credentials.yaml > keys/azure-dns-credentials.json
+    rm keys/azure-dns-credentials.yaml
+  fi
+
 else
   # Default is to use AWS Route53
   echo "Using AWS Route53"

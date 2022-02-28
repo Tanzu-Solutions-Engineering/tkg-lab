@@ -9,7 +9,7 @@ Crashd is a diagnostics tool that will gather logs and additional information re
 The following lab walks through a series of commands that can be used to retrieve crashd data from TKG on AWS.  There is an added complexity here in that the AWS setup includes a bastion hosts to get to cluster nodes.
 
 ```bash
-export CRASHD_VERSION=v0.3.2+vmware.2
+export CRASHD_VERSION=v0.3.7+vmware.2
 
 # This shows retrieving the binary from internal source for pre-testing, however here is where to get the offical GA version
 https://www.vmware.com/go/get-tkg
@@ -54,7 +54,7 @@ export CRASHD_VERSION=$(cat crashd-version)
 
 # Install prerequsites kubectl and kind
 sudo snap install kubectl --classic
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 
@@ -81,7 +81,7 @@ scp -i $SSH_KEY ubuntu@$BASTION_IP:crashd/tkg-mgmt.diagnostics.tar.gz /tmp/tkg-m
 The following lab walks through a series of commands that can be used to retrieve crashd data from TKG assuming you have direct access from your macbook to the management cluster.  This was the case for me with vSphere (but not with AWS due to bastion host).
 
 ```bash
-export CRASHD_VERSION=v0.3.2+vmware.2
+export CRASHD_VERSION=v0.3.7+vmware.2
 
 # This shows retrieving the binary from internal source for pre-testing, however here is where to get the offical GA version
 https://www.vmware.com/go/get-tkg
@@ -99,7 +99,7 @@ export MGMT_CLUSTER=$(yq e .management-cluster.name $PARAMS_YAML)
 kubectl config use-context $MGMT_CLUSTER-admin@$MGMT_CLUSTER
 
 # Create the crasd properties file
-cat > /tmp/crashd-args.properties << EOF
+cat > /tmp/crashd-args-mgmt.properties << EOF
 target=mgmt
 infra=vsphere
 workdir=/tmp/workdir
@@ -110,7 +110,28 @@ mgmt_cluster_config=~/.kube/config
 EOF
 
 # Run crashd
-crashd run --args-file /tmp/crashd-args.properties crashd/diagnostics.crsh --debug
+crashd run --args-file /tmp/crashd-args-mgmt.properties crashd/diagnostics.crsh --debug
+
+# Now for a workload cluster
+export SS_CLUSTER=$(yq e .shared-services-cluster.name $PARAMS_YAML)
+kubectl config use-context $MGMT_CLUSTER-admin@$MGMT_CLUSTER
+
+# Create the crasd properties file
+cat > /tmp/crashd-args-workload.properties << EOF
+target=workload
+infra=vsphere
+workdir=/tmp/workdir
+ssh_user=capv
+ssh_pk_file=$SSH_KEY_PATH
+mgmt_cluster_ns=tkg-system
+mgmt_cluster_config=~/.kube/config
+workload_clusters=$SS_CLUSTER
+workload_cluster_ns=default
+EOF
+
+# Run crashd
+crashd run --args-file /tmp/crashd-args-workload.properties crashd/diagnostics.crsh --debug
+
 ```
 
 Now get the `tkg-mgmt.diagnostics.tar.gz` file at your project root and can upload it into a ticket.

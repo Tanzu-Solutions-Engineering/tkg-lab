@@ -44,6 +44,26 @@ then
   yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   yq e -i '.deployment.args[6] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
+elif [ "$DNS_PROVIDER" = "azure-dns" ];
+then
+  echo "DEBUG: Configuring External DNS for Azure DNS"
+
+  # Expecting that create-dns-zone.sh has been run and ahreasetting up the zone and service principle
+
+  kubectl -n tanzu-system-service-discovery create secret \
+    generic azure-config-file \
+    --from-file=externaldns-config.json=keys/azure-dns-credentials.json \
+    -o yaml --dry-run=client | kubectl apply -f-
+
+  cp tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-data-values-azure-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
+  AZURE_DNZ_ZONE_NAME=$(yq e .subdomain $PARAMS_YAML)
+  AZURE_ZONE_RESOURCE_GROUP=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNZ_ZONE_NAME'].resourceGroup")
+  export DOMAIN_FILTER=--domain-filter=$AZURE_DNZ_ZONE_NAME
+  export AZURE_RESOURCE_GROUP_ARG=--azure-resource-group=$AZURE_ZONE_RESOURCE_GROUP
+  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[6] = env(AZURE_RESOURCE_GROUP_ARG)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+
 else # Using AWS Route53
 
   cp tkg-extensions-mods-examples/service-discovery/external-dns/external-dns-data-values-aws-with-contour.yaml.example generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
@@ -53,13 +73,29 @@ else # Using AWS Route53
   yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
   yq e -i '.deployment.args[6] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
-  kubectl create secret generic route53-credentials \
-    --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
-    --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
-    -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
+  # Perform special processing to handle Cloudgate use case where session tokens are used
+  if [ -z "$AWS_SESSION_TOKEN" ]; then
+    echo "Using Existing Extension."
+
+    kubectl create secret generic route53-credentials \
+      --from-literal=aws_access_key_id=$(yq e .aws.access-key-id $PARAMS_YAML) \
+      --from-literal=aws_secret_access_key=$(yq e .aws.secret-access-key $PARAMS_YAML) \
+      -n tanzu-system-service-discovery -o yaml --dry-run=client | kubectl apply -f-
+  else
+    # When using cloudgate, External-DNS should use permissions on the EC2 instance to access Route53 API
+    # TODO: Determine if there is a lower privilege than FullAccess that can be used
+    aws iam attach-role-policy --role-name nodes.tkg.cloud.vmware.com --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess
+
+    echo "Removing AWS Credentials from Extension"
+    # Remove Secret reference from data-values for the external dns so that it will use the instance profile permissions
+    yq -i eval 'del(.deployment.env)'  generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  fi
+
 fi
 
-VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -oyaml | yq eval ".[0].version" -)
+# Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
+# thus supplying -1 as the index of the array
+VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "external-dns") | .latest-version' -)
 tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
     --version $VERSION \

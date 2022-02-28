@@ -28,8 +28,6 @@ pinnipedProxy:
   defaultAuthenticatorName: kubeapps-jwt-authenticator
   image:
     repository: bitnami/kubeapps-pinniped-proxy
-    # Explicitly request the version of pinniped-proxy which supports the pre 0.6.0 version of pinniped.
-    tag: 2.2.1-debian-10-r22 # TODO: Remove this when TKG bumps pinniped to 0.6.0+
 
 clusters:
   - name: default
@@ -38,5 +36,5 @@ clusters:
 
 apprepository:
   initialRepos:
-    - name: tac-repo
-      url: https://charts.trials.tac.bitnami.com/demo
+    - name: vac-repo
+      url: https://charts.app-catalog.vmware.com/demo

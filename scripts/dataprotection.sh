@@ -24,7 +24,7 @@ tmc cluster dataprotection create --management-cluster-name attached \
 # Wait for it to be ready
 while [[ $(tmc cluster dataprotection get -m attached -p attached --cluster-name ${VMWARE_ID}-${CLUSTER_NAME}-${IAAS} | yq e -o=json | jq .status.phase -r) != "READY" ]] ; do
   echo Velero is not yet ready
-  sleep 5s
+  sleep 5
 done
 
 # Setup the backup schedule

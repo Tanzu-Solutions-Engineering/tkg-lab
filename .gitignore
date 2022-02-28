@@ -16,3 +16,4 @@ crashd/*
 !crashd/.gitkeep
 tkg-mgmt.diagnostics.tar.gz
 .envrc
+.vscode/

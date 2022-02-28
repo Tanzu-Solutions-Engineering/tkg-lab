@@ -32,10 +32,9 @@ yq e -i '.authProxy.additionalFlags.[0] = env(ISSUER_URL_FLAG)' generated/$CLUST
 cp kubeapps/kubeapps-jwt-authenticator.yaml generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
 yq e -i ".spec.issuer = env(OIDC_ISSUER_URL)" generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
 
-# TODO: Once TKG bumps pinniped to 0.6.0+ need to remove namespace from following resource
 kubectl apply -f generated/$CLUSTER_NAME/kubeapps/kubeapps-jwt-authenticator.yaml
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
 kubectl apply -f generated/$CLUSTER_NAME/kubeapps/01-namespace.yaml
-helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml --version=5.3.4
+helm upgrade --install kubeapps --namespace kubeapps bitnami/kubeapps -f generated/$CLUSTER_NAME/kubeapps/kubeapps-values.yaml --version=7.4.0
