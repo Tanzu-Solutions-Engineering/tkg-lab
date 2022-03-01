@@ -16,8 +16,7 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 VELERO_BUCKET=$(yq e .velero.bucket $PARAMS_YAML)
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
-# HACK: Need to update to the GA repository once it goes GA
-VELERO_IMAGE_REPO=projects-stg.registry.vmware.com
+VELERO_IMAGE_REPO=projects.registry.vmware.com
 VELERO_VERSION=v1.7.0_vmware.1
 VELERO_PLUGIN_FOR_VSPHERE_VERSION=v1.3.0_vmware.1
 VELERO_PLUGIN_FOR_AWS_VERSION=v1.3.0_vmware.1
