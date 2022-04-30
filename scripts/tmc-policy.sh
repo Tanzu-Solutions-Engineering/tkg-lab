@@ -15,11 +15,8 @@ IAAS=$(yq e .iaas $PARAMS_YAML)
 
 VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
 
-MGMT_CLUSTER=$(yq e .management-cluster.name $PARAMS_YAML)
-PROVISIONER=$(yq e .tmc.provisioner $PARAMS_YAML)
-
-tmc cluster iam add-binding $CLUSTER_NAME \
+tmc cluster iam add-binding $VMWARE_ID-$CLUSTER_NAME-$IAAS \
   --role $ROLE \
   --groups $POLICY_GROUPS \
-  --management-cluster-name ${MGMT_CLUSTER} \
-  --provisioner-name ${PROVISIONER}
+  --management-cluster-name attached \
+  --provisioner-name attached

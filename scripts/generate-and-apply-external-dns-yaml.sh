@@ -11,7 +11,6 @@ fi
 CLUSTER_NAME=$1
 DNS_PROVIDER=$(yq e .dns.provider $PARAMS_YAML)
 
-
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 mkdir -p generated/$CLUSTER_NAME/external-dns
@@ -103,34 +102,3 @@ tanzu package install external-dns \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
     --poll-timeout 10m0s
-=======
-if [[ -f generated/$CLUSTER_NAME/contour/contour-data-values.yaml ]]; then
-  # Now update the contour extension to include external dns annotation
-  yq e -i '.tkg_lab.ingress_fqdn = strenv(INGRESS_FQDN)' generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-
-  # Add in the document seperator that yq removes
-  add_yaml_doc_seperator generated/$CLUSTER_NAME/contour/contour-data-values.yaml
-
-  # Update contour secret with custom configuration for ingress
-  kubectl create secret generic contour-data-values --from-file=values.yaml=generated/$CLUSTER_NAME/contour/contour-data-values.yaml -n tanzu-system-ingress -o yaml --dry-run=client | kubectl apply -f-
-
-  # Generate the modified contour extension
-  ytt \
-    -f tkg-extensions/extensions/ingress/contour/contour-extension.yaml \
-    -f tkg-extensions-mods-examples/ingress/contour/contour-extension-overlay.yaml \
-    --ignore-unknown-comments \
-    > generated/$CLUSTER_NAME/contour/contour-extension.yaml
-
-  # Create configmap with the overlay
-  kubectl create configmap contour-overlay -n tanzu-system-ingress -o yaml --dry-run=client \
-    --from-file=contour-overlay.yaml=tkg-extensions-mods-examples/ingress/contour/contour-overlay.yaml | kubectl apply -f-
-
-  # Update Contour using modifified Extension
-  kubectl apply -f generated/$CLUSTER_NAME/contour/contour-extension.yaml
-
-  # Wait until reconcile succeeds
-  while kubectl get app contour -n tanzu-system-ingress | grep contour | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-    echo contour extension is not yet ready
-    sleep 5
-  done
-fi

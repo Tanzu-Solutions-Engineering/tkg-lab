@@ -17,4 +17,3 @@ crashd/*
 tkg-mgmt.diagnostics.tar.gz
 .envrc
 .vscode/
-spring-cloud-gateway
