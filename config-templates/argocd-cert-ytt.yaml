@@ -1,0 +1,19 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+apiVersion: cert-manager.io/v1beta1
+kind: Certificate
+metadata:
+  annotations:
+  name: argocd-cert
+  namespace: argocd
+spec:
+  commonName: #@ data.values["app-accelerator"].fqdn
+  dnsNames:
+  - #@ data.values["argocd"].fqdn
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-contour-cluster-issuer
+  secretName: argocd-tls

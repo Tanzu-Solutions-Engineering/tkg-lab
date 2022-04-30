@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 CLUSTER_NAME=$(yq e .shared-services-cluster.name $PARAMS_YAML)
-GITLAB_BASE_FQDN="$(yq e .shared-services-cluster.name $PARAMS_YAML).$(yq e .subdomain $PARAMS_YAML)"
+GITLAB_BASE_FQDN="$(yq e .shared-services-cluster.gitlab-fqdn $PARAMS_YAML)"
 IAAS=$(yq e .iaas $PARAMS_YAML)
 LETS_ENCRYPT_EMAIL=$(yq e .lets-encrypt-acme-email $PARAMS_YAML)
 mkdir -p generated/$CLUSTER_NAME/gitlab/
