@@ -16,7 +16,7 @@ tanzu cluster delete $(yq e .shared-services-cluster.name $PARAMS_YAML) --yes
 #Wait for clusters to be deleted
 while tanzu cluster list | grep deleting ; [ $? -eq 0 ]; do
 	echo "Waiting for clusters to be deleted"
-	sleep 5s
+	sleep 5
 done   
 
 # HACK: Kubeconfig should not be required, OLYMP-26147 has been created address this.  Set current context to managment cluster
