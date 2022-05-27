@@ -47,10 +47,10 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 * `azure.control-plane-machine-type` - e.g. Standard_D2s_v3 cpu: 2, ram: 8GiB
 * `azure.node-machine-type` - e.g. Standard_D2s_v3
 
-4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-mgmt-clusters-azure.html#accept-the-base-image-license-4).
+4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-mgmt-clusters-azure.html#accept-the-base-image-license-5).
 
 ```bash
-az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot22dot5-ubuntu-2004
+az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot22dot8-ubuntu-2004
 ```
 
 5. Deploy the management cluster.

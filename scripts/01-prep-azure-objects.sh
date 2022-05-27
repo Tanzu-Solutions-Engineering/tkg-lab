@@ -75,6 +75,9 @@ if [ "$AZURE_CREDENTIALS_CONFIGURED" == "false" ]; then
   echo "INFO: azure client secret written to $PARAMS_YAML at azure.client-secret"
   yq e -i '.azure.client-secret = env(AZURE_CLIENT_SECRET)' "$PARAMS_YAML"
 
+  # Set role "Owner" for the app we just created
+  RETURNED_ROLE_ASSIG=$(az role assignment create --assignee $AZURE_CLIENT_ID --role "Owner")
+  echo "INFO: RETURNED_ROLE_ASSIG is $RETURNED_ROLE_ASSIG"
 fi
 
 # Create an SSH key for use
