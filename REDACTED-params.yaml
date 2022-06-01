@@ -124,6 +124,7 @@ avi:
   avi-password: "VMware1!"
   avi-service-engine-group: Default-Group
   avi-username: admin
+  avi-controller-version: # optional, set to 21.1.3 or 21.1.4 if not using 20.1.x
 dockerhub:
   username: REDACTED # Your dockerhub username
   password: REDACTED # Your dockerhub password
