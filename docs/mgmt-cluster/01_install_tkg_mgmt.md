@@ -50,7 +50,7 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-mgmt-clusters-azure.html#accept-the-base-image-license-5).
 
 ```bash
-az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot22dot8-ubuntu-2004
+az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot22dot9-ubuntu-2004
 ```
 
 5. Deploy the management cluster.
@@ -63,11 +63,11 @@ az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot
 
 1. Complete [Deploy Management Clusters to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-mgmt-clusters-vsphere.html) which prepares an SSH key and the OS image templates to be used for all clusters.
 
-First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.5.0 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.22.3 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
+First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.5.0 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.22.9 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
 
-- Photon v3 Kubernetes v1.22.3 OVA (our scripts will only use this version)
-- Photon v3 Kubernetes v1.21.6 OVA
-- Photon v3 Kubernetes v1.20.12 OVA
+- Photon v3 or Ubuntu Kubernetes v1.22.9 OVA (our scripts will only use this version)
+- Photon v3 or Ubuntu Kubernetes v1.21.11 OVA
+- Photon v3 or Ubuntu Kubernetes v1.20.15 OVA
 
 Then you can follow the manual steps in the documentation or use the following script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at `keys/<environment-name>-ssh` and `keys/<environment-name>-ssh.pub`.
 
