@@ -6,6 +6,7 @@ namespace: tanzu-system-service-discovery
 # Deployment related configuration
 deployment:
   args:
+    - --metrics-address=:7979 #! ensures external dns exposes metrics
     - --source=service
     - --source=ingress
     - --source=contour-httpproxy # Provide this to enable Contour HTTPProxy support. Must have Contour installed or external-dns will fail.

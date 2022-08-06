@@ -75,6 +75,7 @@ yq e -i '.tlsCertificate."ca.crt" = strenv(HARBOR_CERT_CA)' generated/$SHAREDSVC
 # Enhance PVC to 50GB for TAP use cases. Comment this row if 10GB is enough for you
 yq e -i '.persistence.persistentVolumeClaim.registry.size = "50Gi"' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 yq e -i '.harborAdminPassword = env(HARBOR_ADMIN_PASSWORD)' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
+yq e -i '.metrics.enabled = true' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
 # Check for Blob storage type
 HARBOR_BLOB_STORAGE_TYPE=$(yq e .harbor.blob-storage.type $PARAMS_YAML)
@@ -109,7 +110,8 @@ tanzu package install harbor \
 
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
 kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
-kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay
+kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay --overwrite
+
 
 # Wait for the Package to reconcile
 while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do

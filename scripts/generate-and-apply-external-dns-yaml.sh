@@ -102,3 +102,7 @@ tanzu package install external-dns \
     --namespace tanzu-kapp \
     --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
     --poll-timeout 10m0s
+
+# Apply overly for metrics
+kubectl apply -f tkg-extensions-mods-examples/service-discovery/external-dns/metrics-overlay.yaml -n tanzu-kapp
+kubectl annotate PackageInstall external-dns -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=metrics-overlay
