@@ -57,9 +57,15 @@ export CONFIG_FILTERS=$(cat << EOF
   Record tkg_instance $TKG_ENVIRONMENT_NAME
 EOF
 )
-
+export POD_ANNOTATIONS=$(cat << EOF
+prometheus.io/scrape: "true"
+prometheus.io/path: "/api/v1/metrics/prometheus"
+prometheus.io/port: "2020"
+EOF
+)
 yq e ".fluent_bit.config.outputs = strenv(CONFIG_OUTPUTS)" --null-input > generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 yq e -i ".fluent_bit.config.filters = strenv(CONFIG_FILTERS)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
+yq e -i ".fluent_bit.daemonset.podAnnotations = env(POD_ANNOTATIONS)" generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml
 
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
