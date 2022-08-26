@@ -21,6 +21,7 @@ if [ "$DNS_PROVIDER" = "gcloud-dns" ];
 then
   # Using Google Cloud DNS
   # Create GCloud Service Account
+  export GCLOUD_PROJECT=$(yq e .gcloud.project $PARAMS_YAML )
   GCP_SERVICE_ACCOUNT=`gcloud iam service-accounts list | grep external-dns`
   if [ -z "$GCP_SERVICE_ACCOUNT" ]
   then
@@ -41,8 +42,8 @@ then
 
   export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML)
   export PROJECT_ID=--google-project=$(yq e .gcloud.project $PARAMS_YAML)
-  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-  yq e -i '.deployment.args[6] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[4] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[7] = env(PROJECT_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
 elif [ "$DNS_PROVIDER" = "azure-dns" ];
 then
@@ -61,8 +62,8 @@ then
   AZURE_ZONE_RESOURCE_GROUP=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNZ_ZONE_NAME'].resourceGroup")
   export DOMAIN_FILTER=--domain-filter=$AZURE_DNZ_ZONE_NAME
   export AZURE_RESOURCE_GROUP_ARG=--azure-resource-group=$AZURE_ZONE_RESOURCE_GROUP
-  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-  yq e -i '.deployment.args[6] = env(AZURE_RESOURCE_GROUP_ARG)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[4] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[7] = env(AZURE_RESOURCE_GROUP_ARG)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
 else # Using AWS Route53
 
@@ -70,8 +71,8 @@ else # Using AWS Route53
 
   export DOMAIN_FILTER=--domain-filter=$(yq e .subdomain $PARAMS_YAML)
   export HOSTED_ZONE_ID=--txt-owner-id=$(yq e .aws.hosted-zone-id $PARAMS_YAML)
-  yq e -i '.deployment.args[3] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
-  yq e -i '.deployment.args[6] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[4] = env(DOMAIN_FILTER)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
+  yq e -i '.deployment.args[7] = env(HOSTED_ZONE_ID)' generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
   # Perform special processing to handle Cloudgate use case where session tokens are used
   if [ -z "$AWS_SESSION_TOKEN" ]; then
