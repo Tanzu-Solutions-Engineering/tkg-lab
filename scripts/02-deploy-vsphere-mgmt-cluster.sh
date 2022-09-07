@@ -20,12 +20,6 @@ export AVI_LABELS=$(yq e .avi.avi-labels $PARAMS_YAML)
 export AVI_PASSWORD=$(yq e .avi.avi-password $PARAMS_YAML)
 export AVI_SERVICE_ENGINE_GROUP=$(yq e .avi.avi-service-engine-group $PARAMS_YAML)
 export AVI_USERNAME=$(yq e .avi.avi-username $PARAMS_YAML)
-export AVI_CONTROLLER_VERSION=$(yq e '.avi.avi-controller-version // null' $PARAMS_YAML)
-if [ $AVI_CONTROLLER_VERSION == null ]
-then
-  echo "ERROR: You must set avi.avi-controller-version in your parameter file."
-  exit 1;
-fi
 NODE_OS=$(yq e .vsphere.node-os $PARAMS_YAML)
 if [ "$NODE_OS" = "photon" ];
 then
@@ -53,7 +47,6 @@ yq e -i '.AVI_LABELS = strenv(AVI_LABELS)' generated/$CLUSTER_NAME/cluster-confi
 yq e -i '.AVI_PASSWORD = strenv(AVI_PASSWORD)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_SERVICE_ENGINE_GROUP = env(AVI_SERVICE_ENGINE_GROUP)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.AVI_USERNAME = env(AVI_USERNAME)' generated/$CLUSTER_NAME/cluster-config.yaml
-yq e -i '.AVI_CONTROLLER_VERSION = env(AVI_CONTROLLER_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OS_NAME = env(NODE_OS)' generated/$CLUSTER_NAME/cluster-config.yaml
 yq e -i '.OS_VERSION = env(NODE_VERSION)' generated/$CLUSTER_NAME/cluster-config.yaml
 
