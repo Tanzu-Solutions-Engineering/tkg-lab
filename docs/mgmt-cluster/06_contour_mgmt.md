@@ -33,7 +33,7 @@ az network lb list
 
 ## Setup DNS Management
 
-We will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates using the user-managed package associated with TKG [Service Discovery with ExternalDNS](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.5/vmware-tanzu-kubernetes-grid-15/GUID-packages-external-dns.html).  Any HTTPProxy, Ingress, or Service with annotations, `external-dns` will observe the change and make the desired updates within the DNS Provider: Route53 (default) or Google Cloud DNS or Azure DNS depending on the configuration of `dns.provider`.  
+We will leverage [external-dns](https://github.com/kubernetes-sigs/external-dns) for kubernetes managed DNS updates using the user-managed package associated with TKG [Service Discovery with ExternalDNS](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.6/vmware-tanzu-kubernetes-grid-16/GUID-packages-external-dns.html).  Any HTTPProxy, Ingress, or Service with annotations, `external-dns` will observe the change and make the desired updates within the DNS Provider: Route53 (default) or Google Cloud DNS or Azure DNS depending on the configuration of `dns.provider`.  
 
 If we are leveraging Route53, we require access to AWS.  See [external-dns docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) for minimum access required for the AWS account you are using.  If necessary, set the policy and assign to the user for the access key.  So regardless of TKG IaaS, ensure the following are set in `params.yaml`:
 
