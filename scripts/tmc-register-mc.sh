@@ -24,16 +24,6 @@ else
   tmc clustergroup create -n $TMC_CLUSTER_GROUP
 fi
 
-# Currently TMC cluster lifecycle management for TKG on vSphere only works with Photon OS.
-if [ "$IAAS" == "vsphere" ];
-then
-  NODE_OS=$(yq e .vsphere.node-os $PARAMS_YAML)
-  if [ "$NODE_OS" == "ubuntu" ];
-  then
-    echo "Warning! Please note, although you management cluster will be registered, TMC features associated to the management cluster on vsphere are only supported for Photon OS."
-  fi
-fi
-
 mkdir -p generated/$CLUSTER_NAME/tmc
 
 REGISTER=true
