@@ -1,13 +1,13 @@
 # NSX-ALB (AVI) Controller Setup
 
-This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.5.0+`
+This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Controller in a vSphere 6.7 or 7 environment to be used by TKG `v1.6.0+`
 
 ## 1. Get Binaries
 
 To download the Controller binaries we can go to the same location where we download the rest of the TKG components [here](https://www.vmware.com/go/get-tkg).
 Look for `VMware NSX Advanced Load Balancer`, `GO TO DOWNLOADS` and `DOWNLOAD NOW`.
 That will take you to the Partner Connect Portal.  If don't already have an active session, you will need to log-in.
-You will be redirected to the AVI Portal. Once there go to Downloads and download current version (`20.1.7` when this guide was updated last). Choose the VMware Controller OVA.
+You will be redirected to the AVI Portal. Once there go to Downloads and download current TKG-validated controller (`21.1.4-2p3` when this guide was updated last). Choose the VMware Controller OVA.  Also download the latest patch for that controller version (`21.1.4-2p7` when this guide was updated last).
 
 ## 2. Choose Topology
 
@@ -83,7 +83,7 @@ Choose the admin username and password. Email is optional.
 
 <img src="avi-admin-user.png" width="400"><br>
 
-Choose the right DNS resolver.  Choose Search Domain (optional, if you do not use FQDN references for internal components) for your environment. Also choose a passphrase for the backups.
+Provide Passphrase for backups.  Choose the right DNS resolver for your environment.  Choose Search Domain (optional, if you do not use FQDN references for internal components) for your environment.
 
 <img src="avi-dns.png" width="800"><br>
 
@@ -95,24 +95,32 @@ In the Multi-Tenant screen leave all the defaults:
 
 <img src="avi-tenant.png" width="800"><br>
 
-Check the `Select Cloud After` checkbox at the bottom-right of the screen. Click `Save`.
+Check the `Setup Cloud After` checkbox at the bottom-right of the screen. Click `Save`.
 
+You should be taken to the `Infrastructure > Clouds` list page.  If you see an error message indicating `Controller Faults` related to licensing, you can `x` out of the message safely for now.  We will take care of that later on.
 
-### 4.2 Orchestrator setup
-If you did not check the checkbox in the previous screen go to `Infrastructure > Clouds`. Then edit the `Default-Cloud`:
+### 4.2 Cloud setup
 
-Choose Orchestrator
-- Select VMware.
+>Note: For some reason if you got lost, then go to `Infrastructure > Clouds`.
 
-<img src="avi-orchestrator.png" width="800"><br>
+Now choose the `Convert Cloud Type` icon on the `Default-Cloud` item in the list.
+
+Choose Cloud Type
+- Select `VMware vCenter/vSphere ESX` and then `YES, CONTINUE` button
+
+<img src="avi-cloud-type.png" width="800"><br>
 
 Provide vCenter Credentials
 - Enter vSphere FQDN and credentials.
 - Select Write permissions.
 
+Click Next button.
+
 <img src="avi-vc.png" width="800"><br>
 
 Choose Datacenter. You can leave all checkboxes unchecked for Static IP Address management and default settings.
+
+Click Next button.
 
 <img src="avi-datacenter.png" width="800"><br>
 
@@ -131,11 +139,11 @@ Click `Save`.
 
 ### 4.3 Set Scope for Service Engines to Specific vSphere Clusters
 
-The NSX ALB Controller will create service engines on vSphere clusters for which it has permissions.  In the event you are using an administrative vSphere user account with multiple clustesr, that means these service engines could be created anywhere and perhaps different SEs in a single SE Group will be created in different clusters.  
+The NSX ALB Controller will create service engines on vSphere clusters for which it has permissions.  In the event you are using an administrative vSphere user account with multiple clusters, that means these service engines could be created anywhere and perhaps different SEs in a single SE Group will be created in different clusters.  
 
 You can set the scope for a given SE Group to constrain the SE creation to specific clusters or hosts.  This may particularly be useful if a single vSphere cluster is designated to support Tanzu.
 
-Go to `Infrastructure > Service Engine Group`. Then edit the `Default-Cloud`:
+Go to `Infrastructure > Cloud Resources > Service Engine Group`. Then edit the `Default-Cloud`.
 
 Choose `Advanced` tab of the resulting dialog.
 
@@ -145,11 +153,10 @@ In the `Host & Data Store Scope` section, select your desired vSphere cluster.
 
 Click `Save`.
 
-
 ### 4.4 Upgrade Controller to latest patch (Optional)
-To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`20.1.7-2p8` when this guide was updated last).
+To get the latest UI based capabilities is best to upgrade to the latest patch of the release you are using: (`21.1.4-2p7` when this guide was updated last).
 
-Go to `Administration > Controller > Software`. Click on `Upload from Computer` and select the avi-patch `pkg` file.
+Go to `Administration > Controller > Software`. Click on `Upload from Computer` and select the avi-patch `pkg` file.  Wait until the pkg has completed uploading.
 
 <img src="avi-software.png" width="800"><br>
 
@@ -157,14 +164,14 @@ Go to `Administration > Controller > System Update`. Click on the checkbox next 
 
 <img src="avi-systemupdate.png" width="800"><br>
 
-On the pop-up window, leave settings as they are and click `Continue`. Wait for the upgrade to finish. The UI will eventually become inresponsive and you will have to log-in again.
+On the pop-up window, leave settings as they are and click `Continue`. You will be prompted to take a backup.  Click `Confirm` button to continue without backup. You will be taken back to the original page and then a progress bar will display.  Wait for the upgrade to finish. The UI will eventually become inresponsive.  You may get an error message, which you can safely click through.  You will have to log-in again.
 
 ### 4.5 Switch to Essentials Tier (Optional)
-Go to `Administration > Settings > Licensing`. Click on the crank wheel next to the `Licensing` title. Select `Essentials License`. Click `Save`. Click `Continue`.
+Go to `Administration > Settings > Licensing`. Click on the crank wheel next to the `Licensing` title. Select `Essentials License`. Click `Save`. Click `x` at top right corner.  Then Click `Continue`.
 
 <img src="avi-essentials.png" width="800"><br>
 
-In Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Routing` and create a `Static Route`, with:
+In Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Cloud Resources > Routing` and create a `Static Route`, with:
 - Gateway Subnet: `0.0.0.0/0`
 - Next Hop: The Gateway of the VIP Network you are going to use
 
@@ -199,7 +206,7 @@ Click `Save`.
 
 
 ### 4.9. Create VIP Pool (Only for 2 network configuration, skip for flat network)
-Go to `Infrastructure > Networks` and Edit the network you chose in the `IPAM Profile` configuration.
+Go to `Infrastructure > Cloud Resources > Networks` and Edit the network you chose in the `IPAM Profile` configuration.
 
 Click on `Add subnet`:
 - Enter the CIDR of the Data Network to be used for the VIPs in the `IP Subnet` field.
@@ -225,13 +232,7 @@ In the pop-up form, insert the following information:
 <img src="avi-create-cert.png" width="800"><br>
 - Click `Save`.
 
-Go to `Administration > Settings > Access Settings` and edit `System Access Settings` by clicking on the pencil icon on the right side:
-- Delete all certificates in the `SSL/TLS Certificate` field, add the custom certificate you created above:
-<img src="avi-config-new-cert.png" width="800"><br>
-- Click `Save`.
-- Reload the page since the Controller cert has changed.
-
-Go to `Templates > Security > SSL/TLS Certificates` and export the certificate you created by clicking on the export icon on the right side:
+Export the certificate you created by clicking on the export icon on the right side:
 
 <img src="avi-export-cert.png" width="800"><br>
 
@@ -253,11 +254,19 @@ export NSX_ALB_CONTROLLER_ENCODED_CERT=`cat keys/nsx-alb-controller.cert | base6
 yq e -i '.avi.avi-ca-data = env(NSX_ALB_CONTROLLER_ENCODED_CERT)' $PARAMS_YAML
 ```
 
+Configure the controller to use the new certficate.
+
+Go to `Administration > Settings > Access Settings` and edit `System Access Settings` by clicking on the pencil icon on the right side:
+- Delete all certificates in the `SSL/TLS Certificate` field, add the custom certificate you created above:
+<img src="avi-config-new-cert.png" width="800"><br>
+- Click `Save`.
+- Reload the page since the Controller cert has changed.
+
 ### 4.11. Extend UI Session Timeout (Optional)
 
 The NSX ALB Controller UI has a 15 minute session timeout.  This may be too quick for efficent activity for POCs.  You can extend the UI session timeout as a user preference.
 
-Click the `AVI` icon in the top right corner of the NSX ALB Controller UI and choose `My Account`.
+Click the person icon in the top right corner of the NSX ALB Controller UI and choose `My Account`.
 
 Set your desired session timeout in the `Controller Settings` section of the `Edit My Account` dialog.
 
