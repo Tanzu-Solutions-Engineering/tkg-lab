@@ -50,7 +50,7 @@ export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 # Get Harbor Package version
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-export HARBOR_VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "harbor") | .latest-version' -)
+VERSION=$(tanzu package available list harbor.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 # We won't wait for the package while there is an issue we solve with an overlay
 WAIT_FOR_PACKAGE=false
 

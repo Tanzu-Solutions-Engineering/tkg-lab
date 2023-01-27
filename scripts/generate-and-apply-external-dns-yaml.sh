@@ -96,7 +96,7 @@ fi
 
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "external-dns") | .latest-version' -)
+VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 tanzu package install external-dns \
     --package-name external-dns.tanzu.vmware.com \
     --version $VERSION \
