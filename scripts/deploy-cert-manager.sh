@@ -17,7 +17,6 @@ kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 VERSION=$(tanzu package available list cert-manager.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 
 tanzu package install cert-manager \
-    --package-name cert-manager.tanzu.vmware.com \
+    --package cert-manager.tanzu.vmware.com \
     --version $VERSION \
-    --namespace tanzu-kapp \
-    --poll-timeout 10m0s
+    --namespace tanzu-user-managed-packages

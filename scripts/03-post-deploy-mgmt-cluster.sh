@@ -25,4 +25,4 @@ fi
 
 tanzu cluster scale $MANAGEMENT_CLUSTER_NAME -n tkg-system -w $WORKER_REPLICAS
 
-kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
+kubectl create ns tanzu-user-managed-packages --dry-run=client --output yaml | kubectl apply -f -

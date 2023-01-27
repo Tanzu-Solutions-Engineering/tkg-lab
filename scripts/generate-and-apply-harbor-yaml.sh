@@ -102,19 +102,19 @@ yq -i eval '... comments=""' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-dat
 
 # Create Harbor using modifified Extension
 tanzu package install harbor \
-    --package-name harbor.tanzu.vmware.com \
+    --package harbor.tanzu.vmware.com \
     --version $HARBOR_VERSION \
-    --namespace tanzu-kapp \
+    --namespace tanzu-user-managed-packages \
     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml \
     --wait=$WAIT_FOR_PACKAGE
 
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
-kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
-kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay --overwrite
+kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-user-managed-packages -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
+kubectl annotate PackageInstall harbor -n tanzu-user-managed-packages ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay --overwrite
 
 
 # Wait for the Package to reconcile
-while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
+while tanzu package installed list -n tanzu-user-managed-packages | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
 	echo Harbor extension is not yet ready
 	sleep 5
 done
