@@ -68,7 +68,6 @@ elif [ "$IAAS" = "azure" ]; then
 
   VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
   AZURE_LOCATION=$(yq e .azure.location $PARAMS_YAML)
-  AZURE_APP_NAME=$(yq e .azure.app-name $PARAMS_YAML)
   AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id $PARAMS_YAML)
   AZURE_TENANT_ID=$(yq e .azure.tenant-id $PARAMS_YAML)
   AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)
