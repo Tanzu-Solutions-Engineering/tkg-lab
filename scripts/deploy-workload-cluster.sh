@@ -77,9 +77,6 @@ then
   # do this first so we can fail fast if no valid AWS creds
   aws ec2 create-tags --resources $PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
 
-  tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
-
-
 elif [ "$IAAS" == "azure" ];
 then
 
@@ -122,12 +119,6 @@ then
     yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
     yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
   fi
-
-  # create the cluster
-  tanzu cluster create \
-  --file=generated/$CLUSTER/cluster-config.yaml \
-  $KUBERNETES_VERSION_FLAG_AND_VALUE \
-  -v 6
 
 else
   cp config-templates/vsphere-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
@@ -181,28 +172,22 @@ else
   fi
   yq e -i '.ANTREA_NODEPORTLOCAL = env(ANTREA_NODEPORTLOCAL)' generated/$CLUSTER/cluster-config.yaml
 
-  tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
+
+tanzu cluster create --dry-run --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE > generated/$CLUSTER/classy-cluster.yaml
+tanzu cluster create --file=generated/$CLUSTER/classy-cluster.yaml -v 6
 
 # Retrive admin kubeconfig
 tanzu cluster kubeconfig get $CLUSTER --admin
 
 kubectl config use-context $CLUSTER-admin@$CLUSTER
 
-# A cluster can still be created even if the system addon apps fail to reconcile.  The following checks will break the script if an app has not succeeded reconciliation
-if kubectl get app -n tkg-system | grep failed ; [ $? -ne 0 ]; then
-	echo No apps have failed reconciliation, proceeding.
-else
-	echo An app has failed reconciliation, please troubleshoot!
-	exit 1
-fi
 
-if kubectl get app -n tkg-system | grep Reconciling ; [ $? -ne 0 ]; then
-	echo No apps are still reconciling, proceeding.
-else
-	echo An app is still reconciling, please troubleshoot!
-	exit 1
-fi
+# A cluster can still be created even if the system addon apps fail to reconcile.
+while [[ $(kubectl get apps -n tkg-system -oyaml | yq e '.items[] | select(.status.friendlyDescription != "Reconcile succeeded") | .metadata.name' | wc -l) -ne 0 ]] ; do
+	echo "Waiting for apps to finish reconciling"
+	sleep 5
+done
 
 # Create namespace that the lab uses for kapp metadata
-kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
+kubectl create ns tanzu-user-managed-packages --dry-run=client --output yaml | kubectl apply -f -

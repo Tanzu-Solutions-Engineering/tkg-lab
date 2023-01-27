@@ -8,20 +8,11 @@ WORKER_REPLICAS=$(yq e .management-cluster.worker-replicas $PARAMS_YAML)
 
 kubectl config use-context $MANAGEMENT_CLUSTER_NAME-admin@$MANAGEMENT_CLUSTER_NAME
 
-# A management cluster can still be created even if the system addon apps fail to reconcile.  The following checks will break the script if an app has not succeeded reconciliation
-if kubectl get app -n tkg-system | grep failed ; [ $? -ne 0 ]; then
-	echo No apps have failed reconciliation, proceeding.
-else
-	echo An app has failed reconciliation, please troubleshoot!
-	exit 1
-fi
-
-if kubectl get app -n tkg-system | grep Reconciling ; [ $? -ne 0 ]; then
-	echo No apps are still reconciling, proceeding.
-else
-	echo An app is still reconciling, please troubleshoot!
-	exit 1
-fi
+# Wait for apps to finish reconciling
+while [[ $(kubectl get apps -n tkg-system -oyaml | yq e '.items[] | select(.status.friendlyDescription != "Reconcile succeeded") | .metadata.name' | wc -l) -ne 0 ]] ; do
+	echo "Waiting for apps to finish reconciling"
+	sleep 5
+done
 
 tanzu cluster scale $MANAGEMENT_CLUSTER_NAME -n tkg-system -w $WORKER_REPLICAS
 
