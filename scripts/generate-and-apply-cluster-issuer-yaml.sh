@@ -41,7 +41,7 @@ then
   export AZURE_TENANT_ID=$(yq e .tenantId keys/azure-dns-credentials.json)
   export AZURE_DNS_ZONE=$(yq e .subdomain $PARAMS_YAML)
   export AZURE_ENVIRONMENT=$(yq e '.azure.environment' $PARAMS_YAML)
-  export AZURE_ZONE_RESOURCE_GROUP_NAME=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNS_ZONE'].resourceGroup" -g tkg-lab-dns)
+  export AZURE_ZONE_RESOURCE_GROUP_NAME=$(az network dns zone list -o tsv --query "[?name=='$AZURE_DNS_ZONE'].resourceGroup")
   yq e -i '.spec.acme.solvers[0].dns01.azureDNS.clientID = env(AZURE_CERT_MANAGER_SP_APP_ID)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
   yq e -i '.spec.acme.solvers[0].dns01.azureDNS.subscriptionID = env(AZURE_SUBSCRIPTION_ID)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
   yq e -i '.spec.acme.solvers[0].dns01.azureDNS.tenantID = env(AZURE_TENANT_ID)' generated/$CLUSTER_NAME/contour/contour-cluster-issuer.yaml
