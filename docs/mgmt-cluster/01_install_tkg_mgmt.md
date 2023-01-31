@@ -65,9 +65,9 @@ az vm image terms accept --publisher vmware-inc --offer tkg-capi-2022-06-24 --pl
 
 First thing you need to do is to download the VMware Tanzu Kubernetes Grid 1.6.0 OVAs for Kubernetes from https://www.vmware.com/go/get-tkg. You need to download v1.23.8 for the management cluster and optionally the others if you choose to deploy workload clusters with a different version of Kubernetes:
 
-- Photon v3 or Ubuntu Kubernetes v1.23.8 OVA (our scripts will only use this version)
-- Photon v3 or Ubuntu Kubernetes v1.22.11 OVA
-- Photon v3 or Ubuntu Kubernetes v1.21.14 OVA
+- Photon v3 or Ubuntu Kubernetes v1.24.9 OVA (our scripts will only use this version)
+- Photon v3 or Ubuntu Kubernetes v1.23.15 OVA
+- Photon v3 or Ubuntu Kubernetes v1.22.17 OVA
 
 Then you can follow the manual steps in the documentation or use the following script to automate the creation of the SSH key, upload OVAs and set as template. SSH keys will be stored at `keys/<environment-name>-ssh` and `keys/<environment-name>-ssh.pub`.
 
@@ -120,7 +120,7 @@ Deploying management clusters in various IaaS takes anywhere from 10-25 minutes.
 2. Validation Step. Check management cluster is provisioned, pods are running:
 
 ```bash
-tanzu cluster list --include-management-cluster
+tanzu cluster list --include-management-cluster -A
 kubectl get pods -A
 ```
 
