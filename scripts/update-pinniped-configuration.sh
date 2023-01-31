@@ -52,6 +52,7 @@ kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-secret-with-ca.yaml
 kubectl get secret $CLUSTER_NAME-pinniped-package -n tkg-system -ojsonpath="{.data.values\.yaml}" | base64 --decode > generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
 yq e -i '.custom_tls_secret = "custom-auth-cert-tls-with-ca"' generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
 yq e -i '.pinniped.supervisor_svc_external_dns = env(PINNIPED_ENDPOINT)' generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
+yq e -i '.pinniped.supervisor.service.type = "ClusterIP"' generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
 
 
 # Deleting the existing job.  It will be recreated when the pinniped-addon secret is updated below.  And then gives us a chance to wait until job is competed
