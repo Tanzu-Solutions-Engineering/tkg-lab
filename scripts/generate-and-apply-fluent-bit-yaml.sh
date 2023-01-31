@@ -30,6 +30,7 @@ export CONFIG_OUTPUTS=$(cat << EOF
   Match             *
   Host              $ELASTICSEARCH_CN
   Port              $ELASTICSEARCH_PORT
+  Generate_ID       On      
   Logstash_Format   On
   Replace_Dots      On
   Retry_Limit       False
