@@ -15,7 +15,8 @@ It is expected that you already have the `aws` cli and that you've gone through 
 1. Once this is complete, we need to:
 
 - [Create an SSH Public Key with your Account](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.1/tkg-deploy-mc-21/mgmt-reqs-prep-aws.html#register-an-ec2-key-pair-12)
-- [Required Permissions for the AWS Account](hhttps://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.1/tkg-deploy-mc-21/mgmt-reqs-prep-aws.html#required-aws-permissions-5)                   
+- [Required Permissions for the AWS Account](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.1/tkg-deploy-mc-21/mgmt-reqs-prep-aws.html#required-aws-permissions-5)
+- [Create AWS Network Resources](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.1/tkg-deploy-mc-21/mgmt-reqs-prep-aws.html#resource-usage-in-your-aws-account-1) - This is done via terraform in the script reference below.
 
 In order to do the steps above in a scripted manner, you simply need to ensure you have populated your `params.yaml` file.  At that point, you can use the following script.  The private key will be stored in the `keys` directory.
 
