@@ -4,7 +4,7 @@
 
 Even though Tanzu Mission Control will manage your data protection amd lifecycle velero on the cluster, at times it may be useful to have the velero cli.
 
-Download and install the Velero cli from TKG 1.5.0 at https://www.vmware.com/go/get-tkg.
+Download and install the Velero cli from the TKG 2.1.0 page at https://www.vmware.com/go/get-tkg.
 
 ## Set configuration parameters
 

@@ -13,7 +13,7 @@
 
 1. Access TMC UI
 2. Select Policies on the left nav
-3. Choose Access->Clusters and then select your shared services cluster
+3. Choose Access and then select your shared services cluster
 4. Observe direct Access Policy => Set cluster.admin permission to the platform-team group
 
 ## Go to Next Step

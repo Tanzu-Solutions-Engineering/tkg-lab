@@ -50,12 +50,12 @@ export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 # Get Harbor Package version
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list harbor.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
+HARBOR_VERSION=$(tanzu package available list harbor.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 # We won't wait for the package while there is an issue we solve with an overlay
 WAIT_FOR_PACKAGE=false
 
 # Prepare Harbor custom configuration
-image_url=$(kubectl -n tanzu-package-repo-global get packages harbor.tanzu.vmware.com."$HARBOR_VERSION" -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
+image_url=$(kubectl -n tanzu-user-managed-packages get packages harbor.tanzu.vmware.com."$HARBOR_VERSION" -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
 imgpkg pull -b $image_url -o /tmp/harbor-package
 cp /tmp/harbor-package/config/values.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
@@ -100,7 +100,7 @@ fi
 # # Remove all comments
 yq -i eval '... comments=""' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
-# Create Harbor using modifified Extension
+# Create Harbor using modifified package
 tanzu package install harbor \
     --package harbor.tanzu.vmware.com \
     --version $HARBOR_VERSION \
@@ -115,7 +115,7 @@ kubectl annotate PackageInstall harbor -n tanzu-user-managed-packages ext.packag
 
 # Wait for the Package to reconcile
 while tanzu package installed list -n tanzu-user-managed-packages | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-	echo Harbor extension is not yet ready
+	echo Harbor package is not yet ready
 	sleep 5
 done
 
