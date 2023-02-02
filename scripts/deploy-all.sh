@@ -58,7 +58,7 @@ $TKG_LAB_SCRIPTS/generate-and-apply-grafana-yaml.sh \
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.grafana-fqdn $PARAMS_YAML)
 # Shared Services Step 8
-$TKG_LAB_SCRIPTS/genergenerate-and-apply-minio-yaml.sh
+$TKG_LAB_SCRIPTS/generate-and-apply-minio-yaml.sh
 # Shared Services Step 9
 $TKG_LAB_SCRIPTS/dataprotection.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 10

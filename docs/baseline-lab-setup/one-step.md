@@ -15,10 +15,6 @@ export PARAMS_YAML=local-config/params.yaml
 
 Ensure that your copy of `params.yaml` indicates your IaaS as `aws`, `azure` or `vsphere` appropriately.
 
-## Ensure credentials-velero file is in keys directory
-
-Ensure the credentials-velero file is in keys directory as per [Install Velero and Setup Nightly Backup on Management Cluster](../mgmt-cluster/10_velero_mgmt.md)
-
 ## Azure Only - Configure the Azure CLI and Accept the TKG Azure Base Image License
 
 Ensure the `az` CLI is installed and configured. The deploy all script will use `az` to deploy TKG.

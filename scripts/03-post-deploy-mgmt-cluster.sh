@@ -15,4 +15,4 @@ done
 
 # Create namespace and Package Repository for User Managed Packages
 kubectl create ns tanzu-user-managed-packages --dry-run=client --output yaml | kubectl apply -f -
-$TKG_LAB_SCRIPTS/scripts/deploy-tanzu-standard-package-repo.sh $MANAGEMENT_CLUSTER_NAME
+$TKG_LAB_SCRIPTS/deploy-tanzu-standard-package-repo.sh $MANAGEMENT_CLUSTER_NAME

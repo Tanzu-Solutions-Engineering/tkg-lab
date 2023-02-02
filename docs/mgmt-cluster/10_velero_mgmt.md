@@ -16,7 +16,7 @@ Your backup will be stored based upon the IaaS you are using.
 - `Azure` will create a storage account in your cluster resource group and backups will go there
 - `AWS` will go into AWS S3 and backups will go there
 
-Credentials to access the target storage location are stored at `generated/$CLUSTER_NAME/velero/velero-credentials`.
+Credentials to access the target storage location are stored at `generated/$CLUSTER_NAME/velero/credentials-velero`.
 
 If using Cloud Gate for AWS, no credentials will be stored and you will use the IAM of the node.
 
