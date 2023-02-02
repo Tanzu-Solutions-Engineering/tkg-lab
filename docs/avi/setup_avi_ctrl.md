@@ -7,7 +7,7 @@ This guide includes a comprehensive set of steps to set up a NSX-ALB (AVI) Contr
 To download the Controller binaries we can go to the same location where we download the rest of the TKG components [here](https://www.vmware.com/go/get-tkg).
 Look for `VMware NSX Advanced Load Balancer`, `GO TO DOWNLOADS` and `DOWNLOAD NOW`.
 That will take you to the Partner Connect Portal.  If don't already have an active session, you will need to log-in.
-You will be redirected to the AVI Portal. Once there go to Downloads and download current TKG-validated controller (`21.1.4-2p3` when this guide was updated last). Choose the VMware Controller OVA.  Also download the latest patch for that controller version (`21.1.4-2p7` when this guide was updated last).
+You will be redirected to the AVI Portal. Once there go to Downloads and download current TKG-validated controller (`22.1.2` when this guide was updated last). Choose the VMware Controller OVA.  Also download the latest patch for that controller version (`22.1.2-2p4` when this guide was updated last).
 
 ## 2. Choose Topology
 
@@ -83,7 +83,9 @@ Choose the admin username and password. Email is optional.
 
 <img src="avi-admin-user.png" width="400"><br>
 
-Provide Passphrase for backups.  Choose the right DNS resolver for your environment.  Choose Search Domain (optional, if you do not use FQDN references for internal components) for your environment.
+- Provide Passphrase for backups.  
+- Choose the right DNS resolver for your environment.  
+- Choose Search Domain (optional, if you do not use FQDN references for internal components) for your environment.
 
 <img src="avi-dns.png" width="800"><br>
 
@@ -110,32 +112,51 @@ Choose Cloud Type
 
 <img src="avi-cloud-type.png" width="800"><br>
 
-Provide vCenter Credentials
-- Enter vSphere FQDN and credentials.
-- Select Write permissions.
-
-Click Next button.
+In the General section
+- Set the `Template Service Engine Group` to `Default-Group` and leave the other settings with the default.
 
 <img src="avi-vc.png" width="800"><br>
 
-Choose Datacenter. You can leave all checkboxes unchecked for Static IP Address management and default settings.
+In the vCenter/vSphere section, click `SET CREDENTIALS` button, and then provide...
 
-Click Next button.
+Provide vCenter Credentials
+- Enter vSphere FQDN and credentials.
 
-<img src="avi-datacenter.png" width="800"><br>
+<img src="avi-vc2.png" width="800"><br>
 
+Now additional form fields are available.
 
-Configure Management Network
+- Choose your Datacenter
+- Select the `AVI` Content Library
+- Follow instructions to click `SAVE & RELAUNCH` button
+
+<img src="avi-vc3.png" width="800"><br>
+
+After relaunch, Management Network and `IPAM/DNS` form fields are available.
+
+Choose your Managament Network
+
 - Select Management Network. Same network you chose when installing the AVI Controller OVA.
-- Select `Default-Group` for `Template Service Engine Group`.
 - You can choose `Static` or `DHCP`. In this lab we will chose `Static`, so the network range chosen should be outside of the DHCP range.
 - In `IP Subnet` enter the Management Network CIDR. Same network used for the Controller IP.
-- In `Add IP Static Address Pool` choose an available IP range within the CIDR. This range will be used to configure the Management Network NIC in the AVI Service Engines. Make sure this range does not overlap with the Controller IP. Also since we are selecting `Static` and since AVI Management Plane and TKG nodes will be in the same network then you need to make sure the DHCP range (needed by TKG) is limited to a specific part of this network to leave room for this `IP Address Pool`.
 - Enter the Management Network `Default Gateway`.
+- In `Add IP Static Address Pool` choose an available IP range within the CIDR. This range will be used to configure the Management Network NIC in the AVI Service Engines. Make sure this range does not overlap with the Controller IP. Also since we are selecting `Static` and since AVI Management Plane and TKG nodes will be in the same network then you need to make sure the DHCP range (needed by TKG) is limited to a specific part of this network to leave room for this `IP Address Pool`.
 
 <img src="avi-mgmt-net.png" width="800"><br>
 
-Click `Save`.
+Now on to `IPAM/DNS`, choose the 3 vertical dots next to `IPAM Profile` and then select `Create`.
+
+- Choose a distinctive name.  e.g. `tkg-ipam`
+- Select `Avi Vantage IPAM` type.
+- Leave `Allocate IP in VRF` unchecked.
+- Select `Default-Cloud` for `Cloud`
+- Click `Add` under `Usable Networks` And choose the network to be used for the VIPs. This is the Data Plane Network from your network topology.
+
+<img src="avi-ipam.png" width="800">
+
+We will take care of the `DNS Profile` as an optional step later.
+
+- Click `Save`.  It may take a minute or so for the Default-Cloud to turn green status.
 
 ### 4.3 Set Scope for Service Engines to Specific vSphere Clusters
 
@@ -166,19 +187,26 @@ Go to `Administration > Controller > System Update`. Click on the checkbox next 
 
 On the pop-up window, leave settings as they are and click `Continue`. You will be prompted to take a backup.  Click `Confirm` button to continue without backup. You will be taken back to the original page and then a progress bar will display.  Wait for the upgrade to finish. The UI will eventually become inresponsive.  You may get an error message, which you can safely click through.  You will have to log-in again.
 
-### 4.5 Switch to Essentials Tier (Optional)
-Go to `Administration > Settings > Licensing`. Click on the crank wheel next to the `Licensing` title. Select `Essentials License`. Click `Save`. Click `x` at top right corner.  Then Click `Continue`.
+### 4.5 Set Licensing Tier
+
+Go to `Administration > Licensing`. Click on the crank wheel next to the `Licensing` title. 
+
+Here you should change the default setting of `Enterprise with Cloud Services Tier`.  Set it to either
+- `Enterprise Tier`: You have a 30 day trial license that give you full permisisons
+- `Essentials Teir`: This has limitations, but is included with Tanzu Standard.
+
+Click `Save`. Click `x` at top right corner.  Then Click `YES, CONTINUE`.
 
 <img src="avi-essentials.png" width="800"><br>
 
-In Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Cloud Resources > Routing` and create a `Static Route`, with:
+If you chose Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Cloud Resources > Routing` and create a `Static Route`, with:
 - Gateway Subnet: `0.0.0.0/0`
 - Next Hop: The Gateway of the VIP Network you are going to use
 
 <img src="avi-routes.png" width="800"><br>
 
-
 ### 4.6. Configure DNS Profile (Optional, only relevant for NSX ALB Enterprise)
+
 Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 - Choose a distinctive name.
 - Select `Avi Vantage DNS` type.
@@ -187,17 +215,7 @@ Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `DNS Profile`:
 
 - Click `Save`.
 
-### 4.7. Configure IPAM Profile
-Go to `Templates > Profiles > IPAM/DNS Profiles`. Create `IPAM Profile`:
-- Choose a distinctive name.
-- Select `Avi Vantage IPAM` type.
-- Leave `Allocate IP in VRF` unchecked.
-- Click `Add Usable Network` then select `Default-Cloud` option for cloud for usable network. And choose the network to be used for the VIPs. This is the Data Plane Network from your network topology.
-<img src="avi-ipam.png" width="800">
-
-- Click `Save`.
-
-### 4.8. Add Profiles to Cloud
+### 4.7. Add Profiles to Cloud
 Go to `Infrastructure > Clouds` and Edit the `Default-Cloud` by clicking on the pencil icon on the right side.
 
 In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` and `DNS` (if NSX ALB Enterprise) Profiles we just created.
@@ -205,7 +223,7 @@ In the `Infrastructure` tab of the pop-up screen scroll down and select `IPAM` a
 Click `Save`.
 
 
-### 4.9. Create VIP Pool (Only for 2 network configuration, skip for flat network)
+### 4.8. Create VIP Pool (Only for 2 network configuration, skip for flat network)
 Go to `Infrastructure > Cloud Resources > Networks` and Edit the network you chose in the `IPAM Profile` configuration.
 
 Click on `Add subnet`:
@@ -219,7 +237,7 @@ You should see now both Management and Data networks ready with the respective r
 <img src="avi-net-ready.png"><br>
 
 
-### 4.10. Create Custom Certificate for Controller
+### 4.9. Create Custom Certificate for Controller
 
 The default certificate configured in the Controller doesn't contain IP SAN and because of that the AKO Operator will fail to communicate with the Controller. To fix this we need to generate and configure a new certificate.
 
@@ -262,7 +280,7 @@ Go to `Administration > Settings > Access Settings` and edit `System Access Sett
 - Click `Save`.
 - Reload the page since the Controller cert has changed.
 
-### 4.11. Extend UI Session Timeout (Optional)
+### 4.10. Extend UI Session Timeout (Optional)
 
 The NSX ALB Controller UI has a 15 minute session timeout.  This may be too quick for efficent activity for POCs.  You can extend the UI session timeout as a user preference.
 
