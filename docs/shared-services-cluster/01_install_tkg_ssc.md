@@ -16,7 +16,7 @@ We need to setup a cluster configuration file for our new workload cluster.
 
 Then we ask the management cluster to create the new workload cluster.
 
->Special Note for AWS Deployments: The default behavior is for each cluster (management and workload clusters) to be provisioned in their own VPC.  However, in order to conserve VPC's, we will deploy the workload clusters in the VPC and subnets as the management cluster.  This process is described in the [TKG Docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.6/vmware-tanzu-kubernetes-grid-16/GUID-tanzu-k8s-clusters-aws.html#deploy-a-cluster-that-shares-a-vpc-and-nat-gateways-with-the-management-cluster-4) and done automatically via the script below.
+>Special Note for AWS Deployments: We will deploy the workload clusters in the same VPC and subnets as the management cluster. This lab only generates a VPC and subnets once prior to the deployment of the MC.
 
 All of the steps above can be accomplished by running the following script:
 
