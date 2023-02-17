@@ -127,7 +127,7 @@ Provide vCenter Credentials
 Now additional form fields are available.
 
 - Choose your Datacenter
-- Select the `AVI` Content Library
+- Uncheck `Use content Library`
 - Follow instructions to click `SAVE & RELAUNCH` button
 
 <img src="avi-vc3.png" width="800"><br>
