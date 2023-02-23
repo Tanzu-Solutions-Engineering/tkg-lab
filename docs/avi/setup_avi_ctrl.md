@@ -51,7 +51,7 @@ Data Network:
 - VIP Pool Range: `192.168.15.10 - 192.168.15.99`
 
 ### 2.3. Separate Management network, VIP network and TKG network
-This is the recommended approach for Production, with full separation.
+This is the recommended approach for Production, with full separation. This setup is similar to the previous one with the exception that the TKG Nodes are in a separate (third) network from Management and VIP, with DHCP enabled.
 
 <img src="net-3.png" width="800"><br>
 
@@ -289,3 +289,16 @@ Click the person icon in the top right corner of the NSX ALB Controller UI and c
 Set your desired session timeout in the `Controller Settings` section of the `Edit My Account` dialog.
 
 <img src="session-timeout.png" width="800"><br>
+
+### 4.11 Create Static Route
+
+This is only required if you have a topology where the TKG nodes are NOT in the same network as the Management or VIP network: that's the 3rd topology in the [section 2.3 above](#23-separate-management-network-vip-network-and-tkg-network).
+
+Go to `Infrastructure > Cloud Resources > Routing`. Under `Static Route` click  on `Create`, and fill in the two fields:
+- Gateway Subnet: This is your TKG node network in CIDR format
+- Next Hop: This is the Gateway of your VIP network
+
+<img src="static-route.png" width="800"><br>
+
+
+Click on `Save`. You're all set.
