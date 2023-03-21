@@ -51,7 +51,7 @@ In order to do the steps above in a scripted manner, you simply need to ensure y
 4. [Accept the TKG Azure base image license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.1/tkg-deploy-mc-21/mgmt-reqs-prep-azure.html#accept-the-base-image-license-4).
 
 ```bash
-az vm image terms accept --publisher vmware-inc --offer tkg-capi-2022-06-24 --plan k8s-1dot24dot9-ubuntu-2004
+az vm image terms accept --publisher vmware-inc --offer tkg-capi-2022-06-24 --plan k8s-1dot24dot10-ubuntu-2004
 ```
 
 5. Deploy the management cluster.
