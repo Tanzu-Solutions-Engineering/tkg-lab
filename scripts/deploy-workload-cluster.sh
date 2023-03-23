@@ -171,6 +171,12 @@ else
 fi
 
 tanzu cluster create --dry-run --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE > generated/$CLUSTER/classy-cluster.yaml
+
+# Fix AntreaConfig in classy yaml for vsphere
+# Reason: AntreaConfig  resources need the tkg.tanzu.vmware.com/package-name label, and the classy yaml generated via tanzu cluster create --dry-run fails to add that label to the auto-generated AntreaConfig
+yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/cluster-name" = env(CLUSTER)' generated/$CLUSTER/classy-cluster.yaml
+yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/package-name" = "antrea.tanzu.vmware.com.1.7.2---vmware.1-tkg.1-advanced"' generated/$CLUSTER/classy-cluster.yaml
+
 tanzu cluster create --file=generated/$CLUSTER/classy-cluster.yaml -v 6
 
 # Retrive admin kubeconfig
