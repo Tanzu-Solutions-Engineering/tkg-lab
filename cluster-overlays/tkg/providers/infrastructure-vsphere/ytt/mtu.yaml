@@ -19,6 +19,6 @@ spec:
         #@overlay/match by=overlay.all, expects="1+"
         -
           #@overlay/match missing_ok=True
-          nameservers: #@ data.values.CUSTOM_MTU
+          mtu: #@ data.values.CUSTOM_MTU
 
 #@ end
