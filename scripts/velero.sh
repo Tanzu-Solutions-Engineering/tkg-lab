@@ -17,10 +17,10 @@ VELERO_BUCKET=$(yq e .velero.bucket $PARAMS_YAML)
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
 VELERO_IMAGE_REPO=projects.registry.vmware.com
-VELERO_VERSION=v1.7.0_vmware.1
-VELERO_PLUGIN_FOR_VSPHERE_VERSION=v1.3.0_vmware.1
-VELERO_PLUGIN_FOR_AWS_VERSION=v1.3.0_vmware.1
-VELERO_PLUGIN_FOR_AZURE_VERSION=v1.3.0_vmware.1
+VELERO_VERSION=v1.9.5_vmware.1
+VELERO_PLUGIN_FOR_VSPHERE_VERSION=v1.4.2_vmware.1
+VELERO_PLUGIN_FOR_AWS_VERSION=v1.5.3_vmware.1
+VELERO_PLUGIN_FOR_AZURE_VERSION=v1.5.3_vmware.1
 
 mkdir -p generated/$CLUSTER_NAME/velero
 
@@ -68,7 +68,6 @@ elif [ "$IAAS" = "azure" ]; then
 
   VMWARE_ID=$(yq e .vmware-id $PARAMS_YAML)
   AZURE_LOCATION=$(yq e .azure.location $PARAMS_YAML)
-  AZURE_APP_NAME=$(yq e .azure.app-name $PARAMS_YAML)
   AZURE_SUBSCRIPTION_ID=$(yq e .azure.subscription-id $PARAMS_YAML)
   AZURE_TENANT_ID=$(yq e .azure.tenant-id $PARAMS_YAML)
   AZURE_CLIENT_ID=$(yq e .azure.client-id $PARAMS_YAML)

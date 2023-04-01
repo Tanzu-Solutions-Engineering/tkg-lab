@@ -30,6 +30,7 @@ export CONFIG_OUTPUTS=$(cat << EOF
   Match             *
   Host              $ELASTICSEARCH_CN
   Port              $ELASTICSEARCH_PORT
+  Generate_ID       On      
   Logstash_Format   On
   Replace_Dots      On
   Retry_Limit       False
@@ -69,10 +70,9 @@ yq e -i ".fluent_bit.daemonset.podAnnotations = env(POD_ANNOTATIONS)" generated/
 
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "fluent-bit") | .latest-version' -)
+VERSION=$(tanzu package available list fluent-bit.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 tanzu package install fluent-bit \
-    --package-name fluent-bit.tanzu.vmware.com \
+    --package fluent-bit.tanzu.vmware.com \
     --version $VERSION \
-    --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml \
-    --poll-timeout 10m0s
+    --namespace tanzu-user-managed-packages \
+    --values-file generated/$CLUSTER_NAME/fluent-bit/fluent-bit-data-values.yaml

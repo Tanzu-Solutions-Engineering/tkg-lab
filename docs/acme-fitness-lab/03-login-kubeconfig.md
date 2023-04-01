@@ -8,7 +8,7 @@ You may already have a session established as alana, the admin user.  If so, per
 2. Delete your local tanzu pinniped session
 
 ```bash
-rm -rf ~/.tanzu/pinnpied
+rm -rf ~/.config/tanzu/pinniped/
 ```
 
 ## Login As Cody

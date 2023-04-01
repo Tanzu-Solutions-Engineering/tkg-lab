@@ -1,3 +1,7 @@
+AWS_PRIVATE_SUBNET_ID: # Added by scripts
+AWS_PUBLIC_SUBNET_ID: # Added by scripts
+AWS_VPC_ID: # Added by scripts
+
 AWS_REGION: # Added by scripts
 AWS_SSH_KEY_NAME: # Added by scripts
 CLUSTER_NAME: # Added by scripts

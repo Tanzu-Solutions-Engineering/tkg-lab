@@ -11,7 +11,7 @@ OSS Signed and Supported Packages:
 - **Fluent-bit** for logging
 - **Cert-manager** for certificate management
 - **Harbor** for image registry
-- **Velero** for backup/restore, via Tanzu Mission Control
+- **Velero** for backup/restore, via Tanzu Mission Control Data Protection
 - **Prometheus** and **Grafana** for monitoring
 - **External DNS** as Kubernetes native way to manage DNS records
 
@@ -23,7 +23,7 @@ Incorporates the following Tanzu SaaS products:
 Leverages the following external services:
 
 - **AWS S3** as an object store for Velero backups
-- **AWS Route 53** or **GCP Cloud DNS*** as DNS provider
+- **AWS Route 53**, **GCP Cloud DNS** or **Azure DNS** as DNS provider
 - **Okta** as an OIDC provider
 - **Let's Encrypt** as Certificate Authority
 
@@ -39,7 +39,7 @@ What we do have is a combination of open source and proprietary components, with
 
 VMware commercial products included are: TKG, TO and TMC.
 
-3rd-party SaaS services included are: AWS S3, AWS Route 53, GCP Cloud DNS, Let's Encrypt, Okta.  Note: There is flexibility in deployment planning.  For instance, You could Swap GCP Cloud DNS with Route53.  Or you could swap Okta for Google or Auth0 for OpenID Connect.
+3rd-party SaaS services included are: AWS S3, AWS Route 53, GCP Cloud DNS, Azure DNS, Let's Encrypt, Okta.  Note: There is flexibility in deployment planning.  For instance, You could swap GCP Cloud DNS with Route53.  Or you could swap Okta for Google or Auth0 for OpenID Connect.
 
 ## Scenario Business Context
 
@@ -90,7 +90,8 @@ Wow, that was awesome, what happened on the other side of the request for platfo
 - ytt, kapp, imgpkg, kbld (bundled with tanzu cli)
 - jq
 - aws (for deploying on AWS or using Route53 DNS)
-- az (when deploying to Azure)
+- az (when deploying to Azure or using Azure DNS)
+- terraform (for deploying on AWS)
 
 ## Foundational Lab Setup Guides
 

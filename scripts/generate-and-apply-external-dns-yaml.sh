@@ -96,14 +96,13 @@ fi
 
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "external-dns") | .latest-version' -)
+VERSION=$(tanzu package available list external-dns.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 tanzu package install external-dns \
-    --package-name external-dns.tanzu.vmware.com \
+    --package external-dns.tanzu.vmware.com \
     --version $VERSION \
-    --namespace tanzu-kapp \
-    --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml \
-    --poll-timeout 10m0s
+    --namespace tanzu-user-managed-packages \
+    --values-file generated/$CLUSTER_NAME/external-dns/external-dns-data-values.yaml
 
 # Apply overlay for metrics
-kubectl apply -f tkg-extensions-mods-examples/service-discovery/external-dns/metrics-overlay.yaml -n tanzu-kapp
-kubectl annotate PackageInstall external-dns -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=metrics-overlay
+kubectl apply -f tkg-extensions-mods-examples/service-discovery/external-dns/metrics-overlay.yaml -n tanzu-user-managed-packages
+kubectl annotate PackageInstall external-dns -n tanzu-user-managed-packages ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=metrics-overlay --overwrite=true

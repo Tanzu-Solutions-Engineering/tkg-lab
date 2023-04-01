@@ -46,17 +46,19 @@ $TKG_LAB_SCRIPTS/deploy-cert-manager.sh $(yq e .shared-services-cluster.name $PA
 $TKG_LAB_SCRIPTS/generate-and-apply-contour-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-external-dns-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-cluster-issuer-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
-# Shared Services Step 6
+# Shared Services Step 5
 $TKG_LAB_SCRIPTS/generate-and-apply-elasticsearch-kibana-yaml.sh
-# Shared Services Step 7
+# Shared Services Step 6
 $TKG_LAB_SCRIPTS/generate-and-apply-fluent-bit-yaml.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
-# Shared Services Step 8
+# Shared Services Step 7
 $TKG_LAB_SCRIPTS/generate-and-apply-prometheus-yaml.sh \
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.prometheus-fqdn $PARAMS_YAML)
 $TKG_LAB_SCRIPTS/generate-and-apply-grafana-yaml.sh \
   $(yq e .shared-services-cluster.name $PARAMS_YAML) \
   $(yq e .shared-services-cluster.grafana-fqdn $PARAMS_YAML)
+# Shared Services Step 8
+$TKG_LAB_SCRIPTS/generate-and-apply-minio-yaml.sh
 # Shared Services Step 9
 $TKG_LAB_SCRIPTS/dataprotection.sh $(yq e .shared-services-cluster.name $PARAMS_YAML)
 # Shared Services Step 10

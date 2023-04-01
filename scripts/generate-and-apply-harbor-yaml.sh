@@ -50,12 +50,12 @@ export HARBOR_CERT_CA=$(cat keys/letsencrypt-ca.pem)
 # Get Harbor Package version
 # Retrieve the most recent version number.  There may be more than one version available and we are assuming that the most recent is listed last,
 # thus supplying -1 as the index of the array
-export HARBOR_VERSION=$(tanzu package available list -oyaml | yq eval '.[] | select(.display-name == "harbor") | .latest-version' -)
+HARBOR_VERSION=$(tanzu package available list harbor.tanzu.vmware.com -n tanzu-user-managed-packages -oyaml --summary=false | yq e '. | sort_by(.released-at)' | yq e ".[-1].version")
 # We won't wait for the package while there is an issue we solve with an overlay
 WAIT_FOR_PACKAGE=false
 
 # Prepare Harbor custom configuration
-image_url=$(kubectl -n tanzu-package-repo-global get packages harbor.tanzu.vmware.com."$HARBOR_VERSION" -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
+image_url=$(kubectl -n tanzu-user-managed-packages get packages harbor.tanzu.vmware.com."$HARBOR_VERSION" -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
 imgpkg pull -b $image_url -o /tmp/harbor-package
 cp /tmp/harbor-package/config/values.yaml generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
@@ -100,22 +100,22 @@ fi
 # # Remove all comments
 yq -i eval '... comments=""' generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml
 
-# Create Harbor using modifified Extension
+# Create Harbor using modifified package
 tanzu package install harbor \
-    --package-name harbor.tanzu.vmware.com \
+    --package harbor.tanzu.vmware.com \
     --version $HARBOR_VERSION \
-    --namespace tanzu-kapp \
+    --namespace tanzu-user-managed-packages \
     --values-file generated/$SHAREDSVC_CLUSTER_NAME/harbor/harbor-data-values.yaml \
     --wait=$WAIT_FOR_PACKAGE
 
 # Patch (via overlay) the httpproxy (contour) timeout for pulling down large images.  Required for TBS which has large builder images
-kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-kapp -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
-kubectl annotate PackageInstall harbor -n tanzu-kapp ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay --overwrite
+kubectl create secret generic harbor-timeout-increase-overlay -n tanzu-user-managed-packages -o yaml --dry-run=client --from-file=tkg-extensions-mods-examples/registry/harbor/overlay-timeout-increase.yaml | kubectl apply -f -
+kubectl annotate PackageInstall harbor -n tanzu-user-managed-packages ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-timeout-increase-overlay --overwrite
 
 
 # Wait for the Package to reconcile
-while tanzu package installed list -n tanzu-kapp | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
-	echo Harbor extension is not yet ready
+while tanzu package installed list -n tanzu-user-managed-packages | grep harbor | grep "Reconcile succeeded" ; [ $? -ne 0 ]; do
+	echo Harbor package is not yet ready
 	sleep 5
 done
 

@@ -49,7 +49,7 @@ helm upgrade --install minio --namespace minio bitnami/minio -f generated/$CLUST
 # Wait for pod to be ready
 while kubectl get po -n minio | grep Running ; [ $? -ne 0 ]; do
 	echo Minio is not yet ready
-	sleep 5s
+	sleep 5
 done
 
 # HACK: I was unable to use the helm chart anotation or else Avi would not provide me an external addres.  I needed to annotate after the 

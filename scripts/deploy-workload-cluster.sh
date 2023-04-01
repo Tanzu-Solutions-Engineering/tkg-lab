@@ -49,9 +49,9 @@ then
 
   cp config-templates/aws-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
 
-  export VPC_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.network.vpc.id}")
-  export PUBLIC_SUBNET_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.network.subnets[?(@.isPublic==true)].id}")
-  export PRIVATE_SUBNET_ID=$(kubectl get awscluster $MANAGEMENT_CLUSTER -n tkg-system -ojsonpath="{.spec.network.subnets[?(@.isPublic==false)].id}")
+  export VPC_ID=$(kubectl get awscluster -n tkg-system -l cluster.x-k8s.io/cluster-name=$MANAGEMENT_CLUSTER -ojsonpath="{.items[0].spec.network.vpc.id}")
+  export PUBLIC_SUBNET_ID=$(kubectl get awscluster -n tkg-system -l cluster.x-k8s.io/cluster-name=$MANAGEMENT_CLUSTER -ojsonpath="{.items[0].spec.network.subnets[?(@.isPublic==true)].id}")
+  export PRIVATE_SUBNET_ID=$(kubectl get awscluster -n tkg-system -l cluster.x-k8s.io/cluster-name=$MANAGEMENT_CLUSTER -ojsonpath="{.items[0].spec.network.subnets[?(@.isPublic==false)].id}")
   export AWS_REGION=$(yq e .aws.region $PARAMS_YAML)
   export SSH_KEY_NAME=tkg-$(yq e .environment-name $PARAMS_YAML)-default
   export AWS_CONTROL_PLANE_MACHINE_TYPE=$(yq e .aws.control-plane-machine-type $PARAMS_YAML)
@@ -72,13 +72,6 @@ then
     yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
     yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
   fi
-
-  # The following additional step is required when deploying workload clusters to the same VPC as the management cluster in order for LoadBalancers to be created properly
-  # do this first so we can fail fast if no valid AWS creds
-  aws ec2 create-tags --resources $PUBLIC_SUBNET_ID --tags Key=kubernetes.io/cluster/$CLUSTER,Value=shared
-
-  tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
-
 
 elif [ "$IAAS" == "azure" ];
 then
@@ -122,12 +115,6 @@ then
     yq e -i '.AUTOSCALER_MIN_SIZE_0 = env(WORKER_REPLICAS)' generated/$CLUSTER/cluster-config.yaml
     yq e -i '.AUTOSCALER_MAX_SIZE_0 = env(WORKER_AUTOSCALER_MAX_NODES)' generated/$CLUSTER/cluster-config.yaml
   fi
-
-  # create the cluster
-  tanzu cluster create \
-  --file=generated/$CLUSTER/cluster-config.yaml \
-  $KUBERNETES_VERSION_FLAG_AND_VALUE \
-  -v 6
 
 else
   cp config-templates/vsphere-workload-cluster-config.yaml generated/$CLUSTER/cluster-config.yaml
@@ -181,28 +168,33 @@ else
   fi
   yq e -i '.ANTREA_NODEPORTLOCAL = env(ANTREA_NODEPORTLOCAL)' generated/$CLUSTER/cluster-config.yaml
 
-  tanzu cluster create --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE -v 6
 fi
+
+tanzu cluster create --dry-run --file=generated/$CLUSTER/cluster-config.yaml $KUBERNETES_VERSION_FLAG_AND_VALUE > generated/$CLUSTER/classy-cluster.yaml
+
+# Fix AntreaConfig in classy yaml for vsphere
+# Reason: AntreaConfig  resources need the tkg.tanzu.vmware.com/package-name label, and the classy yaml generated via tanzu cluster create --dry-run fails to add that label to the auto-generated AntreaConfig
+if [ "$IAAS" = "vsphere" ];
+then
+  yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/cluster-name" = env(CLUSTER)' generated/$CLUSTER/classy-cluster.yaml
+  yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/package-name" = "antrea.tanzu.vmware.com.1.7.2---vmware.1-tkg.1-advanced"' generated/$CLUSTER/classy-cluster.yaml
+fi
+
+tanzu cluster create --file=generated/$CLUSTER/classy-cluster.yaml -v 6
 
 # Retrive admin kubeconfig
 tanzu cluster kubeconfig get $CLUSTER --admin
 
 kubectl config use-context $CLUSTER-admin@$CLUSTER
 
-# A cluster can still be created even if the system addon apps fail to reconcile.  The following checks will break the script if an app has not succeeded reconciliation
-if kubectl get app -n tkg-system | grep failed ; [ $? -ne 0 ]; then
-	echo No apps have failed reconciliation, proceeding.
-else
-	echo An app has failed reconciliation, please troubleshoot!
-	exit 1
-fi
 
-if kubectl get app -n tkg-system | grep Reconciling ; [ $? -ne 0 ]; then
-	echo No apps are still reconciling, proceeding.
-else
-	echo An app is still reconciling, please troubleshoot!
-	exit 1
-fi
+# A cluster can still be created even if the system addon apps fail to reconcile.
+while [[ $(kubectl get apps -n tkg-system -oyaml | yq e '.items[] | select(.status.friendlyDescription != "Reconcile succeeded") | .metadata.name' | wc -l) -ne 0 ]] ; do
+	echo "Waiting for apps to finish reconciling"
+	sleep 5
+done
 
 # Create namespace that the lab uses for kapp metadata
-kubectl apply -f tkg-extensions-mods-examples/tanzu-kapp-namespace.yaml
+kubectl create ns tanzu-user-managed-packages --dry-run=client --output yaml | kubectl apply -f -
+
+$TKG_LAB_SCRIPTS/deploy-tanzu-standard-package-repo.sh $CLUSTER

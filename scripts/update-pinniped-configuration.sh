@@ -49,22 +49,24 @@ yq e -i 'del(.metadata.resourceVersion)' generated/$CLUSTER_NAME/pinniped/pinnip
 kubectl apply -f generated/$CLUSTER_NAME/pinniped/pinniped-secret-with-ca.yaml
 
 # Update add-on values
-kubectl get secret $CLUSTER_NAME-pinniped-addon -n tkg-system -ojsonpath="{.data.values\.yaml}" | base64 --decode > generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
-yq e -i '.custom_tls_secret = "custom-auth-cert-tls-with-ca"' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
-yq e -i '.pinniped.supervisor_svc_external_dns = env(PINNIPED_ENDPOINT)' generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml
+kubectl get secret $CLUSTER_NAME-pinniped-package -n tkg-system -ojsonpath="{.data.values\.yaml}" | base64 --decode > generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
+yq e -i '.custom_tls_secret = "custom-auth-cert-tls-with-ca"' generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
+yq e -i '.pinniped.supervisor_svc_external_dns = env(PINNIPED_ENDPOINT)' generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
+yq e -i '.pinniped.supervisor.service.type = "ClusterIP"' generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml
+
 
 # Deleting the existing job.  It will be recreated when the pinniped-addon secret is updated below.  And then gives us a chance to wait until job is competed
 kubectl delete job pinniped-post-deploy-job -n pinniped-supervisor
 
 if [ `uname -s` = 'Darwin' ];
 then
-	NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml | base64`
+	NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml | base64`
 
 else
-	NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-addon-values.yaml | base64 -w 0`
+	NEW_VALUES=`cat generated/$CLUSTER_NAME/pinniped/pinniped-package-values.yaml | base64 -w 0`
 fi
 
-kubectl patch secret $CLUSTER_NAME-pinniped-addon -n tkg-system -p '{"data": {"values.yaml": "'$NEW_VALUES'"}}'
+kubectl patch secret $CLUSTER_NAME-pinniped-package -n tkg-system -p '{"data": {"values.yaml": "'$NEW_VALUES'"}}'
 
 # Wait until job is completed.
 while kubectl get jobs -n pinniped-supervisor | grep "1/1"; [ $? -ne 0 ]; do
