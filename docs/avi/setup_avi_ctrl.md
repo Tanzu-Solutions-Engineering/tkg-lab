@@ -199,7 +199,7 @@ Click `Save`. Click `x` at top right corner.  Then Click `YES, CONTINUE`.
 
 <img src="avi-essentials.png" width="800"><br>
 
-If you chose Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Cloud Resources > Routing` and create a `Static Route`, with:
+If you chose Essentials Tier we don't have `auto-gateway` so we need to create a Default Gateway route to ensure traffic can flow from SEs to pods and back to the clients. Go to `Infrastructure > Cloud Resources > VRF Context`. Edit existing `global` Context clicking on the pencil. In the next screen under `Static Route` click  on `ADD` and fill in the two fields. Then click `SAVE`:
 - Gateway Subnet: `0.0.0.0/0`
 - Next Hop: The Gateway of the VIP Network you are going to use
 
@@ -294,7 +294,7 @@ Set your desired session timeout in the `Controller Settings` section of the `Ed
 
 This is only required if you have a topology where the TKG nodes are NOT in the same network as the Management or VIP network: that's the 3rd topology in the [section 2.3 above](#23-separate-management-network-vip-network-and-tkg-network).
 
-Go to `Infrastructure > Cloud Resources > Routing`. Under `Static Route` click  on `Create`, and fill in the two fields:
+Go to `Infrastructure > Cloud Resources > VRF Context`. Edit existing `global` Context clicking on the pencil. In the next screen under `Static Route` click  on `ADD`, and fill in the two fields. Then click `SAVE`:
 - Gateway Subnet: This is your TKG node network in CIDR format
 - Next Hop: This is the Gateway of your VIP network
 
