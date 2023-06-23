@@ -177,7 +177,7 @@ tanzu cluster create --dry-run --file=generated/$CLUSTER/cluster-config.yaml $KU
 if [ "$IAAS" = "vsphere" ];
 then
   yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/cluster-name" = env(CLUSTER)' generated/$CLUSTER/classy-cluster.yaml
-  yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/package-name" = "antrea.tanzu.vmware.com.1.7.2---vmware.1-tkg.1-advanced"' generated/$CLUSTER/classy-cluster.yaml
+  yq e -i 'select(.kind == "AntreaConfig").metadata.labels."tkg.tanzu.vmware.com/package-name" = "antrea.tanzu.vmware.com.1.9.0---vmware.2-tkg.1-advanced"' generated/$CLUSTER/classy-cluster.yaml
 fi
 
 tanzu cluster create --file=generated/$CLUSTER/classy-cluster.yaml -v 6
