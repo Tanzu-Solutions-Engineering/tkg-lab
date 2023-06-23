@@ -33,4 +33,5 @@ tmc cluster dataprotection schedule create --management-cluster-name attached \
   --cluster-name ${VMWARE_ID}-${CLUSTER_NAME}-${IAAS} \
   --backup-location-name ${BACKUP_LOCATION} \
   --name daily \
-  --rate "0 7 * * *"
+  --rate "0 7 * * *" \
+  --ttl "72h0m0s"
