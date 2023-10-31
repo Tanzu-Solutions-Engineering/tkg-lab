@@ -27,7 +27,11 @@ Now you can execute the following script to perform all of those tasks:
 ./scripts/deploy-all-workload-cluster-components.sh
 ```
 
+After the script finishes atttaching the cluster to TMC, go to the TMC UI and find your cluster. In the Cluster view, go to `Add-ons > Tanzu Repositories` and disable the `tanzu-standard` repository if using version `v2023.7.13_update.2`
+<img src="tanzu-repo.png" width="1000"><br>
+
 >Note: Wait until your cluster has been created and components installed. It may take 12 minutes.
+
 >Note: Once cluster is created your kubeconfig already has the new context as the active one with the necessary credentials
 
 ## Validation Step
