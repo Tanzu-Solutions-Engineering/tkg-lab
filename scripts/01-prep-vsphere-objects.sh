@@ -80,5 +80,5 @@ yq e -i '.VSPHERE_SSH_AUTHORIZED_KEY = env(VSPHERE_SSH_PUB_KEY)' generated/$CLUS
 
 # Upload TKG k8s OVA: Both Ubuntu and Photon
 # TODO: Must update exact sha's once GA version is released
-ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.25.7 $LOCAL_OVA_FOLDER/photon-3-kube-v1.25.7+vmware.2-tkg.1-8795debf8031d8e671660af83b673daa.ova
-ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-efi-kube-v1.25.7 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.25.7+vmware.2-tkg.1-8a74b9f12e488c54605b3537acb683bc.ova
+ensure_upload_template $TEMPLATE_FOLDER photon-3-kube-v1.27.5 $LOCAL_OVA_FOLDER/photon-3-kube-v1.27.5+vmware.1-tkg.1-cac282289bb29b217b808a2b9b0c0c46.ova
+ensure_upload_template $TEMPLATE_FOLDER ubuntu-2004-efi-kube-v1.27.5 $LOCAL_OVA_FOLDER/ubuntu-2004-kube-v1.27.5+vmware.1-tkg.1-0eb96d2f9f4f705ac87c40633d4b69st.ova

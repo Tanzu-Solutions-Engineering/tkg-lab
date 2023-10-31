@@ -17,10 +17,10 @@ VELERO_BUCKET=$(yq e .velero.bucket $PARAMS_YAML)
 IAAS=$(yq e .iaas $PARAMS_YAML)
 
 VELERO_IMAGE_REPO=projects.registry.vmware.com
-VELERO_VERSION=v1.9.5_vmware.1
-VELERO_PLUGIN_FOR_VSPHERE_VERSION=v1.4.2_vmware.1
-VELERO_PLUGIN_FOR_AWS_VERSION=v1.5.3_vmware.1
-VELERO_PLUGIN_FOR_AZURE_VERSION=v1.5.3_vmware.1
+VELERO_VERSION=v1.11.1_vmware.1
+VELERO_PLUGIN_FOR_VSPHERE_VERSION=v1.5.1_vmware.1
+VELERO_PLUGIN_FOR_AWS_VERSION=v1.7.1_vmware.1
+VELERO_PLUGIN_FOR_AZURE_VERSION=v1.7.1_vmware.1
 
 mkdir -p generated/$CLUSTER_NAME/velero
 
@@ -52,7 +52,7 @@ metadata:
 data:
   cluster_flavor: VANILLA
   vsphere_secret_name: vsphere-config-secret
-  vsphere_secret_namespace: kube-system
+  vsphere_secret_namespace: vmware-system-csi
 EOF
 
   velero install \

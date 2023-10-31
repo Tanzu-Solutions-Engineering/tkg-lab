@@ -64,3 +64,5 @@ fi
 
 kubectl apply -f generated/$CLUSTER_NAME/tmc.yaml
 echo "$CLUSTER_NAME registered with TMC"
+
+# After the script finishes atttaching the cluster to TMC, go to the TMC UI and find your cluster. In the Cluster view, go to `Add-ons > Tanzu Repositories` and disable the `tanzu-standard` repository if using version `v2023.7.13_update.2`
