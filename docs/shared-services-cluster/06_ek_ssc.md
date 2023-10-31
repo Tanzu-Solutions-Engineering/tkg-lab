@@ -1,6 +1,6 @@
 # Install Elasticsearch and Kibana
 
-We will deploy Elasticsearch and Kibana as a target for logs.  This is [one of several potential targets for TKG to send logs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.2/using-tkg-22/workload-packages-fluentbit.html).
+We will deploy Elasticsearch and Kibana as a target for logs.  This is [one of several potential targets for TKG to send logs](https://docs.vmware.com/en/VMware-Tanzu-Packages/2023.9.19/tanzu-packages/packages-fluentbit.html).
 
 This is a minimalist and POC quality deployment of Elasticsearh and Kibana.  This is not a component of Tanzu.  This deployment is just for the purpose of demonstration purpose.  See notes below if you face issues with the Elasticsearch deployment.
 

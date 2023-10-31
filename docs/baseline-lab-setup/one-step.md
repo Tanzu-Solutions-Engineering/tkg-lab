@@ -22,7 +22,7 @@ Ensure the `az` CLI is installed and configured. The deploy all script will use 
 To run management cluster VMs on Azure, [accept the license](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2.1/tkg-deploy-mc-21/mgmt-reqs-prep-azure.html#accept-the-base-image-license-4) for their base Kubernetes version and machine OS.
 
 ```
-az vm image terms accept --publisher vmware-inc --offer tkg-capi-2022-06-24 --plan k8s-1dot24dot9-ubuntu-2004
+az vm image terms accept --publisher vmware-inc --offer tkg-capi-2022-06-24 --plan k8s-1dot27dot5-ubuntu-2004
 ```
 
 ## Execute the Deploy All Script

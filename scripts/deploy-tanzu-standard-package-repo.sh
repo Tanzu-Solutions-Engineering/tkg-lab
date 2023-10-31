@@ -13,4 +13,4 @@ CLUSTER_NAME=$1
 kubectl config use-context $CLUSTER_NAME-admin@$CLUSTER_NAME
 
 # Create tanzu-standard package repository
-tanzu package repository add tanzu-standard --url projects.registry.vmware.com/tkg/packages/standard/repo:v2.4.0 -n tanzu-user-managed-packages
+tanzu package repository add tanzu-standard --url projects.registry.vmware.com/tkg/packages/standard/repo:v2023.9.19 --namespace tanzu-user-managed-packages
